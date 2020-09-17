@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-06 23:08+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Planet.cpp:53
+msgid "Barren"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:62
+#: /home/stefan/workspace/sota/starconquest/src/scenes/MainScene.cpp:62
+#: src/scenes/MainScene.cpp:60
+msgid "Exit Game"
+msgstr ""
+
+#: src/Planet.cpp:55
+msgid "Gaia"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:49
+#: /home/stefan/workspace/sota/starconquest/src/scenes/MainScene.cpp:49
+#: src/scenes/MainScene.cpp:47
+msgid "Load Game"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:38
+#: /home/stefan/workspace/sota/starconquest/src/scenes/MainScene.cpp:38
+#: src/scenes/MainScene.cpp:36
+msgid "New Game"
+msgstr ""
+
+#: src/Planet.cpp:57
+msgid "Radiated"
+msgstr ""
+
+#: src/Planet.cpp:59
+msgid "Swamp"
+msgstr ""
+
+#: src/Planet.cpp:61
+msgid "Terran"
+msgstr ""
+
+#: src/Planet.cpp:63
+msgid "Wasteland"
+msgstr ""
