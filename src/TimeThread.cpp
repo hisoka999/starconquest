@@ -1,0 +1,85 @@
+/*
+ * TimeThread.cpp
+ *
+ *  Created on: 12.03.2018
+ *      Author: stefan
+ */
+
+#include "TimeThread.h"
+
+#include "messagetypes.h"
+#include <boost/make_shared.hpp>
+#include <engine/core/MessageSystem.h>
+
+TimeThread::TimeThread(const std::shared_ptr<GameState>& gameState)
+    : running(false)
+    , gameState(gameState)
+    , paused(false)
+    , speed(400)
+{
+
+    std::tm ttm = std::tm();
+    ttm.tm_year = 200;
+    ttm.tm_mon = 0;
+    ttm.tm_mday = 1;
+
+    std::time_t ttime = std::mktime(&ttm);
+    startTime = std::chrono::system_clock::from_time_t(ttime);
+    running = true;
+    thread = std::thread(&TimeThread::update, this);
+    //thread.join();
+}
+
+TimeThread::~TimeThread()
+{
+    stop();
+}
+
+void TimeThread::update()
+{
+    while (running) {
+
+        while (!paused) {
+            startTime += std::chrono::hours(24);
+            std::this_thread::sleep_for(std::chrono::milliseconds(speed));
+
+            std::time_t tmpTime = std::chrono::system_clock::to_time_t(startTime);
+
+            std::tm* tm = std::localtime(&tmpTime);
+
+            if (tm->tm_mday == 1) {
+                for (const auto& player : gameState->getPlayers()) {
+                    gameState->updatePlayerState(player);
+                }
+                auto& msgSystem = core::MessageSystem<MessageTypes>::get();
+                boost::shared_ptr<core::Message<MessageTypes, int>> msg = boost::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
+                msgSystem.sendMessage(msg);
+            }
+        }
+    }
+}
+
+void TimeThread::setSpeed(int value)
+{
+    speed = value;
+}
+
+void TimeThread::stop()
+{
+    running = false;
+}
+
+void TimeThread::start()
+{
+    running = true;
+    paused = false;
+}
+void TimeThread::pause()
+{
+    paused = true;
+}
+
+std::chrono::system_clock::time_point TimeThread::getTime()
+{
+    return startTime;
+}
