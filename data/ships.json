@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name" : "ColonyShip",
+        "description" : "a ship that can colonize a planet.",
+        "type": "ColonyShip",
+        "properties" : {
+                "hull": 2   
+            },
+        "costs": 1
+    },
+    {
+        "id": 2,
+        "name" : "Scout",
+        "description" : "A small and fast scout ship.",
+        "type": "NormalShip",
+        "properties" : {
+                "hull": 3
+                ,"rockets":1
+                ,"laser": 1
+                
+            },
+        "costs": 1
+    },
+
+]
+ 

@@ -18,12 +18,16 @@
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
 #include <boost/locale.hpp>
+#include <engine/utils/json/parser.h>
 #include <iostream>
 
 using namespace boost::locale;
 
 int main()
 {
+    std::shared_ptr<utils::JSON::Parser> parser = std::make_shared<utils::JSON::Parser>();
+
+    auto obj = parser->parseObject("\"id\":1 ,\"name\":\"Test\", \"attr\" : {\"test\":22}");
 
     generator gen;
 

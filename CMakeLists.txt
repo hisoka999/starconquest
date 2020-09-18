@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(starconquest)
 
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -89,7 +89,7 @@ if(PACKAGE_TESTS)
         ${PROJECT_BINARY_DIR}/googletest
         )
     enable_testing()
-    #add_subdirectory(tests)
+    add_subdirectory(tests)
     #add_executable(SimpleTest )
 
 

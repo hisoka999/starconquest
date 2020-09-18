@@ -1,0 +1,31 @@
+[
+    {"id": 1
+    ,"name": "Farm"
+    ,"name_de": "Farm"
+    ,"desc": "A Building that produces food."
+    ,"desc_de": "Ein Gebäude das Nahrung produziert."
+    ,"props":{
+            "food": 2
+        }
+    },
+
+    {"id": 2
+    ,"name": "Factory"
+    ,"name_de": "Fabrik"
+    ,"desc": "A Building that produces goods."
+    ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"props":{
+            "ressources": 2
+        }
+    },
+
+    {"id": 3
+    ,"name": "Research Lab"
+    ,"name_de": "Forschungslabor"
+    ,"desc": "A Building that produces goods."
+    ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"props":{
+            "research": 2
+        }
+    },    
+]
