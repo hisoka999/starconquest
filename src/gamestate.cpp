@@ -61,3 +61,16 @@ std::vector<std::shared_ptr<Fleet>> GameState::getFleets() const
 {
     return fleets;
 }
+
+void GameState::updateFleetPosition(float deltaTime)
+{
+    for (auto& fleet : fleets) {
+        if (fleet->getPosition() != fleet->getTargetPosition()) {
+            float currentDistance = fleet->getPosition().distance(fleet->getStartPosition());
+            float fullDistance = fleet->getTargetPosition().distance(fleet->getStartPosition());
+            float percentage = currentDistance / fullDistance;
+            auto pos = utils::lerp(fleet->getStartPosition(), fleet->getTargetPosition(), percentage);
+            fleet->setPosition(pos);
+        }
+    }
+}

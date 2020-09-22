@@ -29,8 +29,8 @@ public:
     void setMainCamera(Camera* pCamera);
     Camera* getMainCamera();
     void calcDelta();
-    double getZoomFactor();
-    void setZoomFactor(double factor);
+    float getZoomFactor();
+    void setZoomFactor(float factor);
 
     //drawing routines
     /**
@@ -58,7 +58,7 @@ private:
     double delta;
     graphics::Rect viewPort;
     Camera* camera;
-    double zoomFactor;
+    float zoomFactor;
 };
 
 } // namespace core

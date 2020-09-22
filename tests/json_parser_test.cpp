@@ -64,3 +64,16 @@ TEST(ParserTest, ParseArrayMultipleObjects)
     EXPECT_EQ(obj2->getIntValue("id"), 2);
     EXPECT_EQ(obj2->getStringValue("name"), "Demo");
 }
+
+TEST(ParserTest, ParseObjectWithArray)
+{
+    std::shared_ptr<utils::JSON::Parser> parser = std::make_shared<utils::JSON::Parser>();
+    auto obj = parser->parseObject("\"id\":1 ,\"name\":\"Test\", \"texture\":[\"path1\",\"path2\",\"file.ext\"]  ");
+    EXPECT_EQ(obj->getIntValue("id"), 1);
+    EXPECT_EQ(obj->getStringValue("name"), "Test");
+
+    auto vec = obj->getArray("texture");
+    EXPECT_EQ(std::get<std::string>(vec.at(0)), "path1");
+    EXPECT_EQ(std::get<std::string>(vec.at(1)), "path2");
+    EXPECT_EQ(std::get<std::string>(vec.at(2)), "file.ext");
+}

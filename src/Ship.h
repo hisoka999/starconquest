@@ -16,7 +16,7 @@ enum class Attribute {
     Bombs,
     Hull,
     Rockets,
-
+    Drive,
 };
 
 enum class ShipType {
@@ -36,6 +36,7 @@ public:
     int getAttribute(const Attribute attr);
 
     ShipType getShipType() const;
+    bool isDistanceReachable(const float distance);
 
 private:
     ShipType shipType;

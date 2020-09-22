@@ -46,6 +46,7 @@ void TimeThread::update()
             std::time_t tmpTime = std::chrono::system_clock::to_time_t(startTime);
 
             std::tm* tm = std::localtime(&tmpTime);
+            gameState->updateFleetPosition(0);
 
             if (tm->tm_mday == 1) {
                 for (const auto& player : gameState->getPlayers()) {

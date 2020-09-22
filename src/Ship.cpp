@@ -37,3 +37,7 @@ ShipType Ship::getShipType() const
 {
     return shipType;
 }
+bool Ship::isDistanceReachable(const float distance)
+{
+    return getAttribute(Attribute::Drive) * 100 >= distance;
+}

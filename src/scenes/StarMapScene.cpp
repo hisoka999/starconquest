@@ -21,10 +21,10 @@ StarMapScene::~StarMapScene()
 StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_ptr<Star>> pStars,
     std::shared_ptr<Player> player)
     : core::Scene(pRenderer)
-    , mouseSpeedX(100)
-    , mouseSpeedY(
-          100)
     , selectedFleet(nullptr)
+    , mouseSpeedX(100)
+    , mouseSpeedY(100)
+
 {
 
     std::vector<std::shared_ptr<Player>> players;
@@ -39,6 +39,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     colonyShip->loadTexture("images/ships/colonyship.png");
 
     colonyShip->addAttribute(Attribute::Hull, 10);
+    colonyShip->addAttribute(Attribute::Drive, 5);
     auto fleet = std::make_shared<Fleet>("Fleet 1");
     fleet->setOwner(player.get());
     fleet->addShip(colonyShip);
@@ -193,7 +194,7 @@ void StarMapScene::handleEvents(core::Input* pInput)
     if (pInput->isScrollWheel()) {
 
         utils::Vector2 pos = pInput->getMouseWheelPosition();
-        renderer->setZoomFactor(renderer->getZoomFactor() + pos.getY() / 100.0);
+        renderer->setZoomFactor(renderer->getZoomFactor() + pos.getY() / 100.0f);
 
         viewPort.width = WORLD_SIZE * renderer->getZoomFactor();
         viewPort.height = WORLD_SIZE * renderer->getZoomFactor();
@@ -230,14 +231,33 @@ void StarMapScene::handleEvents(core::Input* pInput)
             i++;
 
             if (planetRect.intersects(mousePos)) {
+                utils::Vector2 planetVec(planetRect.x + planetRect.width / 2, planetRect.y + planetRect.height / 2);
                 //mouse hover planet
+                targetFleetVec = planetVec;
 
                 if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
-                    std::cout << "user clicked on planet " << planet->getName()
-                              << std::endl;
-                    planetWindow.setPlanet(planet);
-                    planetWindow.setPlayer(gameState->getHumanPlayer());
-                    planetWindow.setVisible(true);
+                    if (selectedFleet != nullptr) {
+                        float px = selectedFleet->getPosition().getX() * renderer->getZoomFactor();
+                        float py = selectedFleet->getPosition().getY() * renderer->getZoomFactor();
+                        float width = selectedFleet->getFirstShip()->getTexture()->getWidth() * 0.2f * renderer->getZoomFactor();
+                        float height = selectedFleet->getFirstShip()->getTexture()->getHeight() * 0.2f * renderer->getZoomFactor();
+                        px += (width / 2.f);
+                        py += (height / 2.f);
+
+                        auto endPos = utils::Vector2(targetFleetVec.getX() - viewPort.x, targetFleetVec.getY() - viewPort.y);
+                        utils::Vector2 start(px, py);
+
+                        if (selectedFleet->getFirstShip()->isDistanceReachable(endPos.distance(start) / renderer->getZoomFactor())) {
+                            selectedFleet->setStartPosition(selectedFleet->getPosition());
+                            selectedFleet->setTargetPosition(planetVec);
+                        }
+                    } else {
+                        std::cout << "user clicked on planet " << planet->getName()
+                                  << std::endl;
+                        planetWindow.setPlanet(planet);
+                        planetWindow.setPlayer(gameState->getHumanPlayer());
+                        planetWindow.setVisible(true);
+                    }
                 }
             }
         }
@@ -248,8 +268,10 @@ void StarMapScene::handleEvents(core::Input* pInput)
         graphics::Rect fleetRect;
         fleetRect.x = fleet->getPosition().getX() * renderer->getZoomFactor();
         fleetRect.y = fleet->getPosition().getY() * renderer->getZoomFactor();
-        fleetRect.width = texture->getWidth() * 0.2 * renderer->getZoomFactor();
-        fleetRect.height = texture->getHeight() * 0.2 * renderer->getZoomFactor();
+        fleetRect.width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
+        fleetRect.height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
+        fleetRect.x += viewPort.x;
+        fleetRect.y += viewPort.y;
         if (fleetRect.intersects(mousePos)) {
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
                 selectedFleet = fleet;
@@ -301,8 +323,8 @@ void StarMapScene::render()
 
             renderer->drawCircle(x * renderer->getZoomFactor(), y * renderer->getZoomFactor(), i * 50 * renderer->getZoomFactor(),
                 ellipseColor);
-            int tmpx = (planet->getSize() * 3 * std::cos(135 * PI / 180.0)) / 2;
-            int tmpy = (planet->getSize() * 3 * std::sin(135 * PI / 180.0)) / 2;
+            int tmpx = (planet->getSize() * 3.0 * std::cos(135.0 * PI / 180.0)) / 2.0;
+            int tmpy = (planet->getSize() * 3.0 * std::sin(135.0 * PI / 180.0)) / 2.0;
             planetTextures[planet->getType()]->renderResized(renderer,
                 (planetX + x + tmpx) * renderer->getZoomFactor(), (y + (planetY + tmpy) * -1) * renderer->getZoomFactor(),
                 planet->getSize() * 3 * renderer->getZoomFactor(), planet->getSize() * 3 * renderer->getZoomFactor());
@@ -320,9 +342,35 @@ void StarMapScene::render()
 
         int x = fleet->getPosition().getX() * renderer->getZoomFactor();
         int y = fleet->getPosition().getY() * renderer->getZoomFactor();
-        int width = texture->getWidth() * 0.2 * renderer->getZoomFactor();
-        int height = texture->getHeight() * 0.2 * renderer->getZoomFactor();
+        int width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
+        int height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
+
         texture->renderRotated(renderer, 90, x, y, width, height);
+    }
+    if (selectedFleet != nullptr) {
+        auto startPos = selectedFleet->getPosition();
+        auto ship = selectedFleet->getFirstShip();
+        auto texture = ship->getTexture();
+        float x = selectedFleet->getPosition().getX() * renderer->getZoomFactor();
+        float y = selectedFleet->getPosition().getY() * renderer->getZoomFactor();
+        float width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
+        float height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
+        x += (width / 2);
+        y += (height / 2);
+
+        //x -= viewPort.x;
+        //y -= viewPort.y;
+        auto endPos = utils::Vector2(targetFleetVec.getX() - viewPort.x, targetFleetVec.getY() - viewPort.y);
+        utils::Vector2 start(x, y);
+
+        std::cout << "distinace: " << endPos.distance(start) / renderer->getZoomFactor() << std::endl;
+        if (ship->isDistanceReachable(endPos.distance(start) / renderer->getZoomFactor())) {
+            renderer->setDrawColor(0, 255, 0, 255);
+        } else {
+            renderer->setDrawColor(255, 0, 0, 255);
+        }
+
+        renderer->drawLine(start, endPos);
     }
 
     renderer->setViewPort(defaultViewPort);

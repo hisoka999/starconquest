@@ -191,11 +191,11 @@ void Renderer::fillRect(graphics::Rect& rect)
         throw SDLException("fillRect");
     }
 }
-double Renderer::getZoomFactor()
+float Renderer::getZoomFactor()
 {
     return zoomFactor;
 }
-void Renderer::setZoomFactor(double factor)
+void Renderer::setZoomFactor(float factor)
 {
     zoomFactor = factor;
 }

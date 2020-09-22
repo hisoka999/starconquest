@@ -19,5 +19,14 @@ namespace JSON {
         return std::get<std::shared_ptr<Object>>(attributes.at(attr));
     }
 
+    JsonArray Object::getArray(const std::string& attr) const
+    {
+        return arrayAttributes.at(attr);
+    }
+    void Object::setArrayAttribute(const std::string& attr, JsonArray array)
+    {
+        arrayAttributes[attr] = array;
+    }
+
 }
 }

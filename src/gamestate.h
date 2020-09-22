@@ -23,6 +23,8 @@ public:
 
     std::vector<std::shared_ptr<Fleet>> getFleets() const;
 
+    void updateFleetPosition(float deltaTime);
+
 private:
     std::vector<std::shared_ptr<Star>> stars;
     std::vector<std::shared_ptr<Player>> players;

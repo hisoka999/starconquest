@@ -154,6 +154,8 @@ void PlanetWindow::onOpen()
 
 void PlanetWindow::updateData()
 {
+    if (planet == nullptr)
+        return;
     int growth = planet->populationGrowth() * 100.0;
     if (planet->getPlayer() != nullptr) {
         populationLabel->setTextF("%d [%+d]", planet->getPopulation(), growth);
@@ -209,7 +211,7 @@ void PlanetWindow::onSurfaceClick(const utils::Vector2& pos)
 void PlanetWindow::render(core::Renderer* pRender, std::shared_ptr<graphics::Texture> pTexture)
 {
 
-    if (updatePlanet) {
+    if (updatePlanet && planet != nullptr) {
         if (surfaceTexture != nullptr)
             surfaceTexture = nullptr;
 

@@ -112,10 +112,17 @@ namespace JSON {
                     lastAttr = attrValue.find_first_of("}");
                     attrValue = rtrim(ltrim(attrValue, "{"), "}");
                     object->setAttribute(attrName, parseObject(attrValue));
+                } else if (attrValue.find_first_of("[") < attrValue.size()) {
+                    lastAttr = attrValue.find_first_of("]");
+                    attrValue = jsonData.substr(splitPos + 1, lastAttr - splitPos - 1);
+                    object->setArrayAttribute(attrName, parseArray(attrValue));
+
                 } else if (attrValue.find_first_of("\"") < attrValue.size()) {
                     //found string
                     object->setAttribute(attrName, trim(attrValue, "\""));
-                } else if (attrValue == "true") {
+                }
+
+                else if (attrValue == "true") {
                     object->setAttribute(attrName, 1);
                 } else if (attrValue == "false") {
                     object->setAttribute(attrName, 0);

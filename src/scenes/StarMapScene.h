@@ -51,6 +51,7 @@ private:
     windows::PlanetWindow planetWindow;
     std::unique_ptr<TimeThread> timeThread;
     std::shared_ptr<Fleet> selectedFleet;
+    utils::Vector2 targetFleetVec;
 
     int mouseSpeedX, mouseSpeedY;
 };
