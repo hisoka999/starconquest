@@ -1,6 +1,8 @@
 #include "engine/core/gamewindow.h"
 #include "engine/utils/exceptions.h"
 #include <SDL2/SDL_mixer.h>
+#include <engine/utils/os.h>
+#include <fstream>
 #include <iostream>
 
 namespace core {
@@ -12,10 +14,28 @@ GameWindow::GameWindow(const std::string pTitle, int pWidth, int pHeight)
     , title(pTitle)
 {
     //ctor
+    settings = std::make_shared<utils::IniBase>();
 }
 
 int GameWindow::open()
 {
+
+    if (!utils::os::is_dir(utils::os::get_pref_dir("", "starconquest"))) {
+        utils::os::create_dir(utils::os::get_pref_dir("", "starconquest"));
+    }
+
+    std::string path = utils::os::combine(utils::os::get_pref_dir("", "starconquest"), "settings.conf");
+    if (!utils::os::is_file(path)) {
+        std::ofstream filestream;
+        filestream.open(path, std::ios::out);
+        std::cout << path << " created!" << std::endl;
+        filestream.close();
+    }
+    settings->Setfilename(path);
+    settings->read();
+    width = settings->getValueI("Base", "Width");
+    height = settings->getValueI("Base", "Height");
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         throw SDLException("GameWindow::SDL_Init");
     }
@@ -39,6 +59,10 @@ int GameWindow::open()
             + std::string(Mix_GetError()));
     }
 
+    if (settings->getValueB("Base", "Fullscreen")) {
+        SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+
     return 0;
 }
 
@@ -60,6 +84,11 @@ SDL_Window* GameWindow::getSDLWindow()
 void GameWindow::delay(unsigned int millsec)
 {
     SDL_Delay(millsec);
+}
+
+std::shared_ptr<utils::IniBase> GameWindow::getSettings() const
+{
+    return settings;
 }
 
 } // namespace core

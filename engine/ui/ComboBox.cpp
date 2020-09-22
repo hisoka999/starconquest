@@ -62,6 +62,35 @@ void ComboBox::render(core::Renderer* pRender)
         tx += dsp.x;
         ty += dsp.y;
     }
+
+    graphics::Rect rect;
+    rect.x = tx;
+    rect.y = ty;
+    rect.width = getWidth();
+    rect.height = 28;
+
+    if (mouseDown && elements.size() > 0) {
+        rect.height *= elements.size();
+    }
+    SDL_Color textColor = { 255, 255, 255, 255 };
+    SDL_Color selectionColor = { 93, 103, 108, 255 };
+    pRender->setDrawColor(12, 21, 24, 255);
+
+    pRender->fillRect(rect);
+    pRender->setDrawColor(93, 103, 108, 255);
+    pRender->drawRect(rect);
+
+    if (mouseDown) {
+        for (size_t i = 0; i < elements.size(); ++i) {
+            if (selection == i) {
+                getFont()->render(pRender, elements[i], selectionColor, rect.x, rect.y + (i * 28));
+            } else {
+                getFont()->render(pRender, elements[i], textColor, rect.x, rect.y + (i * 28));
+            }
+        }
+    } else {
+        getFont()->render(pRender, elements[selection], textColor, rect.x, rect.y);
+    }
 }
 
 void ComboBox::setSelectionByText(std::string text)

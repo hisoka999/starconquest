@@ -1,9 +1,6 @@
 //============================================================================
 // Name        : starconquest.cpp
 // Author      : Stefan Lüdtke
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include "engine/core/SceneManager.h"
@@ -51,7 +48,7 @@ int main()
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
-        scenes::MainScene mainScene(&ren, &sceneManager);
+        scenes::MainScene mainScene(&ren, &sceneManager, &win);
         sceneManager.addScene("main", &mainScene);
         sceneManager.setCurrentScene("main");
 

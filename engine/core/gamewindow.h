@@ -4,32 +4,36 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <engine/utils/IniBase.h>
+#include <memory>
 #include <string>
 
 namespace core {
 
-class GameWindow
-{
-    public:
-        /** Default constructor */
-        GameWindow(std::string pTitle,int pWidth,int pHeight);
-        /** Default destructor */
-        virtual ~GameWindow();
+class GameWindow {
+public:
+    /** Default constructor */
+    GameWindow(std::string pTitle, int pWidth, int pHeight);
+    /** Default destructor */
+    virtual ~GameWindow();
 
-        int open();
+    int open();
 
-        SDL_Window *getSDLWindow();
+    SDL_Window* getSDLWindow();
 
-        void delay(unsigned int millsec);
-        int getWidth() { return width; }
-        int getHeight() { return height; }
-    protected:
-    private:
-        SDL_Window *win;
+    void delay(unsigned int millsec);
+    int getWidth() { return width; }
+    int getHeight() { return height; }
+    std::shared_ptr<utils::IniBase> getSettings() const;
 
-        int width;
-        int height;
-        std::string title;
+protected:
+private:
+    SDL_Window* win;
+
+    int width;
+    int height;
+    std::string title;
+    std::shared_ptr<utils::IniBase> settings;
 };
 
 } // namespace core

@@ -1,10 +1,9 @@
 #include "engine/utils/IniBase.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
-namespace utils
-{
+namespace utils {
 
 IniBase::IniBase()
 {
@@ -25,24 +24,18 @@ void IniBase::read()
     std::cout << filename << std::endl;
 
     file.open(filename.c_str(), std::ios::in);
-    if (!file.is_open())
-    {
+    if (!file.is_open()) {
         throw IOException(filename, "file does not exists");
     }
-    while (getline(file, s))
-    {
+    while (getline(file, s)) {
 
-        if (s[0] == '[')
-        {
+        if (s[0] == '[') {
             group = s.substr(1, s.length() - 2);
-        }
-        else if (!s.empty())
-        {
+        } else if (!s.empty()) {
             std::string attr = s.substr(0, s.find("="));
             std::string value = s.substr(s.find("=") + 1, s.length() - 1);
             this->groups[group][attr] = value;
         }
-
     }
     //while(!s.empty());
     file.close();
@@ -64,7 +57,6 @@ void IniBase::read()
      std::string buffer = inf(in);
      std::cout<<"buffer: "<<buffer.substr(0,100)<<std::endl;
      */
-
 }
 /* Decompress from file source to file dest until stream ends or EOF.
  inf() returns Z_OK on success, Z_MEM_ERROR if memory could not be
@@ -72,7 +64,7 @@ void IniBase::read()
  invalid or incomplete, Z_VERSION_ERROR if the version of zlib.h and
  the version of the library linked do not match, or Z_ERRNO if there
  is an error reading or writing the files. */
-std::string IniBase::inf(FILE *source)
+std::string IniBase::inf(FILE* source)
 {
     int ret;
     unsigned have;
@@ -92,12 +84,10 @@ std::string IniBase::inf(FILE *source)
         zerr(ret);
 
     /* decompress until deflate stream ends or end of file */
-    do
-    {
+    do {
         strm.avail_in = fread(in, sizeof(char), sizeof(in), source);
-        if (ferror(source))
-        {
-            (void) inflateEnd(&strm);
+        if (ferror(source)) {
+            (void)inflateEnd(&strm);
             return NULL;
         }
         if (strm.avail_in == 0)
@@ -105,20 +95,18 @@ std::string IniBase::inf(FILE *source)
         strm.next_in = in;
 
         /* run inflate() on input until output buffer not full */
-        do
-        {
+        do {
             strm.avail_out = CHUNK;
             strm.next_out = out;
             ret = inflate(&strm, Z_NO_FLUSH);
             assert(ret != Z_STREAM_ERROR); /* state not clobbered */
-            switch (ret)
-            {
+            switch (ret) {
             case Z_NEED_DICT:
                 ret = Z_DATA_ERROR;
                 /* no break */
             case Z_DATA_ERROR:
             case Z_MEM_ERROR:
-                (void) inflateEnd(&strm);
+                (void)inflateEnd(&strm);
                 zerr(ret);
                 return NULL;
             }
@@ -135,7 +123,7 @@ std::string IniBase::inf(FILE *source)
     } while (ret != Z_STREAM_END);
 
     /* clean up and return */
-    (void) inflateEnd(&strm);
+    (void)inflateEnd(&strm);
 
     zerr(ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR);
     return buffer.str();
@@ -145,12 +133,11 @@ std::string IniBase::inf(FILE *source)
 void IniBase::zerr(int ret)
 {
     fputs("zlib: ", stderr);
-    switch (ret)
-    {
+    switch (ret) {
     case Z_ERRNO:
-        if (ferror (stdin))
+        if (ferror(stdin))
             fputs("error reading stdin\n", stderr);
-        if (ferror (stdout))
+        if (ferror(stdout))
             fputs("error writing stdout\n", stderr);
         break;
     case Z_STREAM_ERROR:
@@ -179,57 +166,54 @@ void IniBase::write()
     file.open(filename, std::ios::out);
 
     // show content:
-    for (GroupIterator it = groups.begin(); it != groups.end(); ++it)
-    {
+    for (GroupIterator it = groups.begin(); it != groups.end(); ++it) {
         file << '[' << it->first << "]\n";
         //if (it->second.begin() != it->second.end())
         //std::cout<<"TEST"<<it->first<<std::endl;
 
         for (Attributes::iterator a_it = it->second.begin();
-                a_it != it->second.end(); ++a_it)
-        {
+             a_it != it->second.end(); ++a_it) {
             file << a_it->first << "=" << a_it->second << '\n';
         }
-
     }
     file.close();
-
 }
-void IniBase::setAttr(std::string group, std::string name, std::string value)
+void IniBase::setAttr(const std::string& group, const std::string& name, std::string value)
 {
     groups[group][name] = value;
 }
-void IniBase::setAttrB(std::string group, std::string name, bool value)
+void IniBase::setAttrB(const std::string& group, const std::string& name, bool value)
 {
     std::string valB = "FALSE";
     if (value)
         valB = "TRUE";
+    //    if (groups.count(group) == 0) {
+    //        Attributes attribs;
+    //        groups[group] = attribs;
+    //    }
     groups[group][name] = valB;
 }
-void IniBase::setAttrI(std::string group, std::string name, int value)
+void IniBase::setAttrI(const std::string& group, const std::string& name, int value)
 {
     groups[group][name] = std::to_string(value);
 }
 
-std::string IniBase::getValue(std::string group, std::string name)
+std::string IniBase::getValue(const std::string& group, const std::string& name)
 {
     return groups[group][name];
 }
 
-bool IniBase::getValueB(std::string group, std::string name)
+bool IniBase::getValueB(const std::string& group, const std::string& name)
 {
     std::string val = getValue(group, name);
-    if (val == "FALSE")
-    {
+    if (val == "FALSE") {
         return false;
-    }
-    else
-    {
+    } else {
         return true;
     }
 }
 
-int IniBase::getValueI(std::string group, std::string name)
+int IniBase::getValueI(const std::string& group, const std::string& name)
 {
     std::string val = getValue(group, name);
     if (val.length() > 0)

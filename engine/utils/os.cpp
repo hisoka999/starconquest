@@ -8,6 +8,7 @@
 #include "engine/utils/os.h"
 #ifdef __linux
 #include <pwd.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
@@ -61,6 +62,29 @@ namespace os {
     const std::string get_pref_dir(const std::string& org, const std::string& app)
     {
         return SDL_GetPrefPath(org.c_str(), app.c_str());
+    }
+
+    bool is_dir(const std::string path)
+    {
+#ifdef __linux
+        struct stat sb;
+        return stat(path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode);
+#endif
+    }
+
+    bool is_file(const std::string path)
+    {
+#ifdef __linux
+        struct stat sb;
+        return stat(path.c_str(), &sb) == 0 && S_ISREG(sb.st_mode);
+#endif
+    }
+
+    void create_dir(const std::string path)
+    {
+#ifdef __linux
+        mkdir(path.c_str(), 0755);
+#endif
     }
 
 }

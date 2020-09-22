@@ -25,7 +25,7 @@ protected:
 private:
     bool checked;
     std::string text;
-    graphics::Text* textCore;
+    std::shared_ptr<graphics::Text> uiIconText;
     SDL_Color color;
 };
 

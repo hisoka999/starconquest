@@ -1,14 +1,16 @@
 #include "engine/ui/Checkbox.h"
+#include <engine/graphics/TextureManager.h>
 
 namespace UI {
 
 Checkbox::Checkbox(Object* parent)
     : UI::Object(parent)
 {
-    textCore = new graphics::Text();
-    textCore->openFont("arial.ttf", 12);
+    uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
+    //    textCore = new graphics::Text();
+    //    textCore->openFont("arial.ttf", 12);
     checked = false;
-    color = { 0, 0, 0, 255 };
+    color = { 255, 255, 255, 255 };
 }
 
 Checkbox::~Checkbox()
@@ -50,9 +52,16 @@ void Checkbox::render(core::Renderer* pRender)
     }
     int x2 = 0;
     if (checked)
-        x2 = 25;
+        uiIconText->render(pRender, "\uf00c", color, tx, ty);
     //pTexture->render(pRender, tx, ty, 25, 23, x2, 260);
-    textCore->render(pRender, text, color, tx + 30, ty);
+    graphics::Rect rect;
+    rect.x = tx;
+    rect.y = ty;
+    rect.width = 25;
+    rect.height = 25;
+
+    pRender->drawRect(rect);
+    getFont()->render(pRender, text, color, tx + 30, ty);
 }
 
 } // namespace UI

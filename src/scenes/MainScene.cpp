@@ -19,11 +19,12 @@
 namespace scenes {
 
 MainScene::MainScene(core::Renderer* pRenderer,
-    core::SceneManager* pSceneManager)
+    core::SceneManager* pSceneManager, core::GameWindow* gameWindow)
     : core::Scene(pRenderer)
     , running(true)
     , sceneManager(
           pSceneManager)
+    , settingsWindow(gameWindow)
 {
     bgTexture.loadTexture(renderer, "images/title_background.png");
 
@@ -51,11 +52,22 @@ MainScene::MainScene(core::Renderer* pRenderer,
 
     container->addObject(btnLoadGame);
 
+    std::shared_ptr<UI::Button> btnSettingsGame = std::make_shared<UI::Button>();
+    btnSettingsGame->setFont("fonts/Audiowide-Regular.ttf", 14);
+    btnSettingsGame->setColor(white);
+    btnSettingsGame->setLabel(_("Settings"));
+    btnSettingsGame->setPos(450, 450);
+    btnSettingsGame->setStaticWidth(150);
+
+    btnSettingsGame->connect(UI::Button::buttonClickCallback(), [&]() { settingsWindow.setVisible(true); });
+
+    container->addObject(btnSettingsGame);
+
     std::shared_ptr<UI::Button> btnExit = std::make_shared<UI::Button>();
     btnExit->setFont("fonts/Audiowide-Regular.ttf", 14);
     btnExit->setColor(white);
     btnExit->setLabel(_("Exit Game"));
-    btnExit->setPos(450, 450);
+    btnExit->setPos(450, 500);
     btnExit->setStaticWidth(150);
 
     btnExit->connect(UI::Button::buttonClickCallback(), [&]() { exitGame(); });
@@ -70,6 +82,7 @@ void MainScene::render()
         renderer->getMainCamera()->getHeight());
 
     container->render(renderer);
+    settingsWindow.render(renderer);
 }
 
 void MainScene::exitGame()
@@ -140,6 +153,7 @@ void MainScene::loadGame()
 void MainScene::handleEvents(core::Input* pInput)
 {
     container->handleEvents(pInput);
+    settingsWindow.handleEvents(pInput);
 }
 
 MainScene::~MainScene()

@@ -9,6 +9,7 @@
 #define SCENES_MAINSCENE_H_
 
 #include "../Building.h"
+#include "../windows/SettingsWindow.h"
 #include "StarMapScene.h"
 #include <engine/core/Scene.h>
 #include <engine/core/SceneManager.h>
@@ -21,7 +22,7 @@ namespace scenes {
 
 class MainScene : public core::Scene {
 public:
-    MainScene(core::Renderer* pRenderer, core::SceneManager* pSceneManager);
+    MainScene(core::Renderer* pRenderer, core::SceneManager* pSceneManager, core::GameWindow* gameWindow);
     virtual ~MainScene();
     void render();
     void handleEvents(core::Input* pInput);
@@ -41,6 +42,7 @@ private:
     void startGame();
     void loadGame();
     StarMapScene* starMapScene;
+    SettingsWindow settingsWindow;
 };
 
 } /* namespace scenes */
