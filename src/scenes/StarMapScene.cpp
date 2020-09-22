@@ -231,7 +231,7 @@ void StarMapScene::handleEvents(core::Input* pInput)
             i++;
 
             if (planetRect.intersects(mousePos)) {
-                utils::Vector2 planetVec(planetRect.x + planetRect.width / 2, planetRect.y + planetRect.height / 2);
+                utils::Vector2 planetVec(planetRect.x + (planetRect.width * renderer->getZoomFactor() / 2), planetRect.y + (planetRect.height * renderer->getZoomFactor() / 2));
                 //mouse hover planet
                 targetFleetVec = planetVec;
 
@@ -244,12 +244,13 @@ void StarMapScene::handleEvents(core::Input* pInput)
                         px += (width / 2.f);
                         py += (height / 2.f);
 
-                        auto endPos = utils::Vector2(targetFleetVec.getX() - viewPort.x, targetFleetVec.getY() - viewPort.y);
+                        auto endPos = utils::Vector2(x + planetX + tmpx, y + (planetY + tmpy) * -1);
                         utils::Vector2 start(px, py);
 
-                        if (selectedFleet->getFirstShip()->isDistanceReachable(endPos.distance(start) / renderer->getZoomFactor())) {
+                        if (selectedFleet->getFirstShip()->isDistanceReachable(endPos.distance(selectedFleet->getPosition()) / renderer->getZoomFactor())) {
                             selectedFleet->setStartPosition(selectedFleet->getPosition());
-                            selectedFleet->setTargetPosition(planetVec);
+                            //selectedFleet->setPosition(start);
+                            selectedFleet->setTargetPosition(endPos);
                         }
                     } else {
                         std::cout << "user clicked on planet " << planet->getName()
