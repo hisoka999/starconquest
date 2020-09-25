@@ -73,6 +73,7 @@ int main()
             } catch (std::exception& e) {
                 std::cerr << e.what() << std::endl;
             }
+            sceneManager.update();
             sceneManager.render();
             frames++;
             if ((ren.getTickCount() - lastTime) >= 1000) {

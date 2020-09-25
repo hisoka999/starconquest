@@ -10,7 +10,7 @@
 #include <cmath>
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
-#define PI 3.14159265
+#define PI 3.14159265f
 
 namespace scenes {
 
@@ -39,7 +39,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     colonyShip->loadTexture("images/ships/colonyship.png");
 
     colonyShip->addAttribute(Attribute::Hull, 10);
-    colonyShip->addAttribute(Attribute::Drive, 5);
+    colonyShip->addAttribute(Attribute::Drive, 10);
     auto fleet = std::make_shared<Fleet>("Fleet 1");
     fleet->setOwner(player.get());
     fleet->addShip(colonyShip);
@@ -104,6 +104,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     doubleSpeed->setPos(410, 0);
     doubleSpeed->setBorderless(true);
     doubleSpeed->connect(UI::Button::buttonClickCallback(), [&] {
+        timeThread->start();
         timeThread->setSpeed(200);
     });
 
@@ -165,30 +166,42 @@ void StarMapScene::handleEvents(core::Input* pInput)
         return;
     }
 
-    const float MAX_SPEED = 400.0f;
-
     if (pInput->isKeyDown(SDLK_DOWN)) {
-        if (mouseSpeedY < MAX_SPEED)
-            mouseSpeedY++;
-        viewPort.y -= 3 * mouseSpeedY / 100.0f;
+        direction.bottom = true;
+        direction.top = false;
     } else if (pInput->isKeyDown(SDLK_UP)) {
-        if (mouseSpeedY < MAX_SPEED)
-            mouseSpeedY++;
-        viewPort.y += 3 * mouseSpeedY / 100.0f;
+        direction.top = true;
+        direction.bottom = false;
     } else {
-        mouseSpeedY = 100;
+        direction.top = false;
+        direction.bottom = false;
     }
 
     if (pInput->isKeyDown(SDLK_LEFT)) {
-        if (mouseSpeedX < MAX_SPEED)
-            mouseSpeedX++;
-        viewPort.x += 3 * mouseSpeedX / 100.0f;
+        direction.left = true;
+        direction.right = false;
     } else if (pInput->isKeyDown(SDLK_RIGHT)) {
-        if (mouseSpeedX < MAX_SPEED)
-            mouseSpeedX++;
-        viewPort.x -= 3 * mouseSpeedX / 100.0f;
+        direction.left = false;
+        direction.right = true;
     } else {
-        mouseSpeedX = 100;
+        direction.left = false;
+        direction.right = false;
+    }
+
+    if (utils::areSame(pInput->getMousePostion().getX(), 0.f)) {
+        direction.left = true;
+        direction.right = false;
+    } else if (renderer->getMainCamera()->getWidth() - pInput->getMousePostion().getX() <= 5) {
+        direction.left = false;
+        direction.right = true;
+    }
+
+    if (utils::areSame(pInput->getMousePostion().getY(), 0.f)) {
+        direction.top = true;
+        direction.bottom = false;
+    } else if (renderer->getMainCamera()->getHeight() - pInput->getMousePostion().getY() <= 5) {
+        direction.top = false;
+        direction.bottom = true;
     }
 
     if (pInput->isScrollWheel()) {
@@ -215,8 +228,8 @@ void StarMapScene::handleEvents(core::Input* pInput)
                 * (i * PLANET_DISTANCE);
             int planetY = std::sin(planet->getAngle() * PI / 180.0)
                 * (i * PLANET_DISTANCE);
-            int tmpx = (planet->getSize() * 3 * std::cos(135 * PI / 180.0)) / 2;
-            int tmpy = (planet->getSize() * 3 * std::sin(135 * PI / 180.0)) / 2;
+            int tmpx = (planet->getSize() * 3 * std::cos(135 * PI / 180.0f)) / 2;
+            int tmpy = (planet->getSize() * 3 * std::sin(135 * PI / 180.0f)) / 2;
             planetRect.x = x + planetX + tmpx;
 
             planetRect.y = y + (planetY + tmpy) * -1;
@@ -346,7 +359,23 @@ void StarMapScene::render()
         int width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
         int height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
 
-        texture->renderRotated(renderer, 90, x, y, width, height);
+        //
+        float rotation = 90;
+
+        if (fleet->getTargetPosition() != fleet->getPosition()) {
+            utils::Vector2 vecMin(fleet->getPosition().getX(), fleet->getPosition().getY() - PI);
+
+            float b = fleet->getTargetPosition().distance(fleet->getPosition());
+            float a = PI;
+            float c = vecMin.distance(fleet->getTargetPosition());
+
+            rotation = std::acos((std::pow(a, 2.f) + std::pow(b, 2.f) - std::pow(c, 2.f)) / (2 * a * b)) * 180.f / PI;
+            if (fleet->getTargetPosition().getX() < fleet->getPosition().getX()) {
+                rotation = 360.f - rotation;
+            }
+        }
+
+        texture->renderRotated(renderer, rotation, x, y, width, height);
     }
     if (selectedFleet != nullptr) {
         auto startPos = selectedFleet->getPosition();
@@ -364,7 +393,7 @@ void StarMapScene::render()
         auto endPos = utils::Vector2(targetFleetVec.getX() - viewPort.x, targetFleetVec.getY() - viewPort.y);
         utils::Vector2 start(x, y);
 
-        std::cout << "distinace: " << endPos.distance(start) / renderer->getZoomFactor() << std::endl;
+        //std::cout << "distinace: " << endPos.distance(start) / renderer->getZoomFactor() << std::endl;
         if (ship->isDistanceReachable(endPos.distance(start) / renderer->getZoomFactor())) {
             renderer->setDrawColor(0, 255, 0, 255);
         } else {
@@ -378,5 +407,26 @@ void StarMapScene::render()
     //render ui
     renderUI();
 }
+void StarMapScene::update()
+{
+    if (!timeThread->getPaused())
+        gameState->updateFleetPosition(renderer->getTimeDelta() * (800.f - timeThread->getSpeed()) / 800.f);
 
+    float speed = renderer->getTimeDelta() / 1000.f * 400.f;
+
+    if (direction.top) {
+        //if (viewPort.y > 0)
+        viewPort.y += speed;
+
+    } else if (direction.bottom) {
+        viewPort.y -= speed;
+    }
+
+    if (direction.left) {
+        //if (viewPort.x > 0)
+        viewPort.x += speed;
+    } else if (direction.right) {
+        viewPort.x -= speed;
+    }
+}
 } /* namespace scenes */

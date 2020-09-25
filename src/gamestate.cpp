@@ -69,7 +69,7 @@ void GameState::updateFleetPosition(float deltaTime)
             float currentDistance = fleet->getPosition().distance(fleet->getStartPosition());
             float fullDistance = fleet->getTargetPosition().distance(fleet->getStartPosition());
             float percentage = currentDistance / fullDistance;
-            percentage += 0.1f;
+            percentage += (0.1f * deltaTime / 1000.f);
             if (percentage > 1.f) {
                 percentage = 1.0f;
             }

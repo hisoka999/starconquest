@@ -26,6 +26,10 @@ public:
 
     void setSpeed(int value);
 
+    int getSpeed() const;
+
+    bool getPaused() const;
+
 private:
     void update();
     std::thread thread;

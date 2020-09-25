@@ -22,7 +22,7 @@ public:
     void clear();
     void renderPresent();
     Uint32 getTickCount();
-    double getTimeDelta();
+    float getTimeDelta();
     void setRenderTarget(SDL_Texture* pTexture);
     graphics::Rect getViewPort();
     void setViewPort(graphics::Rect& rect);
@@ -55,7 +55,7 @@ private:
     SDL_Renderer* ren;
     Uint32 lastTick;
     Uint32 end;
-    double delta;
+    float delta;
     graphics::Rect viewPort;
     Camera* camera;
     float zoomFactor;

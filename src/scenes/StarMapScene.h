@@ -20,6 +20,13 @@
 
 namespace scenes {
 
+struct MovementDirection {
+    bool left = false;
+    bool right = false;
+    bool top = false;
+    bool bottom = false;
+};
+
 class StarMapScene : public core::Scene {
 public:
     StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_ptr<Star>> pStars,
@@ -27,6 +34,7 @@ public:
     virtual ~StarMapScene();
 
     void render();
+    void update();
     void handleEvents(core::Input* pInput);
 
 private:
@@ -54,6 +62,7 @@ private:
     utils::Vector2 targetFleetVec;
 
     int mouseSpeedX, mouseSpeedY;
+    MovementDirection direction;
 };
 
 } /* namespace scenes */

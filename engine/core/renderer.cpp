@@ -120,7 +120,7 @@ void Renderer::setRenderTarget(SDL_Texture* pTexture)
     }
 }
 
-double Renderer::getTimeDelta()
+float Renderer::getTimeDelta()
 {
     return delta;
 }
