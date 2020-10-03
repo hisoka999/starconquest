@@ -23,13 +23,14 @@
 #include "translate.h"
 
 //using namespace boost::locale;
-#ifdef __WIN32
-INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-            PSTR lpCmdLine, INT nCmdShow)
-#else
-int main()
+//#ifdef __WIN32
+//INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+//            PSTR lpCmdLine, INT nCmdShow)
+//#else
+int main(int argc, char *argv[])
 
-#endif
+
+//#endif
 {
     std::shared_ptr<utils::JSON::Parser> parser = std::make_shared<utils::JSON::Parser>();
 

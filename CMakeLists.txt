@@ -12,6 +12,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(NOT UNIX)
     set(SDL2_LIBRARY sdl2)
+    set(SDL2MAIN_LIBRARY SDL2main)
     set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
     set(SDL2_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2/include)
 
@@ -36,10 +37,10 @@ if(NOT UNIX)
 endif()
 
 find_package(SDL2 REQUIRED)
-find_package(SDL2_image)
-find_package(SDL2_mixer)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_gfx)
-find_package(SDL2TTF)
+find_package(SDL2TTF REQUIRED)
 find_package(ZLIB)
 #find_package(Intl)
 
@@ -47,7 +48,7 @@ find_package(ZLIB)
 
 
 #FIND_PACKAGE(Boost COMPONENTS locale)
-message( "${Intl_INCLUDE_DIR}")
+message( "${MINGW32_LIBRARY} ${SDL2_LIBRARIES}")
 
 
 INCLUDE_DIRECTORIES()
@@ -95,12 +96,19 @@ if(PACKAGE_TESTS)
 
 endif()
 endif()
+if(MINGW)
+    IF(CMAKE_BUILD_TYPE MATCHES DEBUG)
+        message("debug mode")
+        target_link_libraries(${PROJECT_NAME} SDL2)
+    else()
+        target_link_libraries(${PROJECT_NAME} mingw32 SDL2main SDL2 -mwindows)
+    ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
 
-target_link_libraries(${PROJECT_NAME} )
-if(NOT UNIX)
-    target_link_libraries(${PROJECT_NAME} mingw32 SDL2main)
+else()
+    target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 endif()
-target_link_libraries(${PROJECT_NAME} SDL2)
+
+
 target_link_libraries(${PROJECT_NAME} SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} SDL2_image)
 target_link_libraries(${PROJECT_NAME} SDL2_mixer)

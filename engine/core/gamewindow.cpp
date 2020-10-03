@@ -45,6 +45,15 @@ int GameWindow::open()
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         throw SDLException("GameWindow::SDL_Init");
     }
+
+
+#ifdef __WIN32
+    //SDL_SetHint(SDL_HINT_VIDEO_WIN_D3DCOMPILER,"d3dcompiler_46.dll");
+    //sSDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG,"1");
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
+#endif
+
     win = SDL_CreateWindow(title.c_str(), 100, 100, width, height,
         SDL_WINDOW_SHOWN);
     if (win == nullptr) {

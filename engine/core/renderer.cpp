@@ -297,6 +297,10 @@ void Renderer::open(GameWindow* pWin, bool pVSync)
     }
     if(pWin->getSettings()->getValueI("Base","Driver") != 0){
         drvId = pWin->getSettings()->getValueI("Base","Driver");
+    }else{
+#ifdef __WIN32
+        drvId = -1;
+#endif
     }
 
     logger.trace("Renderer::open", "use driver id = " + std::to_string(drvId));
@@ -309,9 +313,10 @@ void Renderer::open(GameWindow* pWin, bool pVSync)
         throw SDLException("Renderer::open");
     }
 
-    if (!SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1")) {
-        logger.logSDLError("Renderer::SDL_HINT_RENDER_VSYNC");
-    }
+//    if (!SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1")) {
+//        logger.logSDLError("Renderer::SDL_HINT_RENDER_VSYNC");
+//    }
+
     // set viewport
     graphics::Rect rect;
     rect.x = 0;

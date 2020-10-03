@@ -102,8 +102,10 @@ void Texture::renderRotated(core::Renderer* ren, const double angle,
     src.w = width;
     src.h = height;
 
-    SDL_RenderCopyEx(ren->getRenderer(), tex, &src, &dst, angle, center,
+    int result = SDL_RenderCopyEx(ren->getRenderer(), tex, &src, &dst, angle, center,
         SDL_FLIP_NONE);
+    if(result != 0)
+        throw SDLException("renderRotated::SDL_RenderCopyEx");
 }
 
 int Texture::getWidth()
