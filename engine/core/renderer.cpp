@@ -1,10 +1,249 @@
 #include "engine/core/renderer.h"
 #include "engine/utils/exceptions.h"
-#include <SDL2/SDL2_gfxPrimitives.h>
+//#include <SDL2/SDL2_gfxPrimitives.h>
 #include <exception>
 #include <iostream>
 
 namespace core {
+int vline(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2)
+{
+    return SDL_RenderDrawLine(renderer, x, y1, x, y2);;
+}
+int pixel(SDL_Renderer *renderer, Sint16 x, Sint16 y)
+{
+    return SDL_RenderDrawPoint(renderer, x, y);
+}
+
+int _drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Sint32 f)
+{
+    int result = 0;
+    Sint16 xpdx, xmdx;
+    Sint16 ypdy, ymdy;
+
+    if (dx == 0) {
+        if (dy == 0) {
+            result |= pixel(renderer, x, y);
+        } else {
+            ypdy = y + dy;
+            ymdy = y - dy;
+            if (f) {
+                result |= vline(renderer, x, ymdy, ypdy);
+            } else {
+                result |= pixel(renderer, x, ypdy);
+                result |= pixel(renderer, x, ymdy);
+            }
+        }
+    } else {
+        xpdx = x + dx;
+        xmdx = x - dx;
+        ypdy = y + dy;
+        ymdy = y - dy;
+        if (f) {
+            result |= vline(renderer, xpdx, ymdy, ypdy);
+            result |= vline(renderer, xmdx, ymdy, ypdy);
+        } else {
+            result |= pixel(renderer, xpdx, ypdy);
+            result |= pixel(renderer, xmdx, ypdy);
+            result |= pixel(renderer, xpdx, ymdy);
+            result |= pixel(renderer, xmdx, ymdy);
+        }
+    }
+
+    return result;
+}
+int hline(SDL_Renderer * renderer, Sint16 x1, Sint16 x2, Sint16 y)
+{
+    return SDL_RenderDrawLine(renderer, x1, y, x2, y);;
+}
+/*!
+\brief Internal function to draw ellipse or filled ellipse with blending.
+
+\param renderer The renderer to draw on.
+\param x X coordinate of the center of the ellipse.
+\param y Y coordinate of the center of the ellipse.
+\param rx Horizontal radius in pixels of the ellipse.
+\param ry Vertical radius in pixels of the ellipse.
+\param r The red value of the ellipse to draw.
+\param g The green value of the ellipse to draw.
+\param b The blue value of the ellipse to draw.
+\param a The alpha value of the ellipse to draw.
+\param f Flag indicating if the ellipse should be filled (1) or not (0).
+
+\returns Returns 0 on success, -1 on failure.
+            */
+#define DEFAULT_ELLIPSE_OVERSCAN	4
+        int _ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 f)
+{
+    int result;
+    Sint32 rxi, ryi;
+    Sint32 rx2, ry2, rx22, ry22;
+    Sint32 error;
+    Sint32 curX, curY, curXp1, curYm1;
+    Sint32 scrX, scrY, oldX, oldY;
+    Sint32 deltaX, deltaY;
+    Sint32 ellipseOverscan;
+
+    /*
+    * Sanity check radii
+    */
+    if ((rx < 0) || (ry < 0)) {
+        return (-1);
+    }
+
+    /*
+    * Set color
+    */
+    result = 0;
+    result |= SDL_SetRenderDrawBlendMode(renderer, (a == 255) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
+    result |= SDL_SetRenderDrawColor(renderer, r, g, b, a);
+
+    /*
+    * Special cases for rx=0 and/or ry=0: draw a hline/vline/pixel
+    */
+    if (rx == 0) {
+        if (ry == 0) {
+            return (pixel(renderer, x, y));
+        } else {
+            return (vline(renderer, x, y - ry, y + ry));
+        }
+    } else {
+        if (ry == 0) {
+            return (hline(renderer, x - rx, x + rx, y));
+        }
+    }
+
+    /*
+     * Adjust overscan
+     */
+    rxi = rx;
+    ryi = ry;
+    if (rxi >= 512 || ryi >= 512)
+    {
+        ellipseOverscan = DEFAULT_ELLIPSE_OVERSCAN / 4;
+    }
+    else if (rxi >= 256 || ryi >= 256)
+    {
+        ellipseOverscan = DEFAULT_ELLIPSE_OVERSCAN / 2;
+    }
+    else
+    {
+        ellipseOverscan = DEFAULT_ELLIPSE_OVERSCAN / 1;
+    }
+
+    /*
+     * Top/bottom center points.
+     */
+    oldX = scrX = 0;
+    oldY = scrY = ryi;
+    result |= _drawQuadrants(renderer, x, y, 0, ry, f);
+
+    /* Midpoint ellipse algorithm with overdraw */
+    rxi *= ellipseOverscan;
+    ryi *= ellipseOverscan;
+    rx2 = rxi * rxi;
+    rx22 = rx2 + rx2;
+    ry2 = ryi * ryi;
+    ry22 = ry2 + ry2;
+    curX = 0;
+    curY = ryi;
+    deltaX = 0;
+    deltaY = rx22 * curY;
+
+    /* Points in segment 1 */
+    error = ry2 - rx2 * ryi + rx2 / 4;
+    while (deltaX <= deltaY)
+    {
+        curX++;
+        deltaX += ry22;
+
+        error +=  deltaX + ry2;
+          if (error >= 0)
+        {
+            curY--;
+            deltaY -= rx22;
+               error -= deltaY;
+        }
+
+        scrX = curX / ellipseOverscan;
+        scrY = curY / ellipseOverscan;
+        if ((scrX != oldX && scrY == oldY) || (scrX != oldX && scrY != oldY)) {
+            result |= _drawQuadrants(renderer, x, y, scrX, scrY, f);
+            oldX = scrX;
+            oldY = scrY;
+        }
+    }
+
+    /* Points in segment 2 */
+    if (curY > 0)
+    {
+        curXp1 = curX + 1;
+        curYm1 = curY - 1;
+        error = ry2 * curX * curXp1 + ((ry2 + 3) / 4) + rx2 * curYm1 * curYm1 - rx2 * ry2;
+        while (curY > 0)
+        {
+            curY--;
+            deltaY -= rx22;
+
+            error += rx2;
+            error -= deltaY;
+
+            if (error <= 0)
+            {
+                curX++;
+                deltaX += ry22;
+                error += deltaX;
+            }
+
+            scrX = curX / ellipseOverscan;
+            scrY = curY / ellipseOverscan;
+            if ((scrX != oldX && scrY == oldY) || (scrX != oldX && scrY != oldY)) {
+                oldY--;
+                for (;oldY >= scrY; oldY--) {
+                    result |= _drawQuadrants(renderer, x, y, scrX, oldY, f);
+                    /* prevent overdraw */
+                    if (f) {
+                        oldY = scrY - 1;
+                    }
+                }
+                oldX = scrX;
+                oldY = scrY;
+            }
+        }
+
+        /* Remaining points in vertical */
+        if (!f) {
+            oldY--;
+            for (;oldY >= 0; oldY--) {
+                result |= _drawQuadrants(renderer, x, y, scrX, oldY, f);
+            }
+        }
+    }
+
+    return (result);
+}
+
+int ellipseRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    return _ellipseRGBA(renderer, x, y, rx, ry, r, g, b, a, 0);
+}
+/*!
+\brief Draw circle with blending.
+
+\param renderer The renderer to draw on.
+\param x X coordinate of the center of the circle.
+\param y Y coordinate of the center of the circle.
+\param rad Radius in pixels of the circle.
+\param r The red value of the circle to draw.
+\param g The green value of the circle to draw.
+\param b The blue value of the circle to draw.
+\param a The alpha value of the circle to draw.
+
+\returns Returns 0 on success, -1 on failure.
+            */
+        int circleRGBA(SDL_Renderer * renderer, Sint16 x, Sint16 y, Sint16 rad, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    return ellipseRGBA(renderer, x, y, rad, rad, r, g, b, a);
+}
 
 Renderer::Renderer(utils::Logger& pLogger)
     : logger(pLogger)
@@ -56,6 +295,10 @@ void Renderer::open(GameWindow* pWin, bool pVSync)
             break;
         }
     }
+    if(pWin->getSettings()->getValueI("Base","Driver") != 0){
+        drvId = pWin->getSettings()->getValueI("Base","Driver");
+    }
+
     logger.trace("Renderer::open", "use driver id = " + std::to_string(drvId));
 
     ren = SDL_CreateRenderer(pWin->getSDLWindow(), drvId,
@@ -158,7 +401,7 @@ Camera* Renderer::getMainCamera()
 
 void Renderer::drawCircle(int x, int y, int rad, SDL_Color color)
 {
-    int result = 0;//circleRGBA(ren, x, y, rad, color.r, color.g, color.b, color.a);
+    int result = circleRGBA(ren, x, y, rad, color.r, color.g, color.b, color.a);
     if (result == -1) {
         logger.logSDLError("Renderer::drawCircle");
         throw SDLException("drawCircle");

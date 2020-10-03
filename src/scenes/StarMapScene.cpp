@@ -27,6 +27,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 
 {
 
+    direction ={false,false,false,false};
     std::vector<std::shared_ptr<Player>> players;
 
     players.push_back(player);
@@ -116,7 +117,9 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
         if (star->getPlayer() == gameState->getHumanPlayer()) {
             viewPort.x = star->getPosition().getX() * -1 + (renderer->getMainCamera()->getWidth() / 2);
             viewPort.y = star->getPosition().getY() * -1 + (renderer->getMainCamera()->getHeight() / 2);
-            std::cout << star->getName() << std::endl;
+            std::cout<<"Player star: " << star->getName() << std::endl;
+            std::cout<<"viewPort.x "<<viewPort.x<<std::endl;
+            std::cout<<"viewPort.y "<<viewPort.y<<std::endl;
             break;
         }
     }
@@ -330,9 +333,9 @@ void StarMapScene::render()
 
             //planet->getType()
 
-            int planetX = std::cos(planet->getAngle() * PI / 180.0)
+            int planetX = std::cos(planet->getAngle() * PI / 180.0f)
                 * (i * PLANET_DISTANCE);
-            int planetY = std::sin(planet->getAngle() * PI / 180.0)
+            int planetY = std::sin(planet->getAngle() * PI / 180.0f)
                 * (i * PLANET_DISTANCE);
 
             renderer->drawCircle(x * renderer->getZoomFactor(), y * renderer->getZoomFactor(), i * 50 * renderer->getZoomFactor(),

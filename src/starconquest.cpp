@@ -106,7 +106,7 @@ int main()
                 //                }
             }
 
-            text.render(&ren, "FPS: " + std::to_string(fps), color, mainCamera.getWidth()-80, 5);
+            text.render(&ren, "FPS: " + std::to_string(fps), color, mainCamera.getWidth()-100.f, 5);
             ren.renderPresent();
 
             //win.delay(delay);

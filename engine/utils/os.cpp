@@ -87,8 +87,7 @@ namespace os {
 #elif __WIN32
         DWORD dwAttrib = GetFileAttributes(path.c_str());
 
-        return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
-                (dwAttrib & FILE_ATTRIBUTE_NORMAL));
+        return (dwAttrib != INVALID_FILE_ATTRIBUTES );
 #endif
     }
 
