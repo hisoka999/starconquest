@@ -9,8 +9,8 @@
 
 Player::Player(std::string name, Race race, SDL_Color color)
     : name(name)
-    , race(race)
     , color(color)
+    , race(race)
     , money(200)
     , moneyPerMonth(0)
     , researchPerMonth(0)

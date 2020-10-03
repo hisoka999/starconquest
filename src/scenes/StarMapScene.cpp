@@ -36,7 +36,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     auto playerStars = gameState->findStarsForPlayer(gameState->getHumanPlayer());
     auto playerPlanet = playerStars[0]->getPlanets()[0];
 
-    colonyShip->loadTexture("images/ships/colonyship.png");
+    colonyShip->loadTexture(utils::os::combine("images","ships","colonyship.png"));
 
     colonyShip->addAttribute(Attribute::Hull, 10);
     colonyShip->addAttribute(Attribute::Drive, 10);
@@ -48,7 +48,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     gameState->addFleet(fleet);
 
     timeThread = std::make_unique<TimeThread>(gameState);
-    starText.openFont("fonts/Audiowide-Regular.ttf", 12);
+    starText.openFont(utils::os::combine("fonts","Audiowide-Regular.ttf"), 12);
     glyphText.openFont("fonts/fa-solid-900.ttf", 20);
 
     background.loadTexture(renderer, "images/star_background.png");

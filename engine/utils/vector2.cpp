@@ -4,7 +4,7 @@
 
 namespace utils {
 
-inline bool areSame(float a, float b)
+bool areSame(float a, float b)
 {
     return std::fabs(a - b) < std::numeric_limits<float>::epsilon();
 }

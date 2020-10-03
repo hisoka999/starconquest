@@ -8,13 +8,11 @@
 #include "PlanetWindow.h"
 #include "../translate.h"
 #include "../ui/BuildableObjectView.h"
-#include <boost/shared_ptr.hpp>
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/TabBar.h>
 #include <functional>
 
 #include "../messagetypes.h"
-#include <boost/make_shared.hpp>
 #include <engine/core/MessageSystem.h>
 #include <engine/utils/os.h>
 

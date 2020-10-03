@@ -8,7 +8,7 @@
 #include "TimeThread.h"
 
 #include "messagetypes.h"
-#include <boost/make_shared.hpp>
+//#include <boost/make_shared.hpp>
 #include <engine/core/MessageSystem.h>
 
 TimeThread::TimeThread(const std::shared_ptr<GameState>& gameState)
@@ -53,7 +53,7 @@ void TimeThread::update()
                     gameState->updatePlayerState(player);
                 }
                 auto& msgSystem = core::MessageSystem<MessageTypes>::get();
-                boost::shared_ptr<core::Message<MessageTypes, int>> msg = boost::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
+                std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);
             }
         }

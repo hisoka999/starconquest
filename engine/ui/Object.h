@@ -123,7 +123,7 @@ private:
     template <typename F, typename... Args>
     void call(F const& f, Args const&... args)
     {
-        std::vector<boost::any> v { args... };
+        std::vector<std::any> v { args... };
         f(v);
     }
 

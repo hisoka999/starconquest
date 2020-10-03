@@ -22,12 +22,18 @@ int GameWindow::open()
 
     if (!utils::os::is_dir(utils::os::get_pref_dir("", "starconquest"))) {
         utils::os::create_dir(utils::os::get_pref_dir("", "starconquest"));
+        std::cout<<"config dir: "<<utils::os::get_pref_dir("", "starconquest")<<std::endl;
     }
 
     std::string path = utils::os::combine(utils::os::get_pref_dir("", "starconquest"), "settings.conf");
     if (!utils::os::is_file(path)) {
         std::ofstream filestream;
         filestream.open(path, std::ios::out);
+        filestream << "[Base]"<<std::endl;
+        filestream << "Width=800"<<std::endl;
+        filestream << "Height=600"<<std::endl;
+        filestream << "Fullscreen=FALSE"<<std::endl;
+
         std::cout << path << " created!" << std::endl;
         filestream.close();
     }
@@ -60,7 +66,7 @@ int GameWindow::open()
     }
 
     if (settings->getValueB("Base", "Fullscreen")) {
-        SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
     }
 
     return 0;
