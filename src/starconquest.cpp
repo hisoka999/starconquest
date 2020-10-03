@@ -3,6 +3,9 @@
 // Author      : Stefan Lüdtke
 //============================================================================
 
+#ifdef __WIN32
+#include <windows.h>
+#endif
 #include "engine/core/SceneManager.h"
 #include "engine/core/gamewindow.h"
 #include "engine/core/input.h"
@@ -14,37 +17,51 @@
 #include "engine/utils/logger.h"
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
-#include <boost/locale.hpp>
+//#include <boost/locale.hpp>
 #include <engine/utils/json/parser.h>
 #include <iostream>
+#include "translate.h"
 
-using namespace boost::locale;
-
+//using namespace boost::locale;
+#ifdef __WIN32
+INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+            PSTR lpCmdLine, INT nCmdShow)
+#else
 int main()
+
+#endif
 {
     std::shared_ptr<utils::JSON::Parser> parser = std::make_shared<utils::JSON::Parser>();
 
     auto obj = parser->parseObject("\"id\":1 ,\"name\":\"Test\", \"attr\" : {\"test\":22}");
 
-    generator gen;
+    //generator gen;
 
     // Specify location of dictionaries
-    gen.add_messages_path("locale");
-    gen.add_messages_domain("starconquest");
+    //gen.add_messages_path("locale");
+    //gen.add_messages_domain("starconquest");
+
+    setlocale (LC_ALL, "");
+    //textdomain ("starconquest");
+    //bindtextdomain ("starconquest", "locale");
+
+
     try {
         // Generate locales and imbue them to iostream
-        std::locale::global(gen(""));
-        std::cout.imbue(std::locale());
+        //std::locale::global(gen(""));
+        //std::locale::global(std::locale("de"));
+        //std::cout.imbue(std::locale());
 
         core::GameWindow win("Star Conquest", 1280, 720);
         utils::Logger logger(utils::LogLevel::trace);
         core::Renderer ren(logger);
+        logger.trace(__FILE__,"renderer initialized");
         graphics::TextureManager::Instance().setRenderer(&ren);
         core::Input input;
 
         core::SceneManager sceneManager;
         win.open();
-        ren.open(&win, true);
+        ren.open(&win, false);
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
@@ -80,25 +97,26 @@ int main()
                 lastTime = ren.getTickCount();
                 fps = frames;
                 frames = 0;
-                if (fps > 300) {
-                    delay++;
-                    std::cout << "delay => " << delay << std::endl;
-                } else {
-                    if (delay > 0)
-                        delay--;
-                }
+                //                if (fps > 300) {
+                //                    delay++;
+                //                    std::cout << "delay => " << delay << std::endl;
+                //                } else {
+                //                    if (delay > 0)
+                //                        delay--;
+                //                }
             }
 
-            text.render(&ren, "FPS: " + std::to_string(fps), color, 850, 5);
+            text.render(&ren, "FPS: " + std::to_string(fps), color, mainCamera.getWidth()-80, 5);
             ren.renderPresent();
 
-            win.delay(delay);
+            //win.delay(delay);
             ren.calcDelta();
         }
     } catch (SDLException& e) {
-        std::cerr << "SDL Exception: " << e.what() << std::endl;
+        std::cout << "SDL Exception: " << e.what() << std::endl;
+
     } catch (std::exception& e) {
-        std::cerr << "unkown standard exception: " << e.what() << std::endl;
+        std::cout << "unkown standard exception: " << e.what() << std::endl;
     }
     return 0;
 }

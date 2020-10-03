@@ -158,7 +158,7 @@ Camera* Renderer::getMainCamera()
 
 void Renderer::drawCircle(int x, int y, int rad, SDL_Color color)
 {
-    int result = circleRGBA(ren, x, y, rad, color.r, color.g, color.b, color.a);
+    int result = 0;//circleRGBA(ren, x, y, rad, color.r, color.g, color.b, color.a);
     if (result == -1) {
         logger.logSDLError("Renderer::drawCircle");
         throw SDLException("drawCircle");

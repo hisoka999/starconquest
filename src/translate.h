@@ -8,8 +8,12 @@
 #ifndef TRANSLATE_H_
 #define TRANSLATE_H_
 
-#include <boost/locale.hpp>
+//#include <boost/locale.hpp>
+//#include <libintl.h>
 
-#define _(STRING) boost::locale::translate(STRING)
+//#define _(STRING) gettext(STRING)
+#include <string>
+
+#define _(STRING) std::string(STRING)
 
 #endif /* TRANSLATE_H_ */

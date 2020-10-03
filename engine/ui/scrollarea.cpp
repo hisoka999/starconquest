@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <engine/graphics/TextureManager.h>
 #include <iostream>
+#include <cmath>
 
 namespace UI {
 
@@ -202,7 +203,7 @@ void ScrollArea::handleEvents(core::Input* pInput)
         destRect.y = parentRect.y + getY();
         if (destRect.intersects(pInput->getMousePostion())) {
             if (scrollPosY > 0) {
-                scrollPosY -= round(
+                scrollPosY -= std::round(
                     (scrollHeight - renderRect.height - 14) / 100);
                 if (scrollPosY < 0)
                     scrollPosY = 0;
@@ -213,7 +214,7 @@ void ScrollArea::handleEvents(core::Input* pInput)
         destRect.y = parentRect.y + renderRect.height + getY() - 14;
         if (destRect.intersects(pInput->getMousePostion())) {
             if (scrollPosY < scrollHeight - renderRect.height - 14)
-                scrollPosY += round(
+                scrollPosY += std::round(
                     (scrollHeight - renderRect.height - 14) / 100);
         }
         //render bar

@@ -6,7 +6,7 @@
  */
 
 #include "engine/core/Scene.h"
-#include <boost/make_shared.hpp>
+
 namespace core {
 
 Scene::Scene(core::Renderer* pRenderer)

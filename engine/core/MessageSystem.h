@@ -8,8 +8,8 @@
 #ifndef CORE_MESSAGESYSTEM_H_
 #define CORE_MESSAGESYSTEM_H_
 
-#include <boost/any.hpp>
-#include <boost/smart_ptr/shared_ptr.hpp>
+#include <any>
+#include <memory>
 #include <engine/core/Consumer.h>
 #include <engine/core/Message.h>
 #include <engine/core/dispatcher.h>
@@ -62,7 +62,7 @@ public:
         return disp.reference;
     }
     template <typename Data>
-    void sendMessage(const boost::shared_ptr<Message<Type, Data>> pMessage)
+    void sendMessage(const std::shared_ptr<Message<Type, Data>> pMessage)
     {
         //std::cout << "send message" << std::endl;
 
@@ -78,7 +78,7 @@ private:
     template <typename F, typename... Args>
     void call(F const& f, Args const&... args)
     {
-        std::vector<boost::any> v { args... };
+        std::vector<std::any> v { args... };
         f(v);
     }
     std::unordered_multimap<Type, MessageDispatcher> _consumer;

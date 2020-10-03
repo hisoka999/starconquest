@@ -3,7 +3,7 @@
 
 namespace utils {
 
-inline bool areSame(float a, float b);
+bool areSame(float a, float b);
 
 class Vector2 {
 public:

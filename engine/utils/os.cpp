@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#elif _WIN32
+#include <windows.h>
 #endif
 #include <SDL2/SDL.h>
 
@@ -20,7 +22,7 @@ namespace os {
 
     const std::string path_separator()
     {
-#ifdef _WIN32
+#ifdef __WIN32
         return "\\";
 #else
         return "/";
@@ -69,6 +71,11 @@ namespace os {
 #ifdef __linux
         struct stat sb;
         return stat(path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode);
+#elif __WIN32
+        DWORD dwAttrib = GetFileAttributes(path.c_str());
+
+        return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+         (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 #endif
     }
 
@@ -77,6 +84,11 @@ namespace os {
 #ifdef __linux
         struct stat sb;
         return stat(path.c_str(), &sb) == 0 && S_ISREG(sb.st_mode);
+#elif __WIN32
+        DWORD dwAttrib = GetFileAttributes(path.c_str());
+
+        return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+                (dwAttrib & FILE_ATTRIBUTE_NORMAL));
 #endif
     }
 
@@ -84,6 +96,8 @@ namespace os {
     {
 #ifdef __linux
         mkdir(path.c_str(), 0755);
+#elif __WIN32
+        CreateDirectory(path.c_str(),nullptr);
 #endif
     }
 

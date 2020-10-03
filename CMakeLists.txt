@@ -9,18 +9,45 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(sdl2 REQUIRED)
+
+if(NOT UNIX)
+    set(SDL2_LIBRARY sdl2)
+    set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
+    set(SDL2_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2/include)
+
+    set(SDL2_IMAGE_LIBRARY sdl2_image)
+    set(SDL2_IMAGE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
+    set(SDL2_IMAGE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2/include)
+
+    set(SDL2TTF_LIBRARY sdl2ttf)
+    set(SDL2TTF_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
+    set(SDL2TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2/include)
+
+    set(SDL2_MIXER_LIBRARY sdl2ttf)
+    set(SDL2_MIXER_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
+    set(SDL2_MIXER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2/include)
+
+    set(Intl_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/gettext/include )
+
+    #message("${PROJECT_SOURCE_DIR}/deps/gettext/lib/")
+
+    link_directories(${SDL2_DIR}/lib/ ${PROJECT_SOURCE_DIR}/deps/gettext/lib/ )
+
+endif()
+
+find_package(SDL2 REQUIRED)
 find_package(SDL2_image)
 find_package(SDL2_mixer)
 find_package(SDL2_gfx)
 find_package(SDL2TTF)
 find_package(ZLIB)
-FIND_PACKAGE(PythonInterp)
+#find_package(Intl)
 
 
 
-FIND_PACKAGE(Boost COMPONENTS locale)
-message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
+
+#FIND_PACKAGE(Boost COMPONENTS locale)
+message( "${Intl_INCLUDE_DIR}")
 
 
 INCLUDE_DIRECTORIES()
@@ -32,7 +59,7 @@ INCLUDE_DIRECTORIES()
 file(GLOB_RECURSE SRC
     engine/*
     src/*.cpp)
-message ("${SRC}")
+#message ("${SRC}")
 
 set (GAME_VERSION_MAJOR 0)
 set (GAME_VERSION_MINOR 1)
@@ -46,11 +73,12 @@ configure_file (
 
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}" ${Boost_INCLUDE_DIRS})
+include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR})
 
 
 add_executable(${PROJECT_NAME} "src/starconquest.cpp" ${SRC})
 
+if( UNIX)
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)
 
@@ -66,17 +94,26 @@ if(PACKAGE_TESTS)
 
 
 endif()
+endif()
 
+target_link_libraries(${PROJECT_NAME} )
+if(NOT UNIX)
+    target_link_libraries(${PROJECT_NAME} mingw32 SDL2main)
+endif()
 target_link_libraries(${PROJECT_NAME} SDL2)
 target_link_libraries(${PROJECT_NAME} SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} SDL2_image)
 target_link_libraries(${PROJECT_NAME} SDL2_mixer)
+if(UNIX)
 target_link_libraries(${PROJECT_NAME} SDL2_gfx)
-target_link_libraries(${PROJECT_NAME} z)
-target_link_libraries(${PROJECT_NAME} pthread)
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+endif()
+#target_link_libraries(${PROJECT_NAME} z)
 
-target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} Intl)
+target_link_libraries(${PROJECT_NAME} pthread)
+
+#target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+
 
 add_custom_command(TARGET starconquest PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -94,6 +131,11 @@ add_custom_command(TARGET starconquest PRE_BUILD
 add_custom_command(TARGET starconquest PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CMAKE_SOURCE_DIR}/data/ $<TARGET_FILE_DIR:starconquest>/data/)
+
+
+                add_custom_command(TARGET starconquest POST_BUILD
+                                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                                       ${CMAKE_SOURCE_DIR}/deps/SDL2/bin/ $<TARGET_FILE_DIR:starconquest>)
 INSTALL(TARGETS starconquest DESTINATION starconquest)
 INSTALL(DIRECTORY fonts DESTINATION starconquest )
 INSTALL(DIRECTORY data DESTINATION starconquest )
