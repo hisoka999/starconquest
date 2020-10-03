@@ -105,7 +105,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     doubleSpeed->setBorderless(true);
     doubleSpeed->connect(UI::Button::buttonClickCallback(), [&] {
         timeThread->start();
-        timeThread->setSpeed(200);
+        timeThread->setSpeed(100);
     });
 
     container->addObject(playButton);

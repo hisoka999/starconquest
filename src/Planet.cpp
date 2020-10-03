@@ -325,6 +325,12 @@ void Planet::generateSurface(long seed)
             mounten = 30;
             waste = 50;
             break;
+        case PlanetType::Wasteland:
+            grass = 0;
+            water = 0;
+            mounten = 30;
+            waste = 70;
+            break;
         case PlanetType::Terran:
             grass = 20;
             water = 20;
@@ -338,8 +344,10 @@ void Planet::generateSurface(long seed)
             mounten = 20;
             break;
         default:
-            grass = 50;
-            mounten = 50;
+            grass = 00;
+            dirt = 20;
+            waste = 50;
+            mounten = 30;
             break;
         }
         int chance = chanceGen(generator);
@@ -405,20 +413,27 @@ void Planet::findSrcRectFloor(graphics::Rect* target, FieldType fieldType)
         target->y = 142;
         break;
     case FieldType::Mounten:
-        target->x = 488;
-        target->y = 710;
+        if (type == PlanetType::Radiated
+            || type == PlanetType::Wasteland) {
+            target->x = 122;
+            target->y = 994;
+        } else {
+            target->x = 488;
+            target->y = 710;
+        }
+
         break;
     case FieldType::Water:
         target->x = 1465;
         target->y = 0;
         break;
     case FieldType::Waste:
-        target->x = 732;
-        target->y = 1278;
+        target->x = 244;
+        target->y = 426;
         break;
     case FieldType::Dirt:
-        target->x = 732;
-        target->y = 1420;
+        target->x = 366;
+        target->y = 1136;
         break;
     default:
         break;
