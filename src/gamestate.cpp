@@ -61,6 +61,34 @@ std::vector<std::shared_ptr<Fleet>> GameState::getFleets() const
 {
     return fleets;
 }
+void GameState::removeFleet(const std::shared_ptr<Fleet>& fleet)
+{
+    auto pos = std::find(fleets.begin(), fleets.end(), fleet);
+    if (pos != std::end(fleets)) {
+        fleets.erase(pos);
+    }
+}
+std::vector<std::shared_ptr<Fleet>> GameState::findFleetsInPlanetDistance(const std::shared_ptr<Star>& star, const std::shared_ptr<Planet>& planet) const
+{
+    std::vector<std::shared_ptr<Fleet>> result;
+    //get planet position
+    auto planetRect = star->planetDisplayRect(planet);
+
+    for (auto fleet : fleets) {
+        graphics::Rect fleetRect;
+        auto ship = fleet->getFirstShip();
+        auto texture = ship->getTexture();
+        fleetRect.x = fleet->getPosition().getX();
+        fleetRect.y = fleet->getPosition().getY();
+        fleetRect.width = texture->getWidth() * 0.2f;
+        fleetRect.height = texture->getHeight() * 0.2f;
+
+        if (fleetRect.intersects(planetRect)) {
+            result.push_back(fleet);
+        }
+    }
+    return result;
+}
 
 void GameState::updateFleetPosition(float deltaTime)
 {

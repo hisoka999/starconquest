@@ -9,6 +9,7 @@
 #define WINDOWS_PLANETWINDOW_H_
 
 #include "../Planet.h"
+#include "../gamestate.h"
 #include "BuildWindow.h"
 #include <engine/graphics/text.h>
 #include <engine/ui/Button.h>
@@ -25,10 +26,11 @@ class PlanetWindow : public UI::Window {
 public:
     PlanetWindow();
     virtual ~PlanetWindow();
-    void setPlanet(const std::shared_ptr<Planet>& planet);
-    void setPlayer(const std::shared_ptr<Player>& player);
+
+    void setGameState(const std::shared_ptr<GameState>& gameState);
     virtual void render(core::Renderer* pRender, std::shared_ptr<graphics::Texture> pTexture);
     virtual void handleEvents(core::Input* pInput);
+    void openForPlanet(const std::shared_ptr<Star>& star, const std::shared_ptr<Planet>& planet);
 
 private:
     void onSurfaceClick(const utils::Vector2& pos);
@@ -60,8 +62,9 @@ private:
 
     bool updatePlanet;
     std::shared_ptr<Planet> planet;
+    std::shared_ptr<Star> star;
     BuildWindow* buildWindow;
-    std::shared_ptr<Player> player;
+    std::shared_ptr<GameState> gameState;
 };
 
 } /* namespace windows */

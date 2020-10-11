@@ -22,8 +22,11 @@ public:
     void addFleet(const std::shared_ptr<Fleet>& fleet);
 
     std::vector<std::shared_ptr<Fleet>> getFleets() const;
+    void removeFleet(const std::shared_ptr<Fleet>& fleet);
 
     void updateFleetPosition(float deltaTime);
+
+    std::vector<std::shared_ptr<Fleet>> findFleetsInPlanetDistance(const std::shared_ptr<Star>& star, const std::shared_ptr<Planet>& planet) const;
 
 private:
     std::vector<std::shared_ptr<Star>> stars;

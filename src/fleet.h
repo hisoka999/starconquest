@@ -28,6 +28,8 @@ public:
     utils::Vector2 getStartPosition() const;
     void setStartPosition(const utils::Vector2& value);
 
+    void destroyShip(const std::shared_ptr<Ship>& ship);
+
 private:
     std::string name;
     Player* owner;

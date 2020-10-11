@@ -37,6 +37,26 @@ PlanetWindow::PlanetWindow()
     colonizeButton = std::make_shared<UI::Button>(mainTab.get());
     colonizeButton->setLabel("Colonize");
     colonizeButton->setPos(100, 180);
+    colonizeButton->connect(UI::Button::buttonClickCallback(), [=]() {
+        planet->colonize(gameState->getHumanPlayer());
+        colonizeButton->disable();
+
+        auto fleets = gameState->findFleetsInPlanetDistance(star, planet);
+
+        for (auto& fleet : fleets) {
+            if (fleet->getOwner() == gameState->getHumanPlayer().get()) {
+                for (auto& ship : fleet->getShips()) {
+                    if (ship->getShipType() == ShipType::ColonyShip) {
+                        fleet->destroyShip(ship);
+                        if (fleet->getShips().empty()) {
+                            gameState->removeFleet(fleet);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    });
     mainTab->addObject(colonizeButton);
     nameLabel = std::make_shared<UI::Label>("Planet: ", mainTab.get());
     nameLabel->setPos(10, 50);
@@ -197,7 +217,7 @@ void PlanetWindow::onSurfaceClick(const utils::Vector2& pos)
               << std::endl;
     planet->setSelectedField(row, column);
 
-    if (planet->hasFieldBuilding(row, column) || planet->getPlayer() != player) {
+    if (planet->hasFieldBuilding(row, column) || planet->getPlayer() != gameState->getHumanPlayer()) {
         buildButton->disable();
     } else {
         buildButton->enable();
@@ -242,22 +262,39 @@ void PlanetWindow::render(core::Renderer* pRender, std::shared_ptr<graphics::Tex
     buildWindow->render(pRender);
 }
 
-void PlanetWindow::setPlanet(const std::shared_ptr<Planet>& planet)
+void PlanetWindow::openForPlanet(const std::shared_ptr<Star>& star, const std::shared_ptr<Planet>& planet)
 {
     nameLabel->setText("Planet: " + planet->getName());
     typeLabel->setText("Type: " + planet->getTranslatedType());
     this->planet = planet;
+    this->star = star;
 
     int fieldsPerColumn = FIELDS / FIELDS_PER_ROW;
     planetSurface->setWidth(FIELDS_PER_ROW * planet->getGridWidth());
     planetSurface->setHeight(fieldsPerColumn * planet->getGridHeight());
 
-    if (planet->getPlayer() == nullptr) {
+    auto fleets = gameState->findFleetsInPlanetDistance(star, planet);
+
+    bool colonizeable = false;
+    for (auto& fleet : fleets) {
+        if (fleet->getOwner() == gameState->getHumanPlayer().get()) {
+            for (auto& ship : fleet->getShips()) {
+                if (ship->getShipType() == ShipType::ColonyShip) {
+                    colonizeable = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (planet->getPlayer() == nullptr && colonizeable) {
         colonizeButton->enable();
     } else {
         colonizeButton->disable();
     }
     updatePlanet = true;
+
+    setVisible(true);
 }
 
 PlanetWindow::~PlanetWindow()
@@ -272,8 +309,8 @@ void PlanetWindow::handleEvents(core::Input* pInput)
     }
 }
 
-void PlanetWindow::setPlayer(const std::shared_ptr<Player>& player)
+void PlanetWindow::setGameState(const std::shared_ptr<GameState>& gameState)
 {
-    this->player = player;
+    this->gameState = gameState;
 }
 } /* namespace windows */

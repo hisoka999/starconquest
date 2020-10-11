@@ -10,7 +10,6 @@
 #include <cmath>
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
-#define PI 3.14159265f
 
 namespace scenes {
 
@@ -27,7 +26,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 
 {
 
-    direction ={false,false,false,false};
+    direction = { false, false, false, false };
     std::vector<std::shared_ptr<Player>> players;
 
     players.push_back(player);
@@ -37,7 +36,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     auto playerStars = gameState->findStarsForPlayer(gameState->getHumanPlayer());
     auto playerPlanet = playerStars[0]->getPlanets()[0];
 
-    colonyShip->loadTexture(utils::os::combine("images","ships","colonyship.png"));
+    colonyShip->loadTexture(utils::os::combine("images", "ships", "colonyship.png"));
 
     colonyShip->addAttribute(Attribute::Hull, 10);
     colonyShip->addAttribute(Attribute::Drive, 10);
@@ -49,7 +48,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     gameState->addFleet(fleet);
 
     timeThread = std::make_unique<TimeThread>(gameState);
-    starText.openFont(utils::os::combine("fonts","Audiowide-Regular.ttf"), 12);
+    starText.openFont(utils::os::combine("fonts", "Audiowide-Regular.ttf"), 12);
     glyphText.openFont("fonts/fa-solid-900.ttf", 20);
 
     background.loadTexture(renderer, "images/star_background.png");
@@ -115,11 +114,13 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 
     for (auto& star : gameState->getStars()) {
         if (star->getPlayer() == gameState->getHumanPlayer()) {
-            viewPort.x = star->getPosition().getX() * -1 + (renderer->getMainCamera()->getWidth() / 2);
-            viewPort.y = star->getPosition().getY() * -1 + (renderer->getMainCamera()->getHeight() / 2);
-            std::cout<<"Player star: " << star->getName() << std::endl;
-            std::cout<<"viewPort.x "<<viewPort.x<<std::endl;
-            std::cout<<"viewPort.y "<<viewPort.y<<std::endl;
+            float camX = star->getPosition().getX() - (renderer->getMainCamera()->getWidth() / 2);
+            float camY = star->getPosition().getY() - (renderer->getMainCamera()->getHeight() / 2);
+
+            renderer->getMainCamera()->move(camX, camY);
+            std::cout << "Player star: " << star->getName() << std::endl;
+            std::cout << "viewPort.x " << viewPort.x << std::endl;
+            std::cout << "viewPort.y " << viewPort.y << std::endl;
             break;
         }
     }
@@ -210,13 +211,16 @@ void StarMapScene::handleEvents(core::Input* pInput)
     if (pInput->isScrollWheel()) {
 
         utils::Vector2 pos = pInput->getMouseWheelPosition();
-        renderer->setZoomFactor(renderer->getZoomFactor() + pos.getY() / 100.0f);
+        float oldFactor = renderer->getZoomFactor();
+        renderer->setZoomFactor(oldFactor + pos.getY() / 100.0f);
+        float diff = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
 
-        viewPort.width = WORLD_SIZE * renderer->getZoomFactor();
-        viewPort.height = WORLD_SIZE * renderer->getZoomFactor();
-        //viewPort.x *= renderer->getZoomFactor();
-        //viewPort.y *= renderer->getZoomFactor();
+        renderer->getMainCamera()->move(diff / 2.f * renderer->getMainCamera()->getHeight() / renderer->getMainCamera()->getWidth(), diff / 2.f);
+        std::cout << "diff" << diff << std::endl;
+        std::cout << "cam x " << renderer->getMainCamera()->getX() << " cam y " << renderer->getMainCamera()->getY() << std::endl;
     }
+    float cameraX = renderer->getMainCamera()->getX();
+    float cameraY = renderer->getMainCamera()->getY();
 
     //detect click on planet
     graphics::Rect planetRect;
@@ -226,13 +230,27 @@ void StarMapScene::handleEvents(core::Input* pInput)
         float x = star->getPosition().getX();
         float y = star->getPosition().getY();
         int i = 1;
+
+        graphics::Rect starRect = { (x - 25) * renderer->getZoomFactor(), (y - 25) * renderer->getZoomFactor(),
+            50 * renderer->getZoomFactor(), 50 * renderer->getZoomFactor() };
+        starRect.x -= cameraX;
+        starRect.y -= cameraY;
+        if (starRect.intersects(mousePos)
+            && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
+            viewPort.width = WORLD_SIZE;
+            viewPort.height = WORLD_SIZE;
+            renderer->setZoomFactor(1);
+            renderer->getMainCamera()->reset();
+            renderer->getMainCamera()->move(star->getPosition().getX() - (renderer->getMainCamera()->getWidth() / 2), star->getPosition().getY() - (renderer->getMainCamera()->getHeight() / 2));
+        }
+
         for (const auto& planet : star->getPlanets()) {
-            int planetX = std::cos(planet->getAngle() * PI / 180.0)
+            float planetX = std::cos(planet->getAngle() * PI / 180.0f)
                 * (i * PLANET_DISTANCE);
-            int planetY = std::sin(planet->getAngle() * PI / 180.0)
+            float planetY = std::sin(planet->getAngle() * PI / 180.0f)
                 * (i * PLANET_DISTANCE);
-            int tmpx = (planet->getSize() * 3 * std::cos(135 * PI / 180.0f)) / 2;
-            int tmpy = (planet->getSize() * 3 * std::sin(135 * PI / 180.0f)) / 2;
+            float tmpx = (planet->getSize() * 3 * std::cos(135 * PI / 180.0f)) / 2;
+            float tmpy = (planet->getSize() * 3 * std::sin(135 * PI / 180.0f)) / 2;
             planetRect.x = x + planetX + tmpx;
 
             planetRect.y = y + (planetY + tmpy) * -1;
@@ -242,8 +260,8 @@ void StarMapScene::handleEvents(core::Input* pInput)
             planetRect.y *= renderer->getZoomFactor();
             planetRect.width *= renderer->getZoomFactor();
             planetRect.height *= renderer->getZoomFactor();
-            planetRect.x += viewPort.x;
-            planetRect.y += viewPort.y;
+            planetRect.x -= cameraX;
+            planetRect.y -= cameraY;
             i++;
 
             if (planetRect.intersects(mousePos)) {
@@ -271,9 +289,8 @@ void StarMapScene::handleEvents(core::Input* pInput)
                     } else {
                         std::cout << "user clicked on planet " << planet->getName()
                                   << std::endl;
-                        planetWindow.setPlanet(planet);
-                        planetWindow.setPlayer(gameState->getHumanPlayer());
-                        planetWindow.setVisible(true);
+                        planetWindow.setGameState(gameState);
+                        planetWindow.openForPlanet(star, planet);
                     }
                 }
             }
@@ -287,8 +304,8 @@ void StarMapScene::handleEvents(core::Input* pInput)
         fleetRect.y = fleet->getPosition().getY() * renderer->getZoomFactor();
         fleetRect.width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
         fleetRect.height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
-        fleetRect.x += viewPort.x;
-        fleetRect.y += viewPort.y;
+        fleetRect.x -= cameraX;
+        fleetRect.y -= cameraY;
         if (fleetRect.intersects(mousePos)) {
             if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
                 selectedFleet = fleet;
@@ -305,12 +322,18 @@ void StarMapScene::render()
     // render background
     background.render(renderer, 0, 0);
     renderer->setViewPort(viewPort);
+    float cameraX = renderer->getMainCamera()->getX();
+    float cameraY = renderer->getMainCamera()->getY();
+
     graphics::Rect planetRect;
     SDL_Color ellipseColor = { 192, 192, 192, 255 };
     // render stars
     for (auto& star : gameState->getStars()) {
-        int x = star->getPosition().getX();
-        int y = star->getPosition().getY();
+        float x = star->getPosition().getX();
+        float y = star->getPosition().getY();
+        utils::Vector2 resizedPosition = star->getPosition() * renderer->getZoomFactor();
+        if (!renderer->getMainCamera()->getViewPortRect().intersects(resizedPosition))
+            continue;
         SDL_Color color = { 255, 255, 255, 0 };
         //render star image
         auto player = star->getPlayer();
@@ -318,13 +341,17 @@ void StarMapScene::render()
             color = player->getColor();
         }
         //render star
-        starTextures[star->getType()]->renderResized(renderer, (x - 25) * renderer->getZoomFactor(), (y - 25) * renderer->getZoomFactor(),
+        float starX = (x - 25) * renderer->getZoomFactor();
+        float starY = (y - 25) * renderer->getZoomFactor();
+        starX -= cameraX;
+        starY -= cameraY;
+        starTextures[star->getType()]->renderResized(renderer, starX, starY,
             50 * renderer->getZoomFactor(), 50 * renderer->getZoomFactor());
         //render star name
         int w = 0;
         int h = 0;
         starText.size(star->getName(), &w, &h);
-        starText.render(renderer, star->getName(), color, (x - w / 2) * renderer->getZoomFactor(), (y + 30) * renderer->getZoomFactor());
+        starText.render(renderer, star->getName(), color, ((x - w / 2) * renderer->getZoomFactor()) - cameraX, ((y + 30) * renderer->getZoomFactor()) - cameraY);
 
         //render planets
         int i = 1;
@@ -333,17 +360,24 @@ void StarMapScene::render()
 
             //planet->getType()
 
-            int planetX = std::cos(planet->getAngle() * PI / 180.0f)
-                * (i * PLANET_DISTANCE);
-            int planetY = std::sin(planet->getAngle() * PI / 180.0f)
+            float planetX = std::cos(planet->getAngle() * PI / 180.0f)
+                * (static_cast<float>(i) * PLANET_DISTANCE);
+            float planetY = std::sin(planet->getAngle() * PI / 180.0f)
                 * (i * PLANET_DISTANCE);
 
-            renderer->drawCircle(x * renderer->getZoomFactor(), y * renderer->getZoomFactor(), i * 50 * renderer->getZoomFactor(),
+            renderer->drawCircle((x * renderer->getZoomFactor()) - cameraX, (y * renderer->getZoomFactor()) - cameraY, i * 50.f * renderer->getZoomFactor(),
                 ellipseColor);
-            int tmpx = (planet->getSize() * 3.0 * std::cos(135.0 * PI / 180.0)) / 2.0;
-            int tmpy = (planet->getSize() * 3.0 * std::sin(135.0 * PI / 180.0)) / 2.0;
+            float tmpx = (planet->getSize() * 3.0f * std::cos(135.0f * PI / 180.0f)) / 2.0f;
+            float tmpy = (planet->getSize() * 3.0f * std::sin(135.0f * PI / 180.0f)) / 2.0f;
+            planetX += x + tmpx;
+            planetY = y + (planetY + tmpy) * -1;
+            planetX *= renderer->getZoomFactor();
+            planetY *= renderer->getZoomFactor();
+            planetX -= cameraX;
+            planetY -= cameraY;
+
             planetTextures[planet->getType()]->renderResized(renderer,
-                (planetX + x + tmpx) * renderer->getZoomFactor(), (y + (planetY + tmpy) * -1) * renderer->getZoomFactor(),
+                planetX, planetY,
                 planet->getSize() * 3 * renderer->getZoomFactor(), planet->getSize() * 3 * renderer->getZoomFactor());
 
             i++;
@@ -361,6 +395,8 @@ void StarMapScene::render()
         int y = fleet->getPosition().getY() * renderer->getZoomFactor();
         int width = texture->getWidth() * 0.2f * renderer->getZoomFactor();
         int height = texture->getHeight() * 0.2f * renderer->getZoomFactor();
+        x -= cameraX;
+        y -= cameraY;
 
         //
         float rotation = 90;
@@ -380,6 +416,11 @@ void StarMapScene::render()
 
         texture->renderRotated(renderer, rotation, x, y, width, height);
     }
+    if (selectedFleet != nullptr) {
+        if (selectedFleet->getShips().empty())
+            selectedFleet = nullptr;
+    }
+
     if (selectedFleet != nullptr) {
         auto startPos = selectedFleet->getPosition();
         auto ship = selectedFleet->getFirstShip();
@@ -417,19 +458,23 @@ void StarMapScene::update()
 
     float speed = renderer->getTimeDelta() / 1000.f * 400.f;
 
+    float moveX = 0.f;
+    float moveY = 0.f;
+
     if (direction.top) {
         //if (viewPort.y > 0)
-        viewPort.y += speed;
+        moveY -= speed;
 
     } else if (direction.bottom) {
-        viewPort.y -= speed;
+        moveY += speed;
     }
 
     if (direction.left) {
         //if (viewPort.x > 0)
-        viewPort.x += speed;
+        moveX -= speed;
     } else if (direction.right) {
-        viewPort.x -= speed;
+        moveX += speed;
     }
+    renderer->getMainCamera()->move(moveX, moveY);
 }
 } /* namespace scenes */

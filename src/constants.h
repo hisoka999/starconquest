@@ -8,9 +8,10 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
-#define PLANET_DISTANCE 50.0
+#define PLANET_DISTANCE 50.0f
 #define MAX_PLANETS_PER_STAR 4
 
 #define WORLD_SIZE 6400
+#define PI 3.14159265f
 
 #endif /* CONSTANTS_H_ */

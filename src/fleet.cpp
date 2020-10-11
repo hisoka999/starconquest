@@ -1,4 +1,5 @@
 #include "fleet.h"
+#include <algorithm>
 
 Fleet::Fleet(const std::string& name)
     : name(name)
@@ -65,4 +66,11 @@ void Fleet::setStartPosition(const utils::Vector2& value)
 std::shared_ptr<Ship> Fleet::getFirstShip() const
 {
     return ships.front();
+}
+void Fleet::destroyShip(const std::shared_ptr<Ship>& ship)
+{
+    auto pos = std::find(ships.begin(), ships.end(), ship);
+    if (pos != std::end(ships)) {
+        ships.erase(pos);
+    }
 }

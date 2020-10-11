@@ -30,11 +30,13 @@ public:
     std::string getName();
     std::vector<std::shared_ptr<Planet>> getPlanets() const;
 
-    utils::Vector2& getPosition();
+    utils::Vector2 getPosition() const;
 
     std::shared_ptr<Player> getPlayer();
 
     StarType getType();
+
+    graphics::Rect planetDisplayRect(const std::shared_ptr<Planet>& planet) const;
 
 private:
     std::string name;
