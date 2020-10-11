@@ -533,3 +533,13 @@ bool Planet::hasFieldBuilding(int row, int column)
     size_t field = row + (column * FIELDS_PER_ROW);
     return buildings[field] != nullptr;
 }
+bool Planet::hasBuildingOfName(const std::string& buildingName)
+{
+    for (auto& building : buildings) {
+        if (building == nullptr)
+            continue;
+        if (building->getName() == buildingName)
+            return true;
+    }
+    return false;
+}

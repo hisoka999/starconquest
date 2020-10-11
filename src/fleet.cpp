@@ -74,3 +74,12 @@ void Fleet::destroyShip(const std::shared_ptr<Ship>& ship)
         ships.erase(pos);
     }
 }
+
+int Fleet::calculateCosts()
+{
+    int costs = 0;
+    for (auto& ship : ships) {
+        costs += ship->getCostsPerMonth();
+    }
+    return costs;
+}

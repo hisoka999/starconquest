@@ -21,11 +21,9 @@ BuildWindow::BuildWindow(std::shared_ptr<Player> p)
     addObject(scrollArea);
     scrollArea->setX(5);
     scrollArea->connect("selectItem", [&](int idx) {
-        if (buildings[idx]->canBuildObject(player->getMoney())) {
-            selection = idx;
-            this->setVisible(false);
-            this->fireFuncionCall("buildingSelected");
-        }
+        selection = idx;
+        this->setVisible(false);
+        this->fireFuncionCall("buildingSelected");
     });
 }
 
@@ -50,12 +48,13 @@ void BuildWindow::clearBuildings()
     buildings.clear();
 }
 
-void BuildWindow::addBuilding(std::shared_ptr<BuildableObject> object)
+void BuildWindow::addBuilding(std::shared_ptr<BuildableObject> object, const int planetRessources)
 {
     buildings.push_back(object);
     auto obj = std::make_shared<UI::BuildableObjectView>(object,
         scrollArea.get());
     obj->setY((buildings.size() - 1) * 50);
+    obj->update(planetRessources);
     scrollArea->addObject(obj);
 }
 

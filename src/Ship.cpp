@@ -7,9 +7,10 @@
 
 #include "Ship.h"
 
-Ship::Ship(const std::string& name, int resources, ShipType type)
+Ship::Ship(const std::string& name, int resources, ShipType type, int costsPerMonth)
     : BuildableObject(name, resources)
     , shipType(type)
+    , costsPerMonth(costsPerMonth)
 {
     // TODO Auto-generated constructor stub
 }
@@ -40,4 +41,9 @@ ShipType Ship::getShipType() const
 bool Ship::isDistanceReachable(const float distance)
 {
     return getAttribute(Attribute::Drive) * 100 >= distance;
+}
+
+int Ship::getCostsPerMonth() const
+{
+    return costsPerMonth;
 }

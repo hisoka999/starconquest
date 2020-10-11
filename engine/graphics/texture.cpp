@@ -9,6 +9,7 @@ Texture::Texture()
     , height(0)
 {
     tex = nullptr;
+    surface = nullptr;
 }
 
 Texture::Texture(core::Renderer* pRenderer, const int pWidth, const int pHeight)
@@ -104,7 +105,7 @@ void Texture::renderRotated(core::Renderer* ren, const double angle,
 
     int result = SDL_RenderCopyEx(ren->getRenderer(), tex, &src, &dst, angle, center,
         SDL_FLIP_NONE);
-    if(result != 0)
+    if (result != 0)
         throw SDLException("renderRotated::SDL_RenderCopyEx");
 }
 

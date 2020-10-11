@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-06 23:08+0200\n"
+"POT-Creation-Date: 2020-10-11 20:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,48 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Planet.cpp:53
+#: src/Planet.cpp:53 src/Planet.cpp:86
 msgid "Barren"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:125 src/windows/BuildWindow.cpp:20
+#: src/ui/shipyardtab.cpp:13
+msgid "Build"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:35
+msgid "Buildings"
+msgstr ""
+
+#: src/windows/SettingsWindow.cpp:37
+msgid "Cancel"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:41
+msgid "Colonize"
 msgstr ""
 
 #: src/scenes/MainScene.cpp:62
 #: /home/stefan/workspace/sota/starconquest/src/scenes/MainScene.cpp:62
-#: src/scenes/MainScene.cpp:60
+#: src/scenes/MainScene.cpp:60 src/scenes/MainScene.cpp:69
 msgid "Exit Game"
 msgstr ""
 
-#: src/Planet.cpp:55
+#: src/windows/SettingsWindow.cpp:40
+msgid "Fullscreen"
+msgstr ""
+
+#: src/Planet.cpp:55 src/Planet.cpp:88
 msgid "Gaia"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:122 src/scenes/MainScene.cpp:129
+msgid "Human"
 msgstr ""
 
 #: src/scenes/MainScene.cpp:49
 #: /home/stefan/workspace/sota/starconquest/src/scenes/MainScene.cpp:49
-#: src/scenes/MainScene.cpp:47
+#: src/scenes/MainScene.cpp:47 src/scenes/MainScene.cpp:46
 msgid "Load Game"
 msgstr ""
 
@@ -43,18 +68,77 @@ msgstr ""
 msgid "New Game"
 msgstr ""
 
-#: src/Planet.cpp:57
+#: src/windows/PlanetWindow.cpp:34
+msgid "Overview"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:70 src/windows/PlanetWindow.cpp:194
+msgid "Owner: "
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:187
+#, c-format
+msgid "Owner: %s"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:74
+msgid "Planet Overview"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:64
+msgid "Planet: "
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:33
+msgid "Planetview"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:124
+msgid "Psilon"
+msgstr ""
+
+#: src/Planet.cpp:57 src/Planet.cpp:90
 msgid "Radiated"
 msgstr ""
 
-#: src/Planet.cpp:59
+#: src/ui/BuildableObjectView.cpp:52
+#, c-format
+msgid "Ressources: %d"
+msgstr ""
+
+#: src/windows/SettingsWindow.cpp:19
+msgid "Save"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:58 src/windows/SettingsWindow.cpp:41
+msgid "Settings"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:200
+msgid "Shipyard"
+msgstr ""
+
+#: src/Planet.cpp:59 src/Planet.cpp:92
 msgid "Swamp"
 msgstr ""
 
-#: src/Planet.cpp:61
+#: src/Planet.cpp:61 src/Planet.cpp:94
 msgid "Terran"
 msgstr ""
 
-#: src/Planet.cpp:63
+#: src/ui/BuildableObjectView.cpp:53 src/ui/BuildableObjectView.cpp:58
+#, c-format
+msgid "Time: %d months"
+msgstr ""
+
+#: src/windows/PlanetWindow.cpp:67
+msgid "Type: "
+msgstr ""
+
+#: src/Planet.cpp:63 src/Planet.cpp:96
 msgid "Wasteland"
+msgstr ""
+
+#: src/scenes/MainScene.cpp:130
+msgid "psilons"
 msgstr ""

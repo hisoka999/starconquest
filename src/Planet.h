@@ -89,6 +89,7 @@ public:
     void updatePopulation();
     void updateBuildQueue();
     bool hasFieldBuilding(int row, int column);
+    bool hasBuildingOfName(const std::string& buildingName);
 
 private:
     void initPopulation(int population);

@@ -95,7 +95,7 @@ std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
     auto farm = std::make_shared<Building>("Farm", 50);
     farm->loadTexture(utils::os::combine("images", "objects", "farm.png"));
 
-    auto shipHangar = std::make_shared<Building>("Hangar", 300);
+    auto shipHangar = std::make_shared<Building>("Shipyard", 300);
     shipHangar->loadTexture(
         utils::os::combine("images", "objects", "scifi_hangar.png"));
 
@@ -119,15 +119,15 @@ void MainScene::startGame()
     WorldGenerator gen;
     std::vector<std::shared_ptr<Player>> players;
     auto buildings = initBuildings();
-    Race human(RaceType::Human, "Human", "Sol");
+    Race human(RaceType::Human, _("Human"), "Sol");
     human.setAvailableBuildings(buildings);
-    Race psilons(RaceType::Psilons, "Psilon", "Mentar");
+    Race psilons(RaceType::Psilons, _("Psilon"), "Mentar");
     psilons.setAvailableBuildings(buildings);
     SDL_Color blue { 0, 0, 200, 0 };
     SDL_Color green { 0, 255, 0, 0 };
 
-    players.push_back(std::make_shared<Player>("Human", human, blue));
-    players.push_back(std::make_shared<Player>("psilons", psilons, green));
+    players.push_back(std::make_shared<Player>(_("Human"), human, blue));
+    players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
 
     std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(20, players);
 

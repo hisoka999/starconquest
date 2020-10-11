@@ -9,7 +9,7 @@
 #include "../translate.h"
 #include "../ui/BuildableObjectView.h"
 #include <engine/graphics/TextureManager.h>
-#include <engine/ui/TabBar.h>
+
 #include <functional>
 
 #include "../messagetypes.h"
@@ -21,21 +21,24 @@ namespace windows {
 PlanetWindow::PlanetWindow()
     : UI::Window(0, 0, 800, 450)
 {
-    auto bar = std::make_shared<UI::TabBar>(this);
+    uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
+    uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
+
+    setFont(uiText.get());
+
+    bar = std::make_shared<UI::TabBar>(this);
     bar->setWidth(550);
     bar->setHeight(405);
     addObject(bar);
     setTitle(_("Planetview"));
     mainTab = std::make_shared<UI::Tab>(bar.get(), _("Overview"));
     buildTab = std::make_shared<UI::Tab>(bar.get(), _("Buildings"));
+    shipyardTab = nullptr;
     bar->addTab(mainTab);
     bar->addTab(buildTab);
-    uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
-    uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
 
-    setFont(uiText.get());
     colonizeButton = std::make_shared<UI::Button>(mainTab.get());
-    colonizeButton->setLabel("Colonize");
+    colonizeButton->setLabel(_("Colonize"));
     colonizeButton->setPos(100, 180);
     colonizeButton->connect(UI::Button::buttonClickCallback(), [=]() {
         planet->colonize(gameState->getHumanPlayer());
@@ -58,13 +61,13 @@ PlanetWindow::PlanetWindow()
         }
     });
     mainTab->addObject(colonizeButton);
-    nameLabel = std::make_shared<UI::Label>("Planet: ", mainTab.get());
+    nameLabel = std::make_shared<UI::Label>(_("Planet: "), mainTab.get());
     nameLabel->setPos(10, 50);
     mainTab->addObject(nameLabel);
-    typeLabel = std::make_shared<UI::Label>("Type: ", mainTab.get());
+    typeLabel = std::make_shared<UI::Label>(_("Type: "), mainTab.get());
     typeLabel->setPos(10, 80);
     mainTab->addObject(typeLabel);
-    planetOwnerLabel = std::make_shared<UI::Label>("Owner: ", mainTab.get());
+    planetOwnerLabel = std::make_shared<UI::Label>(_("Owner: "), mainTab.get());
     planetOwnerLabel->setPos(10, 110);
     mainTab->addObject(planetOwnerLabel);
 
@@ -126,7 +129,7 @@ PlanetWindow::PlanetWindow()
         buildWindow->setPlayer(planet->getPlayer());
         buildWindow->clearBuildings();
         for (auto building : planet->getPlayer()->getRace().getAvailableBuildings()) {
-            buildWindow->addBuilding(building);
+            buildWindow->addBuilding(building, planet->calculateResources());
         }
         buildWindow->setVisible(true);
     });
@@ -181,16 +184,22 @@ void PlanetWindow::updateData()
         foodLabel->setTextF("%+d", planet->caclulateFood());
         ressourceLabel->setTextF("%+d", planet->calculateResources());
 
-        planetOwnerLabel->setTextF("Owner: %s", planet->getPlayer()->getName());
+        planetOwnerLabel->setTextF(_("Owner: %s"), planet->getPlayer()->getName());
     } else {
         populationLabel->setTextF("0");
 
         foodLabel->setTextF("0");
         ressourceLabel->setTextF("0");
 
-        planetOwnerLabel->setTextF("Owner: ");
+        planetOwnerLabel->setTextF(_("Owner: "));
     }
     planetIcon->setImage(planetTextures[planet->getType()]);
+
+    //has planet shipyard
+    if (planet->hasBuildingOfName("Shipyard") && shipyardTab == nullptr) {
+        shipyardTab = std::make_shared<UI::ShipyardTab>(bar.get(), _("Shipyard"));
+        bar->addTab(shipyardTab);
+    }
 }
 
 void PlanetWindow::onSurfaceClick(const utils::Vector2& pos)

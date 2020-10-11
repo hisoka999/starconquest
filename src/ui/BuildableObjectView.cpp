@@ -6,7 +6,9 @@
  */
 
 #include "BuildableObjectView.h"
+#include "../translate.h"
 #include <engine/utils/os.h>
+
 namespace UI {
 
 BuildableObjectView::BuildableObjectView(std::shared_ptr<BuildableObject> object,
@@ -18,6 +20,7 @@ BuildableObjectView::BuildableObjectView(std::shared_ptr<BuildableObject> object
 {
     titleLabel = std::make_shared<UI::Label>(this);
     priceLabel = std::make_shared<UI::Label>(this);
+    timeLabel = std::make_shared<UI::Label>(this);
     buildingImage = std::make_shared<UI::ImageButton>(this, 50, 50, 0, 0, true);
 
     buildUI();
@@ -30,6 +33,7 @@ void BuildableObjectView::buildUI()
     addObject(titleLabel);
     addObject(priceLabel);
     addObject(buildingImage);
+    addObject(timeLabel);
     buildingImage->setPos(0, 0);
     buildingImage->setWidth(50);
     buildingImage->setHeight(50);
@@ -40,11 +44,18 @@ void BuildableObjectView::buildUI()
     titleLabel->setPos(55, 5);
     priceLabel->setColor(black);
     priceLabel->setPos(55, 20);
+    timeLabel->setColor(black);
+    timeLabel->setPos(55, 35);
 
     //update data
     titleLabel->setText(object->getName());
-    priceLabel->setText("Price: " + std::to_string(object->getRessources()));
+    priceLabel->setTextF(_("Ressources: %d"), object->getRessources());
+    timeLabel->setTextF(_("Time: %d months"), object->getRessources());
     buildingImage->setImage(object->getTexture());
+}
+void BuildableObjectView::update(const int planetRessources)
+{
+    timeLabel->setTextF(_("Time: %d months"), object->getRessources() / planetRessources);
 }
 
 void BuildableObjectView::render(core::Renderer* pRender)

@@ -22,12 +22,14 @@ public:
     virtual void render(core::Renderer* pRender);
     virtual void handleEvents(core::Input* pInput);
     virtual ~BuildableObjectView();
+    void update(const int planetRessources);
 
 private:
     void buildUI();
     std::shared_ptr<BuildableObject> object;
     std::shared_ptr<UI::Label> titleLabel;
     std::shared_ptr<UI::Label> priceLabel;
+    std::shared_ptr<UI::Label> timeLabel;
     std::shared_ptr<UI::ImageButton> buildingImage;
 };
 

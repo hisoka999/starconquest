@@ -30,6 +30,8 @@ public:
 
     void destroyShip(const std::shared_ptr<Ship>& ship);
 
+    int calculateCosts();
+
 private:
     std::string name;
     Player* owner;

@@ -10,12 +10,14 @@
 
 #include "../Planet.h"
 #include "../gamestate.h"
+#include "../ui/shipyardtab.h"
 #include "BuildWindow.h"
 #include <engine/graphics/text.h>
 #include <engine/ui/Button.h>
 #include <engine/ui/ImageButton.h>
 #include <engine/ui/Label.h>
 #include <engine/ui/Tab.h>
+#include <engine/ui/TabBar.h>
 #include <engine/ui/Window.h>
 #include <engine/ui/scrollarea.h>
 #include <memory>
@@ -58,6 +60,8 @@ private:
     std::shared_ptr<UI::Label> ressourceLabel;
     std::shared_ptr<UI::Label> ressourceIconLabel;
     std::shared_ptr<UI::ImageButton> planetIcon;
+    std::shared_ptr<UI::TabBar> bar;
+    std::shared_ptr<UI::ShipyardTab> shipyardTab;
     std::map<PlanetType, std::shared_ptr<graphics::Texture>> planetTextures;
 
     bool updatePlanet;

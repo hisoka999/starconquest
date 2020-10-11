@@ -47,6 +47,13 @@ void GameState::updatePlayerState(const std::shared_ptr<Player>& player)
             }
         }
     }
+    //get ship costs
+    for (auto& fleet : fleets) {
+        if (fleet->getOwner() == player.get()) {
+            moneyPerTurn -= fleet->calculateCosts();
+        }
+    }
+
     player->setMoneyPerMonth(moneyPerTurn);
     player->addMoney(moneyPerTurn);
     player->setResearchPerMonth(researchPerMonth);

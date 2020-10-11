@@ -19,7 +19,7 @@ public:
     BuildWindow(std::shared_ptr<Player> p);
     virtual ~BuildWindow();
 
-    void addBuilding(std::shared_ptr<BuildableObject> object);
+    void addBuilding(std::shared_ptr<BuildableObject> object, const int planetRessources);
     void setPlayer(std::shared_ptr<Player> p);
 
     std::shared_ptr<BuildableObject> getSelectedBuilding();

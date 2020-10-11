@@ -28,7 +28,7 @@ enum class ShipType {
 
 class Ship : public BuildableObject {
 public:
-    Ship(const std::string& name, int resources, ShipType type);
+    Ship(const std::string& name, int resources, ShipType type, int costsPerMonth);
     virtual ~Ship();
     virtual bool canBuildObject(int planetResources);
 
@@ -38,9 +38,12 @@ public:
     ShipType getShipType() const;
     bool isDistanceReachable(const float distance);
 
+    int getCostsPerMonth() const;
+
 private:
     ShipType shipType;
     std::map<Attribute, int> attrbuteValues;
+    int costsPerMonth;
 };
 
 #endif /* SHIP_H_ */

@@ -18,17 +18,16 @@
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
 //#include <boost/locale.hpp>
+#include "translate.h"
 #include <engine/utils/json/parser.h>
 #include <iostream>
-#include "translate.h"
 
 //using namespace boost::locale;
 //#ifdef __WIN32
 //INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //            PSTR lpCmdLine, INT nCmdShow)
 //#else
-int main(int argc, char *argv[])
-
+int main(int argc, char* argv[])
 
 //#endif
 {
@@ -36,16 +35,17 @@ int main(int argc, char *argv[])
 
     auto obj = parser->parseObject("\"id\":1 ,\"name\":\"Test\", \"attr\" : {\"test\":22}");
 
+    Localisation::Instance().loadLocalisation("locale/de/LC_MESSAGES/starconquest.po");
+
     //generator gen;
 
     // Specify location of dictionaries
     //gen.add_messages_path("locale");
     //gen.add_messages_domain("starconquest");
 
-    setlocale (LC_ALL, "");
+    setlocale(LC_ALL, "");
     //textdomain ("starconquest");
     //bindtextdomain ("starconquest", "locale");
-
 
     try {
         // Generate locales and imbue them to iostream
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         core::GameWindow win("Star Conquest", 1280, 720);
         utils::Logger logger(utils::LogLevel::trace);
         core::Renderer ren(logger);
-        logger.trace(__FILE__,"renderer initialized");
+        logger.trace(__FILE__, "renderer initialized");
         graphics::TextureManager::Instance().setRenderer(&ren);
         core::Input input;
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
                 //                }
             }
 
-            text.render(&ren, "FPS: " + std::to_string(fps), color, mainCamera.getWidth()-100.f, 5);
+            text.render(&ren, "FPS: " + std::to_string(fps), color, mainCamera.getWidth() - 100.f, 5);
             ren.renderPresent();
 
             //win.delay(delay);

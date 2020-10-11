@@ -7,6 +7,7 @@
 
 #include "StarMapScene.h"
 #include "../constants.h"
+#include "../translate.h"
 #include <cmath>
 #include <engine/graphics/TextureManager.h>
 #include <engine/utils/os.h>
@@ -31,7 +32,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 
     players.push_back(player);
     gameState = std::make_shared<GameState>(pStars, players, player);
-    auto colonyShip = std::make_shared<Ship>("ColonyShip", 500, ShipType::ColonyShip);
+    auto colonyShip = std::make_shared<Ship>("ColonyShip", 500, ShipType::ColonyShip, 1);
 
     auto playerStars = gameState->findStarsForPlayer(gameState->getHumanPlayer());
     auto playerPlanet = playerStars[0]->getPlanets()[0];
@@ -454,6 +455,7 @@ void StarMapScene::render()
     //render ui
     renderUI();
 }
+
 void StarMapScene::update()
 {
     if (!timeThread->getPaused())
