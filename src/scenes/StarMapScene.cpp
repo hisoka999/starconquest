@@ -432,9 +432,12 @@ void StarMapScene::render()
         x += (width / 2);
         y += (height / 2);
 
+        x -= cameraX;
+        y -= cameraY;
+
         //x -= viewPort.x;
         //y -= viewPort.y;
-        auto endPos = utils::Vector2(targetFleetVec.getX() - viewPort.x, targetFleetVec.getY() - viewPort.y);
+        auto endPos = utils::Vector2(targetFleetVec.getX(), targetFleetVec.getY());
         utils::Vector2 start(x, y);
 
         //std::cout << "distinace: " << endPos.distance(start) / renderer->getZoomFactor() << std::endl;
