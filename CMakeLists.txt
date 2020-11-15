@@ -46,7 +46,6 @@ find_package(ZLIB)
 
 
 
-
 #FIND_PACKAGE(Boost COMPONENTS locale)
 message( "${MINGW32_LIBRARY} ${SDL2_LIBRARIES}")
 
@@ -72,12 +71,22 @@ configure_file (
   "${PROJECT_BINARY_DIR}/config.h"
   )
 
+set (MAGIC_ENUM_ROOT "deps")
+set (MAGIC_ENUM_SRC "${PROJECT_BINARY_DIR}/${MAGIC_ENUM_ROOT}/magic_enum/include" )
+
+include(magic_enum)
+message(${MAGIC_ENUM_SRC})
+
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR})
+include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUDE_DIR} ${Intl_INCLUDE_DIR} ${MAGIC_ENUM_SRC})
 
 
 add_executable(${PROJECT_NAME} "src/starconquest.cpp" ${SRC})
+
+
+
+
 
 if( UNIX)
 option(PACKAGE_TESTS "Build the tests" ON)
@@ -140,10 +149,11 @@ add_custom_command(TARGET starconquest PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_directory
                     ${CMAKE_SOURCE_DIR}/data/ $<TARGET_FILE_DIR:starconquest>/data/)
 
-
-                add_custom_command(TARGET starconquest POST_BUILD
-                                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                                       ${CMAKE_SOURCE_DIR}/deps/SDL2/bin/ $<TARGET_FILE_DIR:starconquest>)
+if(WIN32)
+    add_custom_command(TARGET starconquest POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           ${CMAKE_SOURCE_DIR}/deps/SDL2/bin/ $<TARGET_FILE_DIR:starconquest>)
+endif()
 INSTALL(TARGETS starconquest DESTINATION starconquest)
 INSTALL(DIRECTORY fonts DESTINATION starconquest )
 INSTALL(DIRECTORY data DESTINATION starconquest )

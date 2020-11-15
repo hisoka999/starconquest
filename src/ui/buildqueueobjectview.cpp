@@ -1,17 +1,11 @@
-/*
- * BuildableObjectView.cpp
- *
- *  Created on: 13.03.2018
- *      Author: stefan
- */
+#include "buildqueueobjectview.h"
 
-#include "BuildableObjectView.h"
 #include "../translate.h"
 #include <engine/utils/os.h>
 
 namespace UI {
 
-BuildableObjectView::BuildableObjectView(std::shared_ptr<BuildableObject> object,
+BuildQueueObjectView::BuildQueueObjectView(BuildQueueElement* object,
     Object* parent)
     : UI::Object(parent)
     , UI::Container()
@@ -26,7 +20,7 @@ BuildableObjectView::BuildableObjectView(std::shared_ptr<BuildableObject> object
     buildUI();
 }
 
-void BuildableObjectView::buildUI()
+void BuildQueueObjectView::buildUI()
 {
     setWidth(200);
     setHeight(50);
@@ -48,27 +42,27 @@ void BuildableObjectView::buildUI()
     timeLabel->setPos(55, 35);
 
     //update data
-    titleLabel->setText(object->getName());
-    priceLabel->setTextF(_("Ressources: %d"), object->getRessources());
-    timeLabel->setTextF(_("Time: %d months"), object->getRessources());
-    buildingImage->setImage(object->getTexture());
+    titleLabel->setText(object->object->getName());
+    priceLabel->setTextF(_("Ressources: %d"), object->resourcesLeft);
+    timeLabel->setTextF(_("Time: %d months"), object->resourcesLeft);
+    buildingImage->setImage(object->object->getTexture());
 }
-void BuildableObjectView::update(const int planetRessources)
+void BuildQueueObjectView::update(const int planetRessources)
 {
-    float value = std::round(static_cast<float>(object->getRessources()) / static_cast<float>(planetRessources));
+    float value = std::round(static_cast<float>(object->resourcesLeft) / static_cast<float>(planetRessources));
     timeLabel->setTextF(_("Time: %.0f months"), value);
 }
 
-void BuildableObjectView::render(core::Renderer* pRender)
+void BuildQueueObjectView::render(core::Renderer* pRender)
 {
     UI::Container::render(pRender);
 }
-void BuildableObjectView::handleEvents(core::Input* pInput)
+void BuildQueueObjectView::handleEvents(core::Input* pInput)
 {
     UI::Container::handleEvents(pInput);
 }
 
-BuildableObjectView::~BuildableObjectView()
+BuildQueueObjectView::~BuildQueueObjectView()
 {
     // TODO Auto-generated destructor stub
 }

@@ -18,6 +18,7 @@
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
 //#include <boost/locale.hpp>
+#include "services/shipservice.h"
 #include "translate.h"
 #include <engine/utils/json/parser.h>
 #include <iostream>
@@ -69,6 +70,8 @@ int main(int argc, char* argv[])
         scenes::MainScene mainScene(&ren, &sceneManager, &win);
         sceneManager.addScene("main", &mainScene);
         sceneManager.setCurrentScene("main");
+
+        ShipService::Instance().loadShips("data/ships.json");
 
         unsigned int lastTime = ren.getTickCount();
         unsigned int frames = 0;

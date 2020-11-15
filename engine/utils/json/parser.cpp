@@ -32,6 +32,23 @@ namespace JSON {
         }
     }
 
+    size_t Parser::findPositionInString(const std::string data, const size_t startPosition)
+    {
+        int depth = 0;
+        for (size_t pos = startPosition; pos < data.size(); ++pos) {
+            if (data.at(pos) == '{') {
+                depth++;
+            } else if (data.at(pos) == '}') {
+                if (depth > 0) {
+                    depth--;
+                } else {
+                    return pos;
+                }
+            }
+        }
+        return 0;
+    }
+
     std::vector<std::variant<int, float, std::string, std::shared_ptr<Object>>> Parser::parseArray(const std::string& jsonData)
     {
         std::vector<std::variant<int, float, std::string, std::shared_ptr<Object>>> vector;
@@ -42,6 +59,7 @@ namespace JSON {
             return vector;
 
         std::string data = jsonData.substr(startPos + 1, endPos - startPos - 1);
+        //std::cout << "data = " << data << std::endl;
 
         size_t splitPos = data.find_first_of(",");
         size_t lastSplitPos = 0;
@@ -49,12 +67,17 @@ namespace JSON {
 
             std::string attrValue = data.substr(lastSplitPos, splitPos - lastSplitPos);
 
+            if (trim(attrValue) == "")
+                break;
+
+            std::cout << "array value (start): <<" << attrValue << ">>" << std::endl;
             if (attrValue.find_first_of("{") < attrValue.size()) {
-                splitPos = data.find_first_of("}", lastSplitPos) + 1;
+                size_t objectStart = data.find_first_of("{", lastSplitPos) + 1;
+                splitPos = findPositionInString(data, objectStart) + 1;
                 attrValue = data.substr(lastSplitPos, splitPos - lastSplitPos);
                 attrValue = rtrim(ltrim(attrValue, "{"), "}");
                 vector.push_back(parseObject(attrValue));
-                splitPos = data.find_first_of(",", splitPos + 1);
+                splitPos = data.find_first_of(",", splitPos - 2);
             } else if (attrValue.find_first_of("\"") < attrValue.size()) {
                 //found string
                 vector.push_back(trim(attrValue, "\""));
@@ -65,7 +88,7 @@ namespace JSON {
             } else {
                 vector.push_back(std::atoi(attrValue.c_str()));
             }
-            //std::cout << "array value: " << attrValue << std::endl;
+            std::cout << "array value: " << attrValue << std::endl;
 
             if (splitPos > data.size())
                 break;
@@ -106,14 +129,18 @@ namespace JSON {
                     endPos = jsonData.size();
                 std::string attrValue = jsonData.substr(splitPos + 1, endPos - splitPos - 1);
                 attrValue = trim(attrValue);
+                attrName = trim(attrName);
                 //std::cout << attrName << ":" << attrValue << std::endl;
                 //test if the value is a string
                 if (attrValue.find_first_of("{") < attrValue.size()) {
-                    lastAttr = attrValue.find_first_of("}");
-                    attrValue = rtrim(ltrim(attrValue, "{"), "}");
+                    size_t objectStart = jsonData.find_first_of("{", splitPos);
+                    size_t objectEnd = findPositionInString(jsonData, objectStart + 1);
+                    attrValue = jsonData.substr(objectStart + 1, objectEnd - objectStart - 1);
+                    attrValue = rtrim(ltrim(trim(attrValue), "{"), "}");
+                    std::cout << "sub:" << attrName << ":" << attrValue << std::endl;
                     object->setAttribute(attrName, parseObject(attrValue));
                 } else if (attrValue.find_first_of("[") < attrValue.size()) {
-                    lastAttr = attrValue.find_first_of("]");
+                    splitPos = attrValue.find_first_of("]");
                     attrValue = jsonData.substr(splitPos + 1, lastAttr - splitPos - 1);
                     object->setArrayAttribute(attrName, parseArray(attrValue));
 

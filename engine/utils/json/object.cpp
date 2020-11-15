@@ -28,5 +28,15 @@ namespace JSON {
         arrayAttributes[attr] = array;
     }
 
+    std::vector<std::string> Object::getAttributes()
+    {
+        std::vector<std::string> result;
+
+        for (auto attr : attributes) {
+            result.push_back(attr.first);
+        }
+        return result;
+    }
+
 }
 }

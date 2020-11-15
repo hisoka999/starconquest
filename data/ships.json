@@ -3,9 +3,11 @@
         "id": 1,
         "name" : "ColonyShip",
         "description" : "a ship that can colonize a planet.",
+        "texture": "images/ships/colonyship.png",
         "type": "ColonyShip",
         "properties" : {
-                "hull": 2   
+                "Hull": 10 
+                ,"Drive":10
             },
         "costs": 1,
         "ressources":500
@@ -14,11 +16,13 @@
         "id": 2,
         "name" : "Scout",
         "description" : "A small and fast scout ship.",
+        "texture": "images/ships/scout.png",
         "type": "NormalShip",
         "properties" : {
-                "hull": 3
-                ,"rockets":1
-                ,"laser": 1
+                "Hull": 15
+                ,"Rockets":1
+                ,"Laser": 1
+                ,"Drive":20
                 
             },
         "costs": 1,

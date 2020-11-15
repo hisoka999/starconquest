@@ -11,6 +11,7 @@
 #include "BuildableObject.h"
 #include "Building.h"
 #include "Player.h"
+#include "Ship.h"
 #include <array>
 #include <engine/core/renderer.h>
 #include <engine/graphics/text.h>
@@ -69,7 +70,7 @@ public:
     std::string getTranslatedType();
 
     void addBuildingToQueue(int position, std::shared_ptr<BuildableObject> obj);
-    std::vector<std::shared_ptr<BuildableObject>> getQueuedObjects();
+    std::vector<BuildQueueElement> getQueuedObjects();
     void renderPlanetSurface(core::Renderer* pRenderer,
         std::shared_ptr<graphics::Texture> pTexture, graphics::Texture* pTargetSurface);
     void generateSurface(long seed);
@@ -113,6 +114,11 @@ private:
     int gridHeight;
     int selectedRow, selectedColumn;
     std::shared_ptr<graphics::Text> debugText;
+};
+
+struct ShipBuildData {
+    Planet* planet;
+    std::shared_ptr<Ship> ship;
 };
 
 #endif /* PLANET_H_ */

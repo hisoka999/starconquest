@@ -17,6 +17,7 @@ enum class Attribute {
     Hull,
     Rockets,
     Drive,
+    Laser,
 };
 
 enum class ShipType {

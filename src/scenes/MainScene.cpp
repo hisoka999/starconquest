@@ -95,11 +95,11 @@ std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
     auto farm = std::make_shared<Building>("Farm", 50);
     farm->loadTexture(utils::os::combine("images", "objects", "farm.png"));
 
-    auto shipHangar = std::make_shared<Building>("Shipyard", 300);
+    auto shipHangar = std::make_shared<Building>("Shipyard", 50);
     shipHangar->loadTexture(
         utils::os::combine("images", "objects", "scifi_hangar.png"));
 
-    auto factory = std::make_shared<Building>("Factory", 100);
+    auto factory = std::make_shared<Building>("Factory", 20);
     factory->loadTexture(
         utils::os::combine("images", "objects", "scifi_factory.png"));
 

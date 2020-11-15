@@ -1,6 +1,7 @@
 #include "shipservice.h"
 #include <engine/utils/exceptions.h>
 #include <fstream>
+#include <magic_enum.hpp>
 #include <sstream>
 
 ShipService* ShipService::instance = nullptr;
@@ -27,6 +28,8 @@ void ShipService::loadShips(const std::string& fileName)
     file.seekg(0);
     file.read(&buffer[0], size);
 
+    //std::cout << buffer << std::endl;
+
     auto objects = parser.parseArray(buffer);
 
     for (auto& object : objects) {
@@ -37,12 +40,23 @@ std::shared_ptr<Ship> ShipService::convertJsonObject2Ship(const std::shared_ptr<
 {
     std::string name = object->getStringValue("name");
     int res = object->getIntValue("ressources");
-    ShipType type = ShipType::Scout; //TODO
+    ShipType type = magic_enum::enum_cast<ShipType>(object->getStringValue("type")).value();
+    ; //TODO
     int costsPerMonth = object->getIntValue("costs");
 
     std::shared_ptr<Ship> ship = std::make_shared<Ship>(name, res, type, costsPerMonth);
+    ship->loadTexture(object->getStringValue("texture"));
 
-    for (auto& prop : object->getArray("properties")) {
+    auto props = object->getObjectValue("properties");
+
+    for (auto& prop : props->getAttributes()) {
+        Attribute attrEnum = magic_enum::enum_cast<Attribute>(prop).value();
+        ship->addAttribute(attrEnum, props->getIntValue(prop));
     }
     return ship;
+}
+
+std::vector<std::shared_ptr<Ship>> ShipService::getShips() const
+{
+    return ships;
 }

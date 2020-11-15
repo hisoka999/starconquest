@@ -6,9 +6,12 @@
  */
 
 #include "Planet.h"
+#include "messagetypes.h"
 #include "translate.h"
+#include <engine/core/MessageSystem.h>
 #include <engine/graphics/TextureManager.h>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 
 Planet::Planet(const std::string& Name, const PlanetType Type,
@@ -513,20 +516,28 @@ void Planet::updateBuildQueue()
     element.resourcesLeft -= resources;
     if (element.resourcesLeft <= 0) {
         int diff = element.resourcesLeft;
+
         const std::shared_ptr<Building> b = std::dynamic_pointer_cast<Building>(element.object);
-        buildings[element.position] = b;
+        if (b != nullptr) {
+            buildings[element.position] = b;
+        } else {
+            const std::shared_ptr<Ship> ship = std::dynamic_pointer_cast<Ship>(element.object);
+            auto& sys = core::MessageSystem<MessageTypes>::get();
+
+            ShipBuildData data;
+            data.ship = ship;
+            data.planet = this;
+            auto msg = std::make_shared<core::Message<MessageTypes, ShipBuildData>>(MessageTypes::ShipHasBuild, data);
+            sys.sendMessage(msg);
+        }
 
         buildqueue.erase(buildqueue.begin());
     }
 }
 
-std::vector<std::shared_ptr<BuildableObject>> Planet::getQueuedObjects()
+std::vector<BuildQueueElement> Planet::getQueuedObjects()
 {
-    std::vector<std::shared_ptr<BuildableObject>> objectList;
-    for (auto& element : buildqueue) {
-        objectList.push_back(element.object);
-    }
-    return objectList;
+    return buildqueue;
 }
 bool Planet::hasFieldBuilding(int row, int column)
 {

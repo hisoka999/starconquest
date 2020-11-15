@@ -56,6 +56,7 @@ void BuildWindow::addBuilding(std::shared_ptr<BuildableObject> object, const int
     obj->setY((buildings.size() - 1) * 50);
     obj->update(planetRessources);
     scrollArea->addObject(obj);
+    scrollArea->reset();
 }
 
 } /* namespace windows */

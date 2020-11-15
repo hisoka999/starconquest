@@ -3,5 +3,6 @@
 enum class MessageTypes {
     NewMonth,
     ObjectHasBuild,
+    ShipHasBuild,
 };
 #endif // MESSAGETYPES_H

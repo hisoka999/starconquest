@@ -7,7 +7,7 @@
 
 #include "PlanetWindow.h"
 #include "../translate.h"
-#include "../ui/BuildableObjectView.h"
+#include "../ui/buildqueueobjectview.h"
 #include <engine/graphics/TextureManager.h>
 
 #include <functional>
@@ -19,7 +19,7 @@
 namespace windows {
 
 PlanetWindow::PlanetWindow()
-    : UI::Window(0, 0, 800, 450)
+    : UI::Window(0, 0, 900, 450)
 {
     uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
     uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
@@ -101,7 +101,7 @@ PlanetWindow::PlanetWindow()
     ressourceLabel->setPos(260, 5);
 
     planetIcon = std::make_shared<UI::ImageButton>(mainTab.get(), 200, 200, 0, 0, true);
-    planetIcon->setPos(350, 200);
+    planetIcon->setPos(250, 200);
     mainTab->addObject(planetIcon);
 
     mainTab->addObject(foodIconLabel);
@@ -117,19 +117,20 @@ PlanetWindow::PlanetWindow()
     buildWindow = new BuildWindow(nullptr);
     buildWindow->setPos(300, 300); //TODO
     buildWindow->setFont(uiText.get());
-    buildQueueArea = std::make_shared<UI::ScrollArea>(200, 200, buildTab.get());
-    buildQueueArea->setPos(350, 10);
-    buildTab->addObject(buildQueueArea);
+    buildQueueArea = std::make_shared<UI::ScrollArea>(200, 350, this);
+    buildQueueArea->setPos(670, 10);
+    this->addObject(buildQueueArea);
     buildButton = std::make_shared<UI::Button>(buildTab.get());
     buildTab->addObject(buildButton);
     buildButton->setLabel(_("Build"));
-    buildButton->setPos(450, 250);
-    buildButton->connect(UI::Button::buttonClickCallback(), [&]() {
+    buildButton->setPos(350, 250);
+    buildButton->connect(UI::Button::buttonClickCallback(), [=]() {
         std::cout << "build it" << std::endl;
         buildWindow->setPlayer(planet->getPlayer());
         buildWindow->clearBuildings();
+        int ressources = planet->calculateResources();
         for (auto building : planet->getPlayer()->getRace().getAvailableBuildings()) {
-            buildWindow->addBuilding(building, planet->calculateResources());
+            buildWindow->addBuilding(building, ressources);
         }
         buildWindow->setVisible(true);
     });
@@ -197,8 +198,11 @@ void PlanetWindow::updateData()
 
     //has planet shipyard
     if (planet->hasBuildingOfName("Shipyard") && shipyardTab == nullptr) {
-        shipyardTab = std::make_shared<UI::ShipyardTab>(bar.get(), _("Shipyard"));
+        shipyardTab = std::make_shared<UI::ShipyardTab>(bar.get(), _("Shipyard"), planet);
         bar->addTab(shipyardTab);
+    } else if (shipyardTab != nullptr && !planet->hasBuildingOfName("Shipyard")) {
+        bar->removeTab(shipyardTab);
+        shipyardTab = nullptr;
     }
 }
 
@@ -261,9 +265,11 @@ void PlanetWindow::render(core::Renderer* pRender, std::shared_ptr<graphics::Tex
         int i = 0;
         for (auto& object : planet->getQueuedObjects()) {
 
-            auto view = std::make_shared<UI::BuildableObjectView>(object, buildQueueArea.get());
+            auto view = std::make_shared<UI::BuildQueueObjectView>(&object, buildQueueArea.get());
             view->setY(i * 50);
+            view->update(planet->calculateResources());
             buildQueueArea->addObject(view);
+
             i++;
         }
     }

@@ -32,6 +32,8 @@ namespace JSON {
         std::shared_ptr<Object> getObjectValue(const std::string& attr) const;
         JsonArray getArray(const std::string& attr) const;
 
+        std::vector<std::string> getAttributes();
+
     private:
         std::map<std::string, JsonValue> attributes;
         std::map<std::string, JsonArray> arrayAttributes;
