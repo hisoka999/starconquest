@@ -8,6 +8,7 @@
 #include "MainScene.h"
 #include "../Star.h"
 #include "../WorldGenerator.h"
+#include "../services/buildingservice.h"
 #include "../translate.h"
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/Button.h>
@@ -91,25 +92,7 @@ void MainScene::exitGame()
 }
 std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
 {
-    std::vector<std::shared_ptr<Building>> buildings;
-    auto farm = std::make_shared<Building>("Farm", 50);
-    farm->loadTexture(utils::os::combine("images", "objects", "farm.png"));
-
-    auto shipHangar = std::make_shared<Building>("Shipyard", 50);
-    shipHangar->loadTexture(
-        utils::os::combine("images", "objects", "scifi_hangar.png"));
-
-    auto factory = std::make_shared<Building>("Factory", 20);
-    factory->loadTexture(
-        utils::os::combine("images", "objects", "scifi_factory.png"));
-
-    farm->addModifier(ModifierType::Food, 2);
-    factory->addModifier(ModifierType::Ressource, 2);
-    shipHangar->addModifier(ModifierType::Money, -1);
-
-    buildings.push_back(farm);
-    buildings.push_back(shipHangar);
-    buildings.push_back(factory);
+    std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getBuildings();
 
     return buildings;
 }

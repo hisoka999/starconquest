@@ -17,13 +17,12 @@
 #include "engine/utils/logger.h"
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
-//#include <boost/locale.hpp>
+#include "services/buildingservice.h"
 #include "services/shipservice.h"
 #include "translate.h"
 #include <engine/utils/json/parser.h>
 #include <iostream>
 
-//using namespace boost::locale;
 //#ifdef __WIN32
 //INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //            PSTR lpCmdLine, INT nCmdShow)
@@ -32,17 +31,8 @@ int main(int argc, char* argv[])
 
 //#endif
 {
-    std::shared_ptr<utils::JSON::Parser> parser = std::make_shared<utils::JSON::Parser>();
 
-    auto obj = parser->parseObject("\"id\":1 ,\"name\":\"Test\", \"attr\" : {\"test\":22}");
-
-    Localisation::Instance().loadLocalisation("locale/de/LC_MESSAGES/starconquest.po");
-
-    //generator gen;
-
-    // Specify location of dictionaries
-    //gen.add_messages_path("locale");
-    //gen.add_messages_domain("starconquest");
+    Localisation::Instance().detectLanguage();
 
     setlocale(LC_ALL, "");
     //textdomain ("starconquest");
@@ -72,6 +62,7 @@ int main(int argc, char* argv[])
         sceneManager.setCurrentScene("main");
 
         ShipService::Instance().loadShips("data/ships.json");
+        BuildingService::Instance().loadBuildings("data/buildings.json");
 
         unsigned int lastTime = ren.getTickCount();
         unsigned int frames = 0;

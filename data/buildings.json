@@ -4,8 +4,10 @@
     ,"name_de": "Farm"
     ,"desc": "A Building that produces food."
     ,"desc_de": "Ein Gebäude das Nahrung produziert."
+    ,"resources": 50
+    ,"texture": "images/objects/farm.png"
     ,"props":{
-            "food": 2
+            "Food": 2
         }
     },
 
@@ -14,8 +16,10 @@
     ,"name_de": "Fabrik"
     ,"desc": "A Building that produces goods."
     ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"resources": 20
+    ,"texture": "images/objects/scifi_factory.png"
     ,"props":{
-            "ressources": 2
+            "Ressource": 2
         }
     },
 
@@ -24,8 +28,21 @@
     ,"name_de": "Forschungslabor"
     ,"desc": "A Building that produces goods."
     ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"texture": "images/objects/scifi_scraper2.png"
+    ,"resources": 50
     ,"props":{
-            "research": 2
+            "Research": 2
         }
-    },    
+    }, 
+    {"id": 4
+    ,"name": "Shipyard"
+    ,"name_de": "Raumhafen"
+    ,"desc": "A Building that produces goods."
+    ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"texture": "images/objects/scifi_hangar.png"
+    ,"resources": 50
+    ,"props":{
+            "Money": -1
+        }
+    }, 
 ]

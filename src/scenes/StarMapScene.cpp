@@ -220,10 +220,12 @@ void StarMapScene::handleEvents(core::Input* pInput)
         utils::Vector2 pos = pInput->getMouseWheelPosition();
         float oldFactor = renderer->getZoomFactor();
         renderer->setZoomFactor(oldFactor + pos.getY() / 100.0f);
-        float diff = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
+        float diffX = renderer->getMainCamera()->getWidth() - (renderer->getMainCamera()->getWidth() * (1 - (pos.getY() / 100.0f)));
+        float diffY = renderer->getMainCamera()->getHeight() - (renderer->getMainCamera()->getHeight() * (1 - (pos.getY() / 100.0f)));
 
-        renderer->getMainCamera()->move(diff / 2.f * renderer->getMainCamera()->getHeight() / renderer->getMainCamera()->getWidth(), diff / 2.f);
-        std::cout << "diff" << diff << std::endl;
+        renderer->getMainCamera()->move(diffX / 2.f, diffY / 2.f);
+        std::cout << "diff " << diffX << " : " << diffY << std::endl;
+        std::cout << "zoom: " << renderer->getZoomFactor() << std::endl;
         std::cout << "cam x " << renderer->getMainCamera()->getX() << " cam y " << renderer->getMainCamera()->getY() << std::endl;
     }
     float cameraX = renderer->getMainCamera()->getX();
@@ -375,35 +377,36 @@ void StarMapScene::render()
 
         //render planets
         int i = 1;
+        if (renderer->getZoomFactor() >= 0.25f) {
 
-        for (auto& planet : star->getPlanets()) {
+            for (auto& planet : star->getPlanets()) {
 
-            //planet->getType()
+                //planet->getType()
 
-            float planetX = std::cos(planet->getAngle() * PI / 180.0f)
-                * (static_cast<float>(i) * PLANET_DISTANCE);
-            float planetY = std::sin(planet->getAngle() * PI / 180.0f)
-                * (i * PLANET_DISTANCE);
+                float planetX = std::cos(planet->getAngle() * PI / 180.0f)
+                    * (static_cast<float>(i) * PLANET_DISTANCE);
+                float planetY = std::sin(planet->getAngle() * PI / 180.0f)
+                    * (i * PLANET_DISTANCE);
 
-            renderer->drawCircle((x * renderer->getZoomFactor()) - cameraX, (y * renderer->getZoomFactor()) - cameraY, i * 50.f * renderer->getZoomFactor(),
-                ellipseColor);
-            float tmpx = (planet->getSize() * 3.0f * std::cos(135.0f * PI / 180.0f)) / 2.0f;
-            float tmpy = (planet->getSize() * 3.0f * std::sin(135.0f * PI / 180.0f)) / 2.0f;
-            planetX += x + tmpx;
-            planetY = y + (planetY + tmpy) * -1;
-            planetX *= renderer->getZoomFactor();
-            planetY *= renderer->getZoomFactor();
-            planetX -= cameraX;
-            planetY -= cameraY;
+                renderer->drawCircle((x * renderer->getZoomFactor()) - cameraX, (y * renderer->getZoomFactor()) - cameraY, i * 50.f * renderer->getZoomFactor(),
+                    ellipseColor);
+                float tmpx = (planet->getSize() * 3.0f * std::cos(135.0f * PI / 180.0f)) / 2.0f;
+                float tmpy = (planet->getSize() * 3.0f * std::sin(135.0f * PI / 180.0f)) / 2.0f;
+                planetX += x + tmpx;
+                planetY = y + (planetY + tmpy) * -1;
+                planetX *= renderer->getZoomFactor();
+                planetY *= renderer->getZoomFactor();
+                planetX -= cameraX;
+                planetY -= cameraY;
 
-            planetTextures[planet->getType()]->renderResized(renderer,
-                planetX, planetY,
-                planet->getSize() * 3 * renderer->getZoomFactor(), planet->getSize() * 3 * renderer->getZoomFactor());
+                planetTextures[planet->getType()]->renderResized(renderer,
+                    planetX, planetY,
+                    planet->getSize() * 3 * renderer->getZoomFactor(), planet->getSize() * 3 * renderer->getZoomFactor());
 
-            i++;
-            //planet->renderPlanetSurface(renderer, &planetSurfaceTexture);
+                i++;
+                //planet->renderPlanetSurface(renderer, &planetSurfaceTexture);
+            }
         }
-
         //render relations
     }
     //render ships
