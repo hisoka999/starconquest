@@ -1,0 +1,30 @@
+[
+    {
+        "id" : 1
+        ,"name": "Interstellar Travel"
+        ,"icon": "\uf197"
+        ,"description": "From now on you will be able to fly into space"
+        ,"costs": 20
+        ,"enables": ["Shipyard",]
+    },
+    {
+        "id" : 2
+        ,"name": "Research Bonus"
+        ,"description": "From now on you will be able to fly into space"
+        ,"costs": 20
+        ,"icon": "\uf0c3"
+        ,"props":{
+            "Research": 2
+        }
+    },
+    {
+        "id" : 3
+        ,"name": "Research Labs"
+        ,"description": "From now on you will be able to fly into space"
+        ,"costs": 20
+        ,"icon": "\uf610"
+        ,"enables": ["Research Lab",]
+        ,"requires": ["Research Bonus"]
+        
+    },
+]
