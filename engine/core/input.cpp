@@ -62,7 +62,10 @@ bool Input::isMouseMoving()
 {
     return (event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN);
 }
-
+bool Input::isMouseDoubleClick()
+{
+    return isMouseButtonPressed(SDL_BUTTON_LEFT) && getEvent().button.clicks >= 2;
+}
 bool Input::isScrollWheel()
 {
     return event.type == SDL_MOUSEWHEEL;

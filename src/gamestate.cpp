@@ -10,25 +10,35 @@ GameState::GameState(std::vector<std::shared_ptr<Star>> stars,
 {
     auto& sys = core::MessageSystem<MessageTypes>::get();
     sys.registerForType(MessageTypes::ShipHasBuild, [=](ShipBuildData buildData) {
-        auto fleet = std::make_shared<Fleet>("New Fleet");
-        fleet->addShip(buildData.ship);
-        fleet->setOwner(buildData.planet->getPlayer().get());
-
         for (auto& star : this->stars) {
             auto planets = star->getPlanets();
             for (auto& planet : planets) {
                 if (planet->getName() == buildData.planet->getName()) {
-                    auto rect = star->planetDisplayRect(planet);
-                    utils::Vector2 pos(rect.x, rect.y);
-                    fleet->setPosition(pos);
-                    fleet->setStartPosition(pos);
-                    fleet->setTargetPosition(pos);
+                    auto foundFleets = findFleetsInPlanetDistance(star, planet);
+
+                    if (foundFleets.size() > 0) {
+                        for (auto& fleet : foundFleets) {
+                            fleet->addShip(buildData.ship);
+                            break;
+                        }
+                    } else {
+                        auto rect = star->planetDisplayRect(planet);
+                        utils::Vector2 pos(rect.x, rect.y);
+
+                        auto fleet = std::make_shared<Fleet>("New Fleet " + std::to_string(fleets.size()));
+                        fleet->addShip(buildData.ship);
+                        fleet->setOwner(buildData.planet->getPlayer().get());
+
+                        fleet->setPosition(pos);
+                        fleet->setStartPosition(pos);
+                        fleet->setTargetPosition(pos);
+                        //fleet->setPosition();
+                        addFleet(fleet);
+                    }
                     break;
                 }
             }
         }
-        //fleet->setPosition();
-        addFleet(fleet);
     });
 }
 

@@ -12,6 +12,7 @@
 #include "../Star.h"
 #include "../TimeThread.h"
 #include "../windows/PlanetWindow.h"
+#include "../windows/fleetwindow.h"
 #include <engine/core/Scene.h>
 #include <engine/core/renderer.h>
 #include <engine/graphics/text.h>
@@ -59,6 +60,7 @@ private:
     windows::PlanetWindow planetWindow;
     std::unique_ptr<TimeThread> timeThread;
     std::shared_ptr<Fleet> selectedFleet;
+    std::map<std::string, std::shared_ptr<windows::FleetWindow>> fleetWindows;
     utils::Vector2 targetFleetVec;
 
     int mouseSpeedX, mouseSpeedY;

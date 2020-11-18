@@ -19,6 +19,7 @@ public:
     bool isMouseButtonPressed(int button);
     bool isMouseButtonUp(int button);
     bool isMouseMoving();
+    bool isMouseDoubleClick();
     bool isQuit();
     utils::Vector2 getMousePostion();
     bool poll();

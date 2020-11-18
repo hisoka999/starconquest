@@ -41,6 +41,8 @@ public:
 
     int getCostsPerMonth() const;
 
+    std::map<Attribute, int> getAttrbuteValues() const;
+
 private:
     ShipType shipType;
     std::map<Attribute, int> attrbuteValues;

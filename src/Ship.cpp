@@ -47,3 +47,8 @@ int Ship::getCostsPerMonth() const
 {
     return costsPerMonth;
 }
+
+std::map<Attribute, int> Ship::getAttrbuteValues() const
+{
+    return attrbuteValues;
+}

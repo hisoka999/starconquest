@@ -131,6 +131,7 @@ void StarMapScene::renderUI()
 {
 
     planetWindow.render(renderer, uiTexture);
+    winMgr->render(renderer);
 
     std::time_t tmpTime = std::chrono::system_clock::to_time_t(
         timeThread->getTime());
@@ -168,6 +169,11 @@ void StarMapScene::handleEvents(core::Input* pInput)
 {
     if (planetWindow.getVisible()) {
         planetWindow.handleEvents(pInput);
+        return;
+    }
+
+    if (winMgr->isWindowOpen()) {
+        winMgr->handleInput(pInput);
         return;
     }
 
@@ -308,12 +314,25 @@ void StarMapScene::handleEvents(core::Input* pInput)
         fleetRect.x -= cameraX;
         fleetRect.y -= cameraY;
         if (fleetRect.intersects(mousePos)) {
-            if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
+            if (pInput->isMouseDoubleClick()) {
                 selectedFleet = fleet;
-            } else if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
-                selectedFleet = nullptr;
+                std::cout << "open fleet window" << std::endl;
+                if (fleetWindows.count(selectedFleet->getName()) == 0) {
+                    auto fleetWindow = std::make_shared<windows::FleetWindow>();
+                    fleetWindows[selectedFleet->getName()] = fleetWindow;
+                    winMgr->addWindow(fleetWindow.get());
+                }
+                fleetWindows[selectedFleet->getName()]->setPos(pInput->getMousePostion().getX(), pInput->getMousePostion().getY());
+                fleetWindows[selectedFleet->getName()]->setVisible(true);
+                fleetWindows[selectedFleet->getName()]->setFleet(fleet);
+
+            } else if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
+                selectedFleet = fleet;
             }
         }
+    }
+    if (pInput->isMouseButtonPressed(SDL_BUTTON_RIGHT)) {
+        selectedFleet = nullptr;
     }
     container->handleEvents(pInput);
 }
