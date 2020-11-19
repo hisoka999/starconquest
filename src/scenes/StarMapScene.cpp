@@ -32,7 +32,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 
     players.push_back(player);
     gameState = std::make_shared<GameState>(pStars, players, player);
-    auto colonyShip = std::make_shared<Ship>("ColonyShip", 500, ShipType::ColonyShip, 1);
+    auto colonyShip = std::make_shared<Ship>("ColonyShip", "Kolonieschiff", 500, ShipType::ColonyShip, 1);
 
     auto playerStars = gameState->findStarsForPlayer(gameState->getHumanPlayer());
     auto playerPlanet = playerStars[0]->getPlanets()[0];

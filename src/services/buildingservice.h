@@ -1,16 +1,15 @@
 #ifndef BUILDINGSERVICE_H
 #define BUILDINGSERVICE_H
 
+#include "../Building.h"
+#include "jsonservice.h"
 #include <engine/utils/json/parser.h>
 #include <memory>
 #include <mutex>
 #include <vector>
-#include "../Building.h"
 
-class BuildingService
-{
+class BuildingService : public services::JSONService<Building> {
 public:
-
     static BuildingService& Instance()
     {
         std::call_once(onceFlag, [] {
@@ -19,9 +18,9 @@ public:
 
         return *(instance);
     }
-    void loadBuildings(const std::string& fileName);
 
-    std::vector<std::shared_ptr<Building>> getBuildings() const;
+protected:
+    virtual std::shared_ptr<Building> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object>& object);
 
 private:
     BuildingService();
@@ -36,12 +35,6 @@ private:
     {
         instance = new BuildingService();
     }
-
-    std::shared_ptr<Building> convertJsonObject2Building(const std::shared_ptr<utils::JSON::Object>& object);
-
-    utils::JSON::Parser parser;
-
-    std::vector<std::shared_ptr<Building>> buildings;
 };
 
 #endif // BUILDINGSERVICE_H

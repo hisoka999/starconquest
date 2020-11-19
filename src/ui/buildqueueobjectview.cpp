@@ -42,7 +42,7 @@ void BuildQueueObjectView::buildUI()
     timeLabel->setPos(55, 35);
 
     //update data
-    titleLabel->setText(object->object->getName());
+    titleLabel->setText(object->object->getLocalisedName());
     priceLabel->setTextF(_("Ressources: %d"), object->resourcesLeft);
     timeLabel->setTextF(_("Time: %d months"), object->resourcesLeft);
     buildingImage->setImage(object->object->getTexture());

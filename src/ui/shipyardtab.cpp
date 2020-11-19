@@ -15,10 +15,10 @@ ShipyardTab::ShipyardTab(Object* parent, const std::string& title, const std::sh
     buildButton->setLabel(_("Build"));
     buildButton->disable();
     buildButton->setPos(110, 320);
-    auto ships = ShipService::Instance().getShips();
+    auto ships = ShipService::Instance().getData();
 
     buildButton->connect(UI::Button::buttonClickCallback(), [&]() {
-        auto list = ShipService::Instance().getShips();
+        auto list = ShipService::Instance().getData();
         planet->addBuildingToQueue(-1, list[selectedShip]);
     });
 

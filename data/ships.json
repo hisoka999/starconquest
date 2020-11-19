@@ -1,7 +1,8 @@
 [
     {
         "id": 1,
-        "name" : "ColonyShip",
+        "name" : "Colony Ship",
+        "name_de": "Kolonieschiff"
         "description" : "a ship that can colonize a planet.",
         "texture": "images/ships/colonyship.png",
         "type": "ColonyShip",
@@ -15,6 +16,7 @@
     {
         "id": 2,
         "name" : "Scout",
+        "name_de" : "Späher",
         "description" : "A small and fast scout ship.",
         "texture": "images/ships/scout.png",
         "type": "NormalShip",

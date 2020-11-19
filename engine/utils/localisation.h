@@ -26,6 +26,10 @@ public:
 
     std::string translate(const std::string& msgid) const;
 
+    std::string getLanguage() const;
+
+    Language getLang() const;
+
 private:
     void loadLocalisation(std::string filename);
     Localisation();

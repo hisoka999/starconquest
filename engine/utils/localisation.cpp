@@ -17,6 +17,16 @@ Localisation::Localisation()
 {
 }
 
+Language Localisation::getLang() const
+{
+    return lang;
+}
+
+std::string Localisation::getLanguage() const
+{
+    return language;
+}
+
 void Localisation::loadLanguage(const Language lang)
 {
     std::string langName = std::string(magic_enum::enum_name(lang));
@@ -47,8 +57,8 @@ void Localisation::detectLanguage()
         language = lang;
     }
 
-    std::string langBase = language.substr(0, 2);
-    this->lang = magic_enum::enum_cast<Language>(langBase).value();
+    language = language.substr(0, 2);
+    this->lang = magic_enum::enum_cast<Language>(language).value();
 
     loadLanguage(this->lang);
 }

@@ -7,8 +7,8 @@
 
 #include "Building.h"
 
-Building::Building(const std::string& name, int resources)
-    : BuildableObject(name, resources)
+Building::Building(const std::string& name, const std::string& localisedName, int resources)
+    : BuildableObject(name, localisedName, resources)
 {
     // TODO Auto-generated constructor stub
 }

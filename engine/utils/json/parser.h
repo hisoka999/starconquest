@@ -20,7 +20,7 @@ namespace JSON {
 
     private:
         void parseAttribute(const std::string& jsonData);
-        size_t findPositionInString(const std::string data, const size_t startPosition);
+        size_t findPositionInString(const std::string data, char starChar, char endChar, const size_t startPosition);
     };
 }
 }

@@ -8,8 +8,9 @@
 #include "BuildableObject.h"
 #include <engine/graphics/TextureManager.h>
 
-BuildableObject::BuildableObject(const std::string& name, int resources)
+BuildableObject::BuildableObject(const std::string& name, const std::string& localisedName, int resources)
     : name(name)
+    , localisedName(localisedName)
     , resources(resources)
 {
     // TODO Auto-generated constructor stub
@@ -37,4 +38,9 @@ std::shared_ptr<graphics::Texture> BuildableObject::getTexture()
 void BuildableObject::loadTexture(std::string path)
 {
     texture = graphics::TextureManager::Instance().loadTexture(path);
+}
+
+std::string BuildableObject::getLocalisedName() const
+{
+    return localisedName;
 }

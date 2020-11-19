@@ -2,12 +2,13 @@
 #define SHIPSERVICE_H
 
 #include "../Ship.h"
+#include "jsonservice.h"
 #include <engine/utils/json/parser.h>
 #include <memory>
 #include <mutex>
 #include <vector>
 
-class ShipService {
+class ShipService : public services::JSONService<Ship> {
 public:
     static ShipService& Instance()
     {
@@ -17,9 +18,9 @@ public:
 
         return *(instance);
     }
-    void loadShips(const std::string& fileName);
 
-    std::vector<std::shared_ptr<Ship>> getShips() const;
+protected:
+    std::shared_ptr<Ship> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object>& object);
 
 private:
     ShipService();
@@ -34,12 +35,6 @@ private:
     {
         instance = new ShipService();
     }
-
-    std::shared_ptr<Ship> convertJsonObject2Ship(const std::shared_ptr<utils::JSON::Object>& object);
-
-    utils::JSON::Parser parser;
-
-    std::vector<std::shared_ptr<Ship>> ships;
 };
 
 #endif // SHIPSERVICE_H

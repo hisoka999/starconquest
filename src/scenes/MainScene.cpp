@@ -92,7 +92,7 @@ void MainScene::exitGame()
 }
 std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
 {
-    std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getBuildings();
+    std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
 
     return buildings;
 }

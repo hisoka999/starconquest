@@ -18,6 +18,7 @@
 #include "engine/utils/os.h"
 #include "scenes/MainScene.h"
 #include "services/buildingservice.h"
+#include "services/researchservice.h"
 #include "services/shipservice.h"
 #include "translate.h"
 #include <engine/utils/json/parser.h>
@@ -61,8 +62,9 @@ int main(int argc, char* argv[])
         sceneManager.addScene("main", &mainScene);
         sceneManager.setCurrentScene("main");
 
-        ShipService::Instance().loadShips("data/ships.json");
-        BuildingService::Instance().loadBuildings("data/buildings.json");
+        ShipService::Instance().loadData("data/ships.json");
+        BuildingService::Instance().loadData("data/buildings.json");
+        ResearchService::Instance().loadResearch("data/research.json");
 
         unsigned int lastTime = ren.getTickCount();
         unsigned int frames = 0;

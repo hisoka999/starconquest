@@ -2,17 +2,22 @@
     {
         "id" : 1
         ,"name": "Interstellar Travel"
+        ,"name_de": "Reise zwischen Sternen"
         ,"icon": "\uf197"
         ,"description": "From now on you will be able to fly into space"
         ,"costs": 20
         ,"enables": ["Shipyard",]
+        ,"requires": []
     },
     {
         "id" : 2
         ,"name": "Research Bonus"
+        ,"name_de": "Forschungsbonus"
         ,"description": "From now on you will be able to fly into space"
         ,"costs": 20
         ,"icon": "\uf0c3"
+        ,"enables": []
+        ,"requires": []
         ,"props":{
             "Research": 2
         }
@@ -20,8 +25,9 @@
     {
         "id" : 3
         ,"name": "Research Labs"
+        ,"name_de": "Forschungslabore"
         ,"description": "From now on you will be able to fly into space"
-        ,"costs": 20
+        ,"costs": 30
         ,"icon": "\uf610"
         ,"enables": ["Research Lab",]
         ,"requires": ["Research Bonus"]

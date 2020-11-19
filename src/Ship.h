@@ -29,7 +29,7 @@ enum class ShipType {
 
 class Ship : public BuildableObject {
 public:
-    Ship(const std::string& name, int resources, ShipType type, int costsPerMonth);
+    Ship(const std::string& name, const std::string& localisedName, int resources, ShipType type, int costsPerMonth);
     virtual ~Ship();
     virtual bool canBuildObject(int planetResources);
 

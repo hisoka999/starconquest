@@ -20,7 +20,7 @@ enum class ModifierType {
 
 class Building : public BuildableObject {
 public:
-    Building(const std::string& name, int resources);
+    Building(const std::string& name, const std::string& localisedName, int resources);
     virtual ~Building();
 
     virtual bool canBuildObject(int planetResources);

@@ -7,8 +7,8 @@
 
 #include "Ship.h"
 
-Ship::Ship(const std::string& name, int resources, ShipType type, int costsPerMonth)
-    : BuildableObject(name, resources)
+Ship::Ship(const std::string& name, const std::string& localisedName, int resources, ShipType type, int costsPerMonth)
+    : BuildableObject(name, localisedName, resources)
     , shipType(type)
     , costsPerMonth(costsPerMonth)
 {

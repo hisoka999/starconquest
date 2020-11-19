@@ -48,7 +48,7 @@ void BuildableObjectView::buildUI()
     timeLabel->setPos(55, 35);
 
     //update data
-    titleLabel->setText(object->getName());
+    titleLabel->setText(object->getLocalisedName());
     priceLabel->setTextF(_("Ressources: %d"), object->getRessources());
     timeLabel->setTextF(_("Time: %d months"), object->getRessources());
     buildingImage->setImage(object->getTexture());

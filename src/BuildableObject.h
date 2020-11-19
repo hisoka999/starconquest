@@ -15,7 +15,7 @@
 class BuildableObject {
 
 public:
-    BuildableObject(const std::string& name, int resources);
+    BuildableObject(const std::string& name, const std::string& localisedName, int resources);
     virtual ~BuildableObject();
     virtual bool canBuildObject(int planetResources) = 0;
     std::string getName();
@@ -23,8 +23,11 @@ public:
     std::shared_ptr<graphics::Texture> getTexture();
     void loadTexture(std::string path);
 
+    std::string getLocalisedName() const;
+
 private:
     std::string name;
+    std::string localisedName;
     int resources;
     std::shared_ptr<graphics::Texture> texture;
 };

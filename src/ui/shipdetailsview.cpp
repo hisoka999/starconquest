@@ -47,7 +47,7 @@ void ShipDetailsView::setShip(const std::shared_ptr<Ship>& value)
 {
     ship = value;
 
-    nameText->setText(ship->getName());
+    nameText->setText(ship->getLocalisedName());
     typeText->setText(std::string(magic_enum::enum_name(ship->getShipType())));
     costsText->setTextF("%d", ship->getCostsPerMonth());
 
