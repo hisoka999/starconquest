@@ -2,7 +2,7 @@
 #define UTILS_INIBASE_H
 
 #include "engine/utils/exceptions.h"
-#include "zlib.h"
+
 #include <assert.h>
 #include <map>
 #include <sstream>
@@ -51,8 +51,6 @@ public:
 
 protected:
 private:
-    std::string inf(FILE* source);
-    void zerr(int ret);
     std::string filename; //!< Member variable "filename"
     std::map<std::string, Attributes> groups;
 };

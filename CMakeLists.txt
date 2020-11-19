@@ -6,11 +6,10 @@ project(starconquest)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-if(NOT UNIX)
+if(MINGW)
     set(SDL2_LIBRARY sdl2)
     set(SDL2MAIN_LIBRARY SDL2main)
     set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/SDL2)
@@ -33,7 +32,25 @@ if(NOT UNIX)
     #message("${PROJECT_SOURCE_DIR}/deps/gettext/lib/")
 
     link_directories(${SDL2_DIR}/lib/ ${PROJECT_SOURCE_DIR}/deps/gettext/lib/ )
+elseif (WIN32)
+    set(SDL2_LIBRARY sdl2)
+    set(SDL2MAIN_LIBRARY SDL2main)
+    set(SDL2_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
+    set(SDL2_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
 
+    set(SDL2_IMAGE_LIBRARY sdl2_image)
+    set(SDL2_IMAGE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
+    set(SDL2_IMAGE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+
+    set(SDL2TTF_LIBRARY sdl2ttf)
+    set(SDL2TTF_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
+    set(SDL2TTF_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+
+    set(SDL2_MIXER_LIBRARY sdl2ttf)
+    set(SDL2_MIXER_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2)
+    set(SDL2_MIXER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/deps/vcpp/SDL2/include)
+
+    link_directories(${SDL2_DIR}/lib/x64)
 endif()
 
 find_package(SDL2 REQUIRED)
@@ -43,7 +60,6 @@ find_package(SDL2_gfx)
 find_package(SDL2TTF REQUIRED)
 find_package(ZLIB)
 #find_package(Intl)
-
 
 
 #FIND_PACKAGE(Boost COMPONENTS locale)
@@ -83,6 +99,9 @@ include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUD
 
 
 add_executable(${PROJECT_NAME} "src/starconquest.cpp" ${SRC})
+if (WIN32)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+endif()
 
 
 
@@ -112,7 +131,8 @@ if(MINGW)
     else()
         target_link_libraries(${PROJECT_NAME} mingw32 SDL2main SDL2 -mwindows)
     ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
-
+elsif(WIN32)
+    target_link_libraries(${PROJECT_NAME} SDL2main SDL2 -mwindows)
 else()
     target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 endif()
@@ -122,14 +142,14 @@ target_link_libraries(${PROJECT_NAME} SDL2_ttf)
 target_link_libraries(${PROJECT_NAME} SDL2_image)
 target_link_libraries(${PROJECT_NAME} SDL2_mixer)
 if(UNIX)
-target_link_libraries(${PROJECT_NAME} SDL2_gfx)
+
 endif()
-#target_link_libraries(${PROJECT_NAME} z)
 
-#target_link_libraries(${PROJECT_NAME} Intl)
+if( UNIX)
+target_link_libraries(${PROJECT_NAME} SDL2_gfx)
 target_link_libraries(${PROJECT_NAME} pthread)
+endif()
 
-#target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 
 add_custom_command(TARGET starconquest PRE_BUILD

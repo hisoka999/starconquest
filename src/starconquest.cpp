@@ -3,7 +3,7 @@
 // Author      : Stefan Lüdtke
 //============================================================================
 
-#ifdef __WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 #include "engine/core/SceneManager.h"
@@ -24,9 +24,9 @@
 #include <engine/utils/json/parser.h>
 #include <iostream>
 
-//#ifdef __WIN32
+//#ifdef _WIN32
 //INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-//            PSTR lpCmdLine, INT nCmdShow)
+  //          PSTR lpCmdLine, INT nCmdShow)
 //#else
 int main(int argc, char* argv[])
 
