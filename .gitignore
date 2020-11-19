@@ -6,3 +6,7 @@ Debug/
 src/.deps/
 
 *.user
+
+.vs
+
+out/

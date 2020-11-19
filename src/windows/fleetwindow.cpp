@@ -1,4 +1,6 @@
 #include "fleetwindow.h"
+#include <algorithm>
+
 namespace windows {
 FleetWindow::FleetWindow()
     : UI::Window(0, 0, 420, 430)

@@ -6,13 +6,31 @@
 #include <iostream>
 #include <magic_enum.hpp>
 #include <sstream>
-#ifdef __WIN32
+#include <algorithm>
+#ifdef _WIN32
 #include <windows.h>
+#include <stdio.h>
+#include <tchar.h>
 #endif
 
 Localisation* Localisation::instance = nullptr;
 std::once_flag Localisation::onceFlag;
+#ifdef _WIN32
 
+
+
+/**
+ * @brief Find DLL entry in lang_map for language for specified locale
+ */
+static WORD GetLangFromLocale(LCID lcid)
+{
+    TCHAR buff[8] = { 0 };
+    WORD langID = 0;
+    if (GetLocaleInfo(lcid, LOCALE_IDEFAULTLANGUAGE, buff, static_cast<int>(std::size(buff))))
+        _stscanf_s(buff, _T("%4hx"), &langID);
+    return langID;
+}
+#endif // _WIN32
 Localisation::Localisation()
 {
 }
@@ -29,16 +47,18 @@ void Localisation::detectLanguage()
 #ifdef __linux
     const char* envLang = std::getenv("LANG");
     language = std::string(envLang);
-#elif __WIN32
+#elif _WIN32
     WORD Lang1 = GetLangFromLocale(GetThreadLocale());
 
     WORD Lang2 = GetLangFromLocale(LOCALE_USER_DEFAULT);
     WORD Lang3 = GetLangFromLocale(LOCALE_SYSTEM_DEFAULT);
-
+    if (Lang1 == 0) {
+        Lang1 = Lang2;
+    }
     std::string s;
-    if (int cch = GetLocaleInfo(Lang1, LOCALE_SLANGUAGE, 0, 0)) {
+    if (int cch = GetLocaleInfo(Lang1, LOCALE_SNAME, 0, 0)) {
         s.resize(cch - 1);
-        GetLocaleInfo(id, type, &*s.begin(), cch);
+        GetLocaleInfo(Lang1, LOCALE_SNAME, &*s.begin(), cch);
     }
     language = s;
 #endif
@@ -48,6 +68,7 @@ void Localisation::detectLanguage()
     }
 
     std::string langBase = language.substr(0, 2);
+    std::transform(langBase.begin(), langBase.end(), langBase.begin(), ::tolower);
     this->lang = magic_enum::enum_cast<Language>(langBase).value();
 
     loadLanguage(this->lang);
