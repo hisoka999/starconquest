@@ -25,7 +25,7 @@
 
 //#ifdef _WIN32
 //INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-//            PSTR lpCmdLine, INT nCmdShow)
+  //          PSTR lpCmdLine, INT nCmdShow)
 //#else
 int main(int argc, char* argv[])
 

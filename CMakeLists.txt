@@ -6,7 +6,6 @@ project(starconquest)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -63,7 +62,6 @@ find_package(ZLIB)
 #find_package(Intl)
 
 
-
 #FIND_PACKAGE(Boost COMPONENTS locale)
 message( "${MINGW32_LIBRARY} ${SDL2_LIBRARIES}")
 
@@ -101,6 +99,9 @@ include_directories("${PROJECT_BINARY_DIR}" ${SDL2_INCLUDE_DIR} ${GETTEXT_INCLUD
 
 
 add_executable(${PROJECT_NAME} "src/starconquest.cpp" ${SRC})
+if (WIN32)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS /SUBSYSTEM:WINDOWS)
+endif()
 
 
 
@@ -131,7 +132,7 @@ if(MINGW)
         target_link_libraries(${PROJECT_NAME} mingw32 SDL2main SDL2 -mwindows)
     ENDIF(CMAKE_BUILD_TYPE MATCHES DEBUG)
 elsif(WIN32)
-    target_link_libraries(${PROJECT_NAME} SDL2main SDL2)
+    target_link_libraries(${PROJECT_NAME} SDL2main SDL2 -mwindows)
 else()
     target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 endif()

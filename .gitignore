@@ -10,3 +10,4 @@ src/.deps/
 .vs
 
 out/
+/CMakeSettings.json
