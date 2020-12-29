@@ -28,7 +28,7 @@
         ,"name_de": "Forschungslabore"
         ,"description": "From now on you will be able to fly into space"
         ,"costs": 30
-        ,"icon": "\uf610"
+        ,"icon": "\uf493"
         ,"enables": ["Research Lab",]
         ,"requires": ["Research Bonus"]
         

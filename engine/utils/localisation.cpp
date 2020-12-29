@@ -1,4 +1,5 @@
 #include "localisation.h"
+#include <algorithm>
 #include <cstdlib>
 #include <engine/utils/exceptions.h>
 #include <engine/utils/string.h>
@@ -6,18 +7,15 @@
 #include <iostream>
 #include <magic_enum.hpp>
 #include <sstream>
-#include <algorithm>
 #ifdef _WIN32
-#include <windows.h>
 #include <stdio.h>
 #include <tchar.h>
+#include <windows.h>
 #endif
 
 Localisation* Localisation::instance = nullptr;
 std::once_flag Localisation::onceFlag;
 #ifdef _WIN32
-
-
 
 /**
  * @brief Find DLL entry in lang_map for language for specified locale
@@ -78,8 +76,8 @@ void Localisation::detectLanguage()
     }
 
     language = language.substr(0, 2);
-    std::transform(langBase.begin(), langBase.end(), langBase.begin(), ::tolower);
-    this->lang = magic_enum::enum_cast<Language>(langBase).value();
+    std::transform(language.begin(), language.end(), language.begin(), ::tolower);
+    this->lang = magic_enum::enum_cast<Language>(language).value();
 
     loadLanguage(this->lang);
 }

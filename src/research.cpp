@@ -6,6 +6,7 @@ Research::Research(const std::string name, const std::string localizedName, cons
     , description(description)
     , icon(icon)
     , costs(costs)
+    , currentCosts(costs)
 {
 }
 
@@ -61,4 +62,29 @@ void Research::setEnabledObjects(const std::vector<std::string>& value)
 void Research::addRequirement(const std::shared_ptr<Research>& requirement)
 {
     requirements.push_back(requirement);
+}
+
+bool Research::canResearch()
+{
+    bool can = true;
+
+    for (auto& requirement : requirements) {
+        if (!requirement->getResearched())
+            can = false;
+    }
+    return can;
+}
+
+int Research::getCurrentCosts() const
+{
+    return currentCosts;
+}
+
+void Research::reduceCosts(int value)
+{
+    currentCosts -= value;
+    if (currentCosts <= 0) {
+        currentCosts = 0;
+        researched = true;
+    }
 }

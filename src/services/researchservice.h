@@ -7,7 +7,10 @@
 #include <memory>
 #include <mutex>
 #include <vector>
-class ResearchService: public services::JSONService<Research> {
+
+std::string utf8chr(int cp);
+
+class ResearchService : public services::JSONService<Research> {
 public:
     static ResearchService& Instance()
     {

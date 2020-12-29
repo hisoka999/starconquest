@@ -2,12 +2,12 @@
     {
         "id": 1,
         "name" : "Colony Ship",
-        "name_de": "Kolonieschiff"
+        "name_de": "Kolonieschiff",
         "description" : "a ship that can colonize a planet.",
         "texture": "images/ships/colonyship.png",
         "type": "ColonyShip",
         "properties" : {
-                "Hull": 10 
+                "Hull": 10
                 ,"Drive":10
             },
         "costs": 1,
@@ -25,11 +25,11 @@
                 ,"Rockets":1
                 ,"Laser": 1
                 ,"Drive":20
-                
+
             },
         "costs": 1,
         "ressources":200
     },
 
 ]
- 
+

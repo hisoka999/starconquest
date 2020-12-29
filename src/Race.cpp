@@ -32,3 +32,13 @@ std::string Race::getHomePlanet()
 {
     return homePlanet;
 }
+
+std::vector<std::shared_ptr<Research> > Race::getAvailableResearch() const
+{
+    return availableResearch;
+}
+
+void Race::setAvailableResearch(const std::vector<std::shared_ptr<Research> > &value)
+{
+    availableResearch = value;
+}

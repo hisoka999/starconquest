@@ -15,6 +15,7 @@ public:
     virtual ~ScrollArea();
     virtual void render(core::Renderer* pRender);
     virtual graphics::Rect displayRect();
+    virtual graphics::Rect eventRect();
     virtual void handleEvents(core::Input* pInput);
     void reset();
 

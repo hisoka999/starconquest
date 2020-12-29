@@ -9,6 +9,7 @@
 #include "../Star.h"
 #include "../WorldGenerator.h"
 #include "../services/buildingservice.h"
+#include "../services/researchservice.h"
 #include "../translate.h"
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/Button.h>
@@ -104,8 +105,10 @@ void MainScene::startGame()
     auto buildings = initBuildings();
     Race human(RaceType::Human, _("Human"), "Sol");
     human.setAvailableBuildings(buildings);
+    human.setAvailableResearch(ResearchService::Instance().getData());
     Race psilons(RaceType::Psilons, _("Psilon"), "Mentar");
     psilons.setAvailableBuildings(buildings);
+    psilons.setAvailableResearch(ResearchService::Instance().getData());
     SDL_Color blue { 0, 0, 200, 0 };
     SDL_Color green { 0, 255, 0, 0 };
 

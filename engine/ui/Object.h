@@ -106,6 +106,7 @@ public:
     graphics::Text* getFont();
     void setFont(graphics::Text* pFont);
     virtual graphics::Rect displayRect();
+    virtual graphics::Rect eventRect();
     int getRenderOrder();
 
 protected:

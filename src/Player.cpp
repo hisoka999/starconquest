@@ -6,6 +6,7 @@
  */
 
 #include "Player.h"
+#include <algorithm>
 
 Player::Player(std::string name, Race race, SDL_Color color)
     : name(name)
@@ -29,7 +30,7 @@ SDL_Color Player::getColor()
 {
     return color;
 }
-Race Player::getRace()
+Race& Player::getRace()
 {
     return race;
 }
@@ -60,4 +61,29 @@ int Player::getResearchPerMonth() const
 void Player::setResearchPerMonth(int value)
 {
     researchPerMonth = value;
+}
+
+std::vector<std::shared_ptr<Research>> Player::getResearchQueue() const
+{
+    return researchQueue;
+}
+
+void Player::addResearchToQueue(const std::shared_ptr<Research>& research)
+{
+    auto found = std::find(researchQueue.begin(), researchQueue.end(), research);
+    if (found == std::end(researchQueue)) {
+        researchQueue.push_back(research);
+    }
+}
+void Player::research()
+{
+    if (researchQueue.size() == 0)
+        return;
+
+    auto& currentResearch = researchQueue.front();
+
+    currentResearch->reduceCosts(getResearchPerMonth());
+    if (currentResearch->getResearched()) {
+        researchQueue.erase(researchQueue.begin());
+    }
 }

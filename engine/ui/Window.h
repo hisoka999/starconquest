@@ -40,6 +40,7 @@ public:
     }
 
     virtual graphics::Rect displayRect();
+    virtual graphics::Rect eventRect();
 
     void setSize(int width, int height)
     {

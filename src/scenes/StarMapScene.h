@@ -13,6 +13,7 @@
 #include "../TimeThread.h"
 #include "../windows/PlanetWindow.h"
 #include "../windows/fleetwindow.h"
+#include "../windows/researchwindow.h"
 #include <engine/core/Scene.h>
 #include <engine/core/renderer.h>
 #include <engine/graphics/text.h>
@@ -58,6 +59,7 @@ private:
     std::shared_ptr<UI::Button> pauseButton;
     std::shared_ptr<UI::Button> doubleSpeed;
     windows::PlanetWindow planetWindow;
+    ResearchWindow researchWindow;
     std::unique_ptr<TimeThread> timeThread;
     std::shared_ptr<Fleet> selectedFleet;
     std::map<std::string, std::shared_ptr<windows::FleetWindow>> fleetWindows;

@@ -24,9 +24,12 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
     , selectedFleet(nullptr)
     , mouseSpeedX(100)
     , mouseSpeedY(100)
-
+    , researchWindow(player)
 {
 
+    winMgr->addWindow(&researchWindow);
+    researchWindow.setVisible(true);
+    researchWindow.setPos(100, 100);
     direction = { false, false, false, false };
     std::vector<std::shared_ptr<Player>> players;
 

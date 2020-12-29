@@ -91,6 +91,8 @@ void GameState::updatePlayerState(const std::shared_ptr<Player>& player)
     player->setMoneyPerMonth(moneyPerTurn);
     player->addMoney(moneyPerTurn);
     player->setResearchPerMonth(researchPerMonth);
+
+    player->research();
 }
 
 void GameState::addFleet(const std::shared_ptr<Fleet>& fleet)

@@ -8,6 +8,8 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#include "research.h"
+
 #include "Race.h"
 #include <SDL2/SDL.h>
 #include <string>
@@ -19,7 +21,7 @@ public:
 
     std::string getName();
     SDL_Color getColor();
-    Race getRace();
+    Race& getRace();
     long getMoney();
     void addMoney(long value);
 
@@ -29,6 +31,11 @@ public:
     int getResearchPerMonth() const;
     void setResearchPerMonth(int value);
 
+    std::vector<std::shared_ptr<Research>> getResearchQueue() const;
+    void addResearchToQueue(const std::shared_ptr<Research>& research);
+
+    void research();
+
 private:
     std::string name;
     SDL_Color color;
@@ -36,6 +43,7 @@ private:
     long money;
     int moneyPerMonth;
     int researchPerMonth;
+    std::vector<std::shared_ptr<Research>> researchQueue;
 };
 
 #endif /* PLAYER_H_ */

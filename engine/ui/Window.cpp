@@ -94,6 +94,12 @@ graphics::Rect Window::displayRect()
     r.height = height - 40;
     return r;
 }
+
+graphics::Rect Window::eventRect()
+{
+    return displayRect();
+}
+
 void Window::clear()
 {
     UI::Container::clear();

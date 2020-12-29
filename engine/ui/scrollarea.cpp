@@ -1,8 +1,8 @@
 #include "engine/ui/scrollarea.h"
 #include <algorithm>
+#include <cmath>
 #include <engine/graphics/TextureManager.h>
 #include <iostream>
-#include <cmath>
 
 namespace UI {
 
@@ -143,8 +143,23 @@ graphics::Rect ScrollArea::displayRect()
     return renderRect;
 }
 
+graphics::Rect ScrollArea::eventRect()
+{
+    graphics::Rect r;
+    r.x = renderRect.x + getX();
+    r.y = renderRect.y + getY();
+    r.width = renderRect.width;
+    r.height = renderRect.height;
+    if (getParent() != nullptr) {
+        r.x += getParent()->eventRect().x;
+        r.y += getParent()->eventRect().y;
+    }
+    return r;
+}
+
 void ScrollArea::handleEvents(core::Input* pInput)
 {
+    reset();
     Container::handleEvents(pInput);
     int i = 0;
 

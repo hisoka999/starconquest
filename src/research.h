@@ -30,6 +30,11 @@ public:
 
     void addRequirement(const std::shared_ptr<Research>& requirement);
 
+    bool canResearch();
+
+    int getCurrentCosts() const;
+    void reduceCosts(int value);
+
 private:
     std::string name;
     std::string localisedName;
@@ -40,6 +45,7 @@ private:
     std::vector<std::string> requirementNames;
     bool researched;
     std::vector<std::string> enabledObjects;
+    int currentCosts;
 };
 
 #endif // RESEARCH_H

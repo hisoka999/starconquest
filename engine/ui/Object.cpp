@@ -55,6 +55,20 @@ void Object::setFont(graphics::Text* pFont)
 {
     font = pFont;
 }
+graphics::Rect Object::eventRect()
+{
+    graphics::Rect r;
+    r.x = x;
+    r.y = y;
+    r.width = width;
+    r.height = height;
+    if (getParent() != nullptr) {
+        r.x += getParent()->eventRect().x;
+        r.y += getParent()->eventRect().y;
+    }
+    return r;
+}
+
 graphics::Rect Object::displayRect()
 {
     graphics::Rect r;
