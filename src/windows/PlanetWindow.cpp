@@ -129,7 +129,7 @@ PlanetWindow::PlanetWindow()
         buildWindow->setPlayer(planet->getPlayer());
         buildWindow->clearBuildings();
         int ressources = planet->calculateResources();
-        for (auto building : planet->getPlayer()->getRace().getAvailableBuildings()) {
+        for (auto building : planet->getBuildableBuildings(planet->getSelectedRow(), planet->getSelectedColumn())) {
             buildWindow->addBuilding(building, ressources);
         }
         buildWindow->setVisible(true);

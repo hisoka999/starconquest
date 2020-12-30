@@ -187,6 +187,16 @@ int Planet::caclulateRessourcePerField(size_t field)
     return ressource;
 }
 
+int Planet::getSelectedColumn() const
+{
+    return selectedColumn;
+}
+
+int Planet::getSelectedRow() const
+{
+    return selectedRow;
+}
+
 double Planet::populationGrowth()
 {
     int food = caclulateFood();
@@ -392,7 +402,20 @@ std::vector<std::shared_ptr<BuildableObject>> Planet::getBuildableBuildings(
     std::vector<std::shared_ptr<BuildableObject>> buildings;
     auto playerBuildings = player->getRace().getAvailableBuildings();
     for (auto& building : playerBuildings) {
-        buildings.push_back(building);
+
+        bool buildable = true;
+
+        auto resList = player->getRace().getAvailableResearch();
+        for (auto& res : resList) {
+            if (res->canEnableObject(building->getName())) {
+                if (!res->getResearched()) {
+                    buildable = false;
+                }
+            }
+        }
+        if (buildable) {
+            buildings.push_back(building);
+        }
     }
 
     //filter all unique buildings

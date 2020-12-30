@@ -7,12 +7,11 @@ The game needs the following Libraries to build:
 
 * SDL2
 * SDL2_image
-* SDL2_gfx
+* SDL2_gfx (optional)
 * SDL2_mixer
 * SDL2_ttf
 * zlib
-* pthread
-* boost_locale
+* pthread (Linux)
 
 ## Unittests
 To run the unitests the library google_test will be required.
@@ -27,10 +26,13 @@ All source code is released under the GNU General Public License Version 3.
 The game is right now in a pre alpha stage. We will provide packages for Windows and Linux once the game reaches a state where testers will be able to test the game.
 
 # Building the Game
-## Linux/BSD 
+## Linux/BSD
 ```bash
 mkdir build/ && cd build/ && cmake ../
 make
 ```
-## Windows and Mac
-As of now threre are no Windows an macOS builds and the code has not been tested on either system.
+## Windows
+It is adviced to generate a project for Visual Studio 2018 or newer with the CMake-GUI. All nessecary dependencies are included.
+
+## macOS
+As of now there is no support for this operating system.

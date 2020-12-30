@@ -1,4 +1,5 @@
 #include "research.h"
+#include <algorithm>
 
 Research::Research(const std::string name, const std::string localizedName, const std::string description, const std::string icon, int costs)
     : name(name)
@@ -87,4 +88,10 @@ void Research::reduceCosts(int value)
         currentCosts = 0;
         researched = true;
     }
+}
+
+bool Research::canEnableObject(const std::string& name)
+{
+    auto found = std::find(enabledObjects.begin(), enabledObjects.end(), name);
+    return found != std::end(enabledObjects);
 }

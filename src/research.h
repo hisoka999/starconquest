@@ -30,6 +30,8 @@ public:
 
     void addRequirement(const std::shared_ptr<Research>& requirement);
 
+    bool canEnableObject(const std::string& name);
+
     bool canResearch();
 
     int getCurrentCosts() const;

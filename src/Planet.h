@@ -92,6 +92,10 @@ public:
     bool hasFieldBuilding(int row, int column);
     bool hasBuildingOfName(const std::string& buildingName);
 
+    int getSelectedRow() const;
+
+    int getSelectedColumn() const;
+
 private:
     void initPopulation(int population);
     void setPlayer(std::shared_ptr<Player> player);
