@@ -20,6 +20,10 @@
 #include <engine/graphics/texture.h>
 #include <map>
 
+namespace UI {
+class IconButton;
+}
+
 namespace scenes {
 
 struct MovementDirection {
@@ -46,6 +50,9 @@ private:
     graphics::Text starText;
     graphics::Text uiText;
     graphics::Text glyphText;
+    std::shared_ptr<UI::IconButton> cashButton;
+    std::shared_ptr<UI::IconButton> researchButton;
+
     graphics::Texture background;
     std::shared_ptr<graphics::Texture> uiTexture;
     graphics::Texture planetSurfaceTexture;

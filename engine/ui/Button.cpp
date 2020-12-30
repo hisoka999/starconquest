@@ -14,6 +14,10 @@ Button::Button(Object* parent)
     color = { 255, 255, 255, 0 };
     width = 0;
 
+    disabledColor = { 204, 204, 204, 255 };
+
+    hoverColor = { 93, 103, 108, 255 };
+
     texture = graphics::TextureManager::Instance().loadTexture("images/Button01.png");
 }
 
@@ -34,7 +38,7 @@ void Button::setFont(const std::string& fontname, unsigned int font_size)
 {
     //TODO error handling
     graphics::Text* text = new graphics::Text();
-    text->openFont(fontname, font_size);
+    text->openFont(fontname, int(font_size));
     Object::setFont(text);
 }
 void Button::setColor(SDL_Color color)
@@ -104,31 +108,20 @@ void Button::handleEvents(core::Input* pInput)
     Object::handleEvents(pInput);
 }
 
-void Button::render(core::Renderer* pRender)
+void Button::renderBackground(core::Renderer* pRenderer)
 {
-
-    int tx;
-    SDL_Color displayColor = color;
-
-    if (!enabled) {
-        displayColor = { 204, 204, 204, 255 };
-    } else if (hover) {
-        displayColor = { 93, 103, 108, 255 };
-    }
-
-    int ty;
+    int tx, ty;
     if (getParent() != nullptr) {
         graphics::Rect r = getParent()->displayRect();
 
         r.x += getX();
         r.y += getY();
-        tx = r.x;
-        ty = r.y;
+        tx = int(r.x);
+        ty = int(r.y);
     } else {
         tx = getX();
         ty = getY();
     }
-
     if (!borderless) {
         //draw background rect
         graphics::Rect backgroundRect;
@@ -137,18 +130,71 @@ void Button::render(core::Renderer* pRender)
         backgroundRect.width = getWidth() + 25;
         backgroundRect.height = getHeight();
 
-        pRender->setDrawColor(12, 21, 24, 255);
-        pRender->fillRect(backgroundRect);
+        pRenderer->setDrawColor(12, 21, 24, 255);
+        pRenderer->fillRect(backgroundRect);
 
         //left top corner
 
-        texture->render(pRender, tx, ty, 9, 9, 0, 0);
+        texture->render(pRenderer, tx, ty, 9, 9, 0, 0);
         //left bottom corner
-        texture->render(pRender, tx, ty + getHeight() - 9, 9, 9, 0, 20);
+        texture->render(pRenderer, tx, ty + getHeight() - 9, 9, 9, 0, 20);
 
-        texture->render(pRender, tx + getWidth() + 25 - 9, ty, 9, 9, 174, 0);
-        texture->render(pRender, tx + getWidth() + 25 - 9, ty + getHeight() - 9, 9, 9, 174, 20);
+        texture->render(pRenderer, tx + getWidth() + 25 - 9, ty, 9, 9, 174, 0);
+        texture->render(pRenderer, tx + getWidth() + 25 - 9, ty + getHeight() - 9, 9, 9, 174, 20);
     }
+}
+
+SDL_Color Button::getDisabledColor() const
+{
+    return disabledColor;
+}
+
+void Button::setDisabledColor(const SDL_Color& value)
+{
+    disabledColor = value;
+}
+
+SDL_Color Button::getHoverColor() const
+{
+    return hoverColor;
+}
+
+void Button::setHoverColor(const SDL_Color& value)
+{
+    hoverColor = value;
+}
+
+bool Button::isHovered() const
+{
+    return hover;
+}
+
+void Button::render(core::Renderer* pRender)
+{
+
+    int tx;
+    SDL_Color displayColor = color;
+
+    if (!enabled) {
+        displayColor = disabledColor;
+    } else if (hover) {
+        displayColor = hoverColor;
+    }
+
+    int ty;
+    if (getParent() != nullptr) {
+        graphics::Rect r = getParent()->displayRect();
+
+        r.x += getX();
+        r.y += getY();
+        tx = int(r.x);
+        ty = int(r.y);
+    } else {
+        tx = getX();
+        ty = getY();
+    }
+    renderBackground(pRender);
+
     getFont()->render(pRender, label, displayColor, tx + 10, ty + 10);
 }
 

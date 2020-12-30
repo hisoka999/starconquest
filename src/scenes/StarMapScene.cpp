@@ -10,6 +10,7 @@
 #include "../translate.h"
 #include <cmath>
 #include <engine/graphics/TextureManager.h>
+#include <engine/ui/iconbutton.h>
 #include <engine/utils/os.h>
 
 namespace scenes {
@@ -28,7 +29,7 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
 {
 
     winMgr->addWindow(&researchWindow);
-    researchWindow.setVisible(true);
+
     researchWindow.setPos(100, 100);
     direction = { false, false, false, false };
     std::vector<std::shared_ptr<Player>> players;
@@ -112,6 +113,37 @@ StarMapScene::StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_pt
         timeThread->setSpeed(100);
     });
 
+    int xLeft = 10;
+    int yLeft = 0;
+    SDL_Color color = { 255, 255, 0, 255 };
+    //cash
+    cashButton = std::make_shared<UI::IconButton>();
+    cashButton->setFont("fonts/Audiowide-Regular.ttf", 12);
+    cashButton->setLabel("");
+    cashButton->setIconText("\uf51e");
+    cashButton->setColor(color);
+    cashButton->setPos(xLeft, yLeft);
+    cashButton->setBorderless(true);
+    xLeft += 25;
+
+    //research
+    xLeft += 80;
+    color = { 0, 200, 200, 255 };
+
+    researchButton = std::make_shared<UI::IconButton>();
+    researchButton->setFont("fonts/Audiowide-Regular.ttf", 12);
+    researchButton->setBorderless(true);
+    researchButton->setLabel("");
+    researchButton->setIconText("\uf0c3");
+    researchButton->setColor(color);
+    researchButton->setPos(xLeft, yLeft);
+    researchButton->connect(UI::Button::buttonClickCallback(), [=]() {
+        researchWindow.setVisible(true);
+    });
+
+    container->addObject(cashButton);
+    container->addObject(researchButton);
+
     container->addObject(playButton);
     container->addObject(pauseButton);
     container->addObject(doubleSpeed);
@@ -146,22 +178,11 @@ void StarMapScene::renderUI()
     std::strftime(time_str, 100, date_time_format,
         std::localtime(&tmpTime));
 
-    int xLeft = 10;
+    //render time
+    int xLeft = 220;
     int yLeft = 10;
-    SDL_Color color = { 255, 255, 0, 255 };
-    //cash
-    glyphText.render(renderer, "\uf51e", color, xLeft, yLeft);
-    xLeft += 25;
-    uiText.render(renderer, utils::string_format("%d [%+d]", gameState->getHumanPlayer()->getMoney(), gameState->getHumanPlayer()->getMoneyPerMonth()), color, xLeft, yLeft + 3);
+    SDL_Color color = { 100, 200, 0, 255 };
 
-    //research
-    xLeft += 80;
-    color = { 0, 200, 200, 255 };
-    glyphText.render(renderer, "\uf0c3", color, xLeft, yLeft);
-    xLeft += 25;
-    uiText.render(renderer, utils::string_format("%+d", gameState->getHumanPlayer()->getResearchPerMonth()), color, xLeft, yLeft + 3);
-    xLeft += 80;
-    color = { 100, 200, 0, 255 };
     glyphText.render(renderer, "\uf017", color, xLeft, yLeft);
     xLeft += 25;
     uiText.render(renderer, std::string(time_str), color, xLeft, yLeft + 3);
@@ -506,5 +527,9 @@ void StarMapScene::update()
         moveX += speed;
     }
     renderer->getMainCamera()->move(moveX, moveY);
+
+    //update UI-Text
+    cashButton->setLabel(utils::string_format("%d [%+d]", gameState->getHumanPlayer()->getMoney(), gameState->getHumanPlayer()->getMoneyPerMonth()));
+    researchButton->setLabel(utils::string_format("%+d", gameState->getHumanPlayer()->getResearchPerMonth()));
 }
 } /* namespace scenes */

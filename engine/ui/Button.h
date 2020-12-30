@@ -37,16 +37,28 @@ public:
     bool getBorderless() const;
     void setBorderless(bool value);
 
+    bool isHovered() const;
+
+    SDL_Color getHoverColor() const;
+    void setHoverColor(const SDL_Color& value);
+
+    SDL_Color getDisabledColor() const;
+    void setDisabledColor(const SDL_Color& value);
+
 protected:
-private:
+    void renderBackground(core::Renderer* pRenderer);
     std::string label;
     SDL_Color color;
+
+private:
     int width;
     int static_width;
     bool hover;
     bool enabled;
     bool borderless;
     std::shared_ptr<graphics::Texture> texture;
+    SDL_Color hoverColor;
+    SDL_Color disabledColor;
 };
 
 } // namespace UI

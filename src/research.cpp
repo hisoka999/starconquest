@@ -7,7 +7,9 @@ Research::Research(const std::string name, const std::string localizedName, cons
     , description(description)
     , icon(icon)
     , costs(costs)
+    , researched(false)
     , currentCosts(costs)
+
 {
 }
 
