@@ -42,3 +42,15 @@ void Race::setAvailableResearch(const std::vector<std::shared_ptr<Research> > &v
 {
     availableResearch = value;
 }
+
+void Race::setModifier(const AttributeModifierType type,const int value) 
+{
+    modifiers[type] = value;
+}
+
+int Race::getModifier(const AttributeModifierType type) 
+{
+    return modifiers.at(type);
+}
+
+

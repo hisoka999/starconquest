@@ -19,6 +19,20 @@ enum class RaceType {
     Psilons,
 };
 
+enum class AttributeModifierType{
+    Income,
+    Research,
+    Production,
+    Food,
+    NeedsFood,
+};
+
+struct AttributeModifier{
+    AttributeModifierType type;
+    int value;
+
+};
+
 class Race {
 public:
     Race(RaceType Type, std::string Name, std::string HomePlanet);
@@ -42,12 +56,18 @@ public:
     std::vector<std::shared_ptr<Research>> getAvailableResearch() const;
     void setAvailableResearch(const std::vector<std::shared_ptr<Research>>& value);
 
+    void setModifier(const AttributeModifierType type,const int value);
+
+    int getModifier(const AttributeModifierType type);
+
 private:
     RaceType type;
     std::string name;
     std::string homePlanet;
     std::vector<std::shared_ptr<Building>> availableBuildings;
     std::vector<std::shared_ptr<Research>> availableResearch;
+
+    std::map<AttributeModifierType,int> modifiers;
 };
 
 #endif /* RACE_H_ */

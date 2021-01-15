@@ -6,7 +6,7 @@
         ,"icon": "\uf197"
         ,"description": "From now on you will be able to fly into space"
         ,"costs": 20
-        ,"enables": ["Shipyard",]
+        ,"enables": ["Shipyard"]
         ,"requires": []
     },
     {
@@ -29,8 +29,21 @@
         ,"description": "From now on you will be able to fly into space"
         ,"costs": 30
         ,"icon": "\uf493"
-        ,"enables": ["Research Lab",]
+        ,"enables": ["Research Lab"]
         ,"requires": ["Research Bonus"]
         
-    },
+    },    
+    {
+        "id" : 4
+        ,"name": "Deep Mines"
+        ,"name_de": "Tiefe Minen"
+        ,"description": "From now on you will be able to fly into space"
+        ,"costs": 30
+        ,"icon": "\uf6fc"
+        ,"enables": ["Mine"]
+        ,"requires": []
+        ,"props":{
+            "Research": 2
+        }
+    }
 ]

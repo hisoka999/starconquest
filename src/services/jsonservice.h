@@ -4,7 +4,6 @@
 #include <engine/utils/exceptions.h>
 #include <engine/utils/json/parser.h>
 #include <fstream>
-#include <magic_enum.hpp>
 #include <memory>
 #include <sstream>
 #include <vector>

@@ -16,7 +16,7 @@
     ,"name_de": "Fabrik"
     ,"desc": "A Building that produces goods."
     ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
-    ,"resources": 20
+    ,"resources": 80
     ,"texture": "images/objects/scifi_factory.png"
     ,"props":{
             "Ressource": 2
@@ -29,7 +29,7 @@
     ,"desc": "A Building that produces goods."
     ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
     ,"texture": "images/objects/scifi_scraper2.png"
-    ,"resources": 50
+    ,"resources": 100
     ,"props":{
             "Research": 2
         }
@@ -37,12 +37,25 @@
     {"id": 4
     ,"name": "Shipyard"
     ,"name_de": "Raumhafen"
-    ,"desc": "A Building that produces goods."
-    ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+    ,"desc": "This is a ship yard to build spaceships."
+    ,"desc_de": "Dies ist ein Raumhaufen zum bauen von Raumschiffen."
     ,"texture": "images/objects/scifi_hangar.png"
-    ,"resources": 50
+    ,"resources": 100
     ,"props":{
             "Money": -1
         }
     }, 
+    {
+        "id":5
+        ,"name": "Mine"
+        ,"name_de" : "Bergwerk"
+        ,"desc": "A Building that produces goods."
+        ,"desc_de": "Ein Gebäude das Güter/Ressourcen herstellt."
+        ,"resources": 200
+        ,"texture": "images/objects/mine.png"
+        ,"props":{
+                "Ressource": 4
+                ,"Money":-1
+            }
+    }
 ]

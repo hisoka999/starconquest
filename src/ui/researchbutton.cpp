@@ -1,9 +1,9 @@
 #include "researchbutton.h"
 #include "../Player.h"
-#include <engine/graphics/TextureManager.h>
+#include "engine/graphics/TextureManager.h"
 #include <engine/utils/os.h>
 #include <engine/utils/string.h>
-
+#include "../translate.h"
 namespace UI {
 ResearchButton::ResearchButton(const std::shared_ptr<Research>& research, std::shared_ptr<Player>& player, UI::Object* parent)
     : UI::Object(parent)
@@ -46,16 +46,21 @@ void ResearchButton::render(core::Renderer* pRender)
     textFont->render(pRender, research->getLocalisedName(), textColor, rect.x + rect.height + 10, rect.y + 5);
 
     //draw research time
+    if(research->getResearched()){
+    smallTextFont->render(pRender, _("researched"), textColor, rect.x + rect.width - 70, rect.y + rect.height - 10);
+    }else{
     smallIconFont->render(pRender, "\uf254", textColor, rect.x + rect.width - 70, rect.y + rect.height - 10);
     int resPerMonth = (player->getResearchPerMonth() == 0) ? 1 : player->getResearchPerMonth();
     auto researchTime = utils::string_format("%i months", research->getCurrentCosts() / resPerMonth);
     smallTextFont->render(pRender, researchTime, textColor, rect.x + rect.width - 60, rect.y + rect.height - 10);
+
+    }
 }
 
 void ResearchButton::handleEvents(core::Input* pInput)
 {
     auto rect = eventRect();
-    if (rect.intersects(pInput->getMousePostion()) && research->canResearch()) {
+    if (rect.intersects(pInput->getMousePostion()) && research->canResearch() && !research->getResearched()) {
         hovered = true;
         if (pInput->isMouseButtonPressed(SDL_BUTTON_LEFT)) {
             this->fireFuncionCall("buttonClicked");

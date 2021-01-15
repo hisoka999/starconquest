@@ -5,16 +5,16 @@
 #include <iostream>
 
 namespace core {
-int vline(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2)
+inline int vline(SDL_Renderer * renderer, Sint16 x, Sint16 y1, Sint16 y2)
 {
     return SDL_RenderDrawLine(renderer, x, y1, x, y2);;
 }
-int pixel(SDL_Renderer *renderer, Sint16 x, Sint16 y)
+inline int pixel(SDL_Renderer *renderer, Sint16 x, Sint16 y)
 {
     return SDL_RenderDrawPoint(renderer, x, y);
 }
 
-int _drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Sint32 f)
+inline int _drawQuadrants(SDL_Renderer * renderer,  Sint16 x, Sint16 y, Sint16 dx, Sint16 dy, Sint32 f)
 {
     int result = 0;
     Sint16 xpdx, xmdx;
