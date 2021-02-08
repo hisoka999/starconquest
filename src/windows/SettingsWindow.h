@@ -8,35 +8,27 @@
 #include <engine/ui/ComboBox.h>
 #include <engine/core/gamewindow.h>
 
-class SaveListener : public UI::ButtonListener
-{
-public:
-    virtual void buttonClick();
-};
-
 class SettingsWindow : public UI::Window
 {
-    public:
-        /** Default constructor */
-        SettingsWindow(core::GameWindow *window);
+public:
+    /** Default constructor */
+    SettingsWindow(core::GameWindow *window);
 
+    /** Default destructor */
+    virtual ~SettingsWindow();
 
-        /** Default destructor */
-        virtual ~SettingsWindow();
+protected:
+    void closeWindow();
 
-    protected:
-        void closeWindow();
-    private:
-        std::shared_ptr<UI::Checkbox> fullscreen;
-        std::shared_ptr<UI::Button> saveButton;
-        std::shared_ptr<UI::Button> cancelButton;
-        std::shared_ptr<UI::ComboBox> resolutions;
-        core::GameWindow *window;
-        int display_in_use = 0;
-        std::shared_ptr<graphics::Text> uiText;
-        std::shared_ptr<graphics::Text> uiIconText;
-
-
+private:
+    std::shared_ptr<UI::Checkbox> fullscreen;
+    std::shared_ptr<UI::Button> saveButton;
+    std::shared_ptr<UI::Button> cancelButton;
+    std::shared_ptr<UI::ComboBox<std::string>> resolutions;
+    core::GameWindow *window;
+    int display_in_use = 0;
+    std::shared_ptr<graphics::Text> uiText;
+    std::shared_ptr<graphics::Text> uiIconText;
 };
 
 #endif // SETTINGSWINDOW_H

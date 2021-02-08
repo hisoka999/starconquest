@@ -16,8 +16,8 @@
 #include <random>
 #include <sstream>
 
-WorldGenerator::WorldGenerator()
-    : generator(std::chrono::system_clock::now().time_since_epoch().count())
+WorldGenerator::WorldGenerator(unsigned seed)
+    : generator(seed)
 
 {
     loadStarnames();
@@ -29,10 +29,12 @@ void WorldGenerator::loadStarnames()
     std::string filename = "data/starlist";
     std::string line;
     file.open(filename.c_str(), std::ios::in);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         throw IOException(filename, "file does not exists");
     }
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
 
         starNames.push_back(line);
     }
@@ -48,7 +50,7 @@ std::string WorldGenerator::generateName()
 }
 
 std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int systemSize,
-    std::vector<std::shared_ptr<Player>> players)
+                                                                      std::vector<std::shared_ptr<Player>> players)
 {
     std::vector<std::shared_ptr<Star>> stars;
     //player star
@@ -56,7 +58,7 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
     auto playerList = players;
     int min_distance = (MAX_PLANETS_PER_STAR + 1) * PLANET_DISTANCE;
     std::uniform_int_distribution<int> positionGen(min_distance,
-        WORLD_SIZE - min_distance);
+                                                   WORLD_SIZE - min_distance);
     std::uniform_int_distribution<unsigned int> planetGen(0, 4);
     std::uniform_int_distribution<unsigned int> planetSizeGen(5, 10);
     std::uniform_int_distribution<unsigned int> planetTypeGen(0, MAX_PLANETS_PER_STAR);
@@ -67,13 +69,15 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
 
     auto t_start = std::chrono::high_resolution_clock::now();
 
-    for (int starId = 0; starId < systemSize; ++starId) {
+    for (int starId = 0; starId < systemSize; ++starId)
+    {
         std::string starName;
         StarType starType = StarType::Yellow;
         currentPlayer = nullptr;
         unsigned int planetNum = planetGen(generator);
 
-        if (playerList.size() > 0) {
+        if (playerList.size() > 0)
+        {
             currentPlayer = playerList.back();
             playerList.pop_back();
 
@@ -82,10 +86,12 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
                 planetNum = planetGen(generator);
         }
         //lookup star name
-        if (starName.empty()) {
+        if (starName.empty())
+        {
             starName = generateName();
 
-            if (starName.empty()) {
+            if (starName.empty())
+            {
                 throw std::runtime_error("star name is empty");
             }
         }
@@ -93,18 +99,23 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
 
         // find a good position
         utils::Vector2 position(0, 0);
-        while (!goodPosition) {
+        while (!goodPosition)
+        {
             position = utils::Vector2(positionGen(generator),
-                positionGen(generator));
+                                      positionGen(generator));
             goodPosition = true;
             unsigned int dd = 0;
-            for (auto& tmpStar : stars) {
+            for (auto &tmpStar : stars)
+            {
 
                 int distance = position.distance(tmpStar->getPosition());
-                if (distance < min_distance * 2) {
+                if (distance < min_distance * 2)
+                {
                     goodPosition = false;
                     break;
-                } else if (distance > min_distance * 4) {
+                }
+                else if (distance > min_distance * 4)
+                {
                     dd++;
                 }
             }
@@ -113,7 +124,8 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
         }
         std::shared_ptr<Star> star = std::make_shared<Star>(starName, position, nullptr, starType);
 
-        for (unsigned int planetId = 0; planetId < planetNum; ++planetId) {
+        for (unsigned int planetId = 0; planetId < planetNum; ++planetId)
+        {
             unsigned int planetSize = planetSizeGen(generator);
 
             PlanetType type = static_cast<PlanetType>(planetTypeGen(generator));

@@ -2,9 +2,8 @@
 #include "../translate.h"
 #include <engine/graphics/TextureManager.h>
 #include <functional>
-SettingsWindow::SettingsWindow(core::GameWindow* window)
-    : UI::Window(50, 50, 490, 300)
-    , window(window)
+SettingsWindow::SettingsWindow(core::GameWindow *window)
+    : UI::Window(50, 50, 490, 300), window(window)
 {
     uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
     uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
@@ -23,7 +22,8 @@ SettingsWindow::SettingsWindow(core::GameWindow* window)
         settings->setAttrB("Base", "Fullscreen", fullscreen->isChecked());
         int i = resolutions->getSelection();
         SDL_DisplayMode mode;
-        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0) {
+        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0)
+        {
             SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
             return;
         }
@@ -39,7 +39,11 @@ SettingsWindow::SettingsWindow(core::GameWindow* window)
     fullscreen->setPos(30, 50);
     fullscreen->setText(_("Fullscreen"));
     setTitle(_("Settings"));
-    resolutions = std::make_shared<UI::ComboBox>(this);
+    resolutions = std::make_shared<UI::ComboBox<std::string>>(this);
+
+    resolutions->setElementFunction([](std::string val) {
+        return val;
+    });
     addObject(resolutions);
     resolutions->setPos(30, 70);
     auto settings = window->getSettings();
@@ -51,12 +55,15 @@ SettingsWindow::SettingsWindow(core::GameWindow* window)
     /* Get available fullscreen/hardware modes */
 
     int display_mode_count = SDL_GetNumDisplayModes(display_in_use);
-    if (display_mode_count < 1) {
+    if (display_mode_count < 1)
+    {
         throw SDLException("SDL_GetNumDisplayModes");
     }
     SDL_DisplayMode mode;
-    for (int i = 0; i < display_mode_count; ++i) {
-        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0) {
+    for (int i = 0; i < display_mode_count; ++i)
+    {
+        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0)
+        {
             SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
             return;
         }

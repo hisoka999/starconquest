@@ -14,13 +14,14 @@
 #include <string>
 #include <vector>
 
-class WorldGenerator {
+class WorldGenerator
+{
 public:
-    WorldGenerator();
+    WorldGenerator(unsigned seed);
     virtual ~WorldGenerator();
 
     std::vector<std::shared_ptr<Star>> generateStarsystem(int systemSize,
-        std::vector<std::shared_ptr<Player>> players);
+                                                          std::vector<std::shared_ptr<Player>> players);
 
 private:
     void loadStarnames();

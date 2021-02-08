@@ -11,5 +11,9 @@ src/.deps/
 
 out/
 /CMakeSettings.json
-
+CMakeCache.txt
+Makefile
 build/
+/.project
+CMakeFiles/
+*.cmake

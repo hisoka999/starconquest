@@ -11,139 +11,112 @@
 #include "../services/buildingservice.h"
 #include "../services/researchservice.h"
 #include "../translate.h"
+#include "NewGameScene.h"
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/Button.h>
 #include <engine/utils/os.h>
 #include <functional>
 #include <iostream>
 #include <vector>
+#include "StarMapScene.h"
 
-namespace scenes {
-
-MainScene::MainScene(core::Renderer* pRenderer,
-    core::SceneManager* pSceneManager, core::GameWindow* gameWindow)
-    : core::Scene(pRenderer)
-    , running(true)
-    , sceneManager(
-          pSceneManager)
-    , settingsWindow(gameWindow)
+namespace scenes
 {
-    bgTexture.loadTexture(renderer, "images/title_background.png");
 
-    container = std::make_shared<UI::Container>();
-    SDL_Color white = { 255, 255, 255, 0 };
-    std::shared_ptr<UI::Button> btnStart = std::make_shared<UI::Button>();
-    btnStart->setFont("fonts/Audiowide-Regular.ttf", 14);
-    btnStart->setColor(white);
-    btnStart->setLabel(_("New Game"));
-    btnStart->setPos(450, 350);
-    btnStart->setStaticWidth(150);
-    container->addObject(btnStart);
+    MainScene::MainScene(core::Renderer *pRenderer,
+                         core::SceneManager *pSceneManager, core::GameWindow *gameWindow)
+        : core::Scene(pRenderer), running(true), sceneManager(
+                                                     pSceneManager),
+          settingsWindow(gameWindow)
+    {
+        bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
 
-    btnStart->connect(UI::Button::buttonClickCallback(), [&]() { startGame(); });
+        container = std::make_shared<UI::Container>();
+        SDL_Color white = {255, 255, 255, 0};
+        std::shared_ptr<UI::Button> btnStart = std::make_shared<UI::Button>();
+        btnStart->setFont("fonts/Audiowide-Regular.ttf", 14);
+        btnStart->setColor(white);
+        btnStart->setLabel(_("New Game"));
+        btnStart->setPos(450, 350);
+        btnStart->setStaticWidth(150);
+        container->addObject(btnStart);
 
-    std::shared_ptr<UI::Button> btnLoadGame = std::make_shared<UI::Button>();
-    btnLoadGame->setFont("fonts/Audiowide-Regular.ttf", 14);
-    btnLoadGame->setColor(white);
-    btnLoadGame->setLabel(_("Load Game"));
-    btnLoadGame->setPos(450, 400);
-    btnLoadGame->setStaticWidth(150);
-    btnLoadGame->disable();
+        btnStart->connect(UI::Button::buttonClickCallback(), [&]() { startGame(); });
 
-    btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]() { loadGame(); });
+        std::shared_ptr<UI::Button> btnLoadGame = std::make_shared<UI::Button>();
+        btnLoadGame->setFont("fonts/Audiowide-Regular.ttf", 14);
+        btnLoadGame->setColor(white);
+        btnLoadGame->setLabel(_("Load Game"));
+        btnLoadGame->setPos(450, 400);
+        btnLoadGame->setStaticWidth(150);
+        btnLoadGame->disable();
 
-    container->addObject(btnLoadGame);
+        btnLoadGame->connect(UI::Button::buttonClickCallback(), [&]() { loadGame(); });
 
-    std::shared_ptr<UI::Button> btnSettingsGame = std::make_shared<UI::Button>();
-    btnSettingsGame->setFont("fonts/Audiowide-Regular.ttf", 14);
-    btnSettingsGame->setColor(white);
-    btnSettingsGame->setLabel(_("Settings"));
-    btnSettingsGame->setPos(450, 450);
-    btnSettingsGame->setStaticWidth(150);
+        container->addObject(btnLoadGame);
 
-    btnSettingsGame->connect(UI::Button::buttonClickCallback(), [&]() { settingsWindow.setVisible(true); });
+        std::shared_ptr<UI::Button> btnSettingsGame = std::make_shared<UI::Button>();
+        btnSettingsGame->setFont("fonts/Audiowide-Regular.ttf", 14);
+        btnSettingsGame->setColor(white);
+        btnSettingsGame->setLabel(_("Settings"));
+        btnSettingsGame->setPos(450, 450);
+        btnSettingsGame->setStaticWidth(150);
 
-    container->addObject(btnSettingsGame);
+        btnSettingsGame->connect(UI::Button::buttonClickCallback(), [&]() { settingsWindow.setVisible(true); });
 
-    std::shared_ptr<UI::Button> btnExit = std::make_shared<UI::Button>();
-    btnExit->setFont("fonts/Audiowide-Regular.ttf", 14);
-    btnExit->setColor(white);
-    btnExit->setLabel(_("Exit Game"));
-    btnExit->setPos(450, 500);
-    btnExit->setStaticWidth(150);
+        container->addObject(btnSettingsGame);
 
-    btnExit->connect(UI::Button::buttonClickCallback(), [&]() { exitGame(); });
+        std::shared_ptr<UI::Button> btnExit = std::make_shared<UI::Button>();
+        btnExit->setFont("fonts/Audiowide-Regular.ttf", 14);
+        btnExit->setColor(white);
+        btnExit->setLabel(_("Exit Game"));
+        btnExit->setPos(450, 500);
+        btnExit->setStaticWidth(150);
 
-    container->addObject(btnExit);
-    starMapScene = nullptr;
-}
-void MainScene::render()
-{
-    bgTexture.renderResized(renderer, 0, 0,
-        renderer->getMainCamera()->getWidth(),
-        renderer->getMainCamera()->getHeight());
+        btnExit->connect(UI::Button::buttonClickCallback(), [&]() { exitGame(); });
 
-    container->render(renderer);
-    settingsWindow.render(renderer);
-}
+        container->addObject(btnExit);
+    }
+    void MainScene::render()
+    {
+        bgTexture->renderResized(renderer, 0, 0,
+                                 renderer->getMainCamera()->getWidth(),
+                                 renderer->getMainCamera()->getHeight());
 
-void MainScene::exitGame()
-{
-    running = false;
-}
-std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
-{
-    std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
-
-    return buildings;
-}
-void MainScene::startGame()
-{
-    std::cout << "start game" << std::endl;
-    WorldGenerator gen;
-    std::vector<std::shared_ptr<Player>> players;
-    auto buildings = initBuildings();
-    Race human(RaceType::Human, _("Human"), "Sol");
-    human.setAvailableBuildings(buildings);
-    human.setAvailableResearch(ResearchService::Instance().getData());
-    Race psilons(RaceType::Psilons, _("Psilon"), "Mentar");
-    psilons.setAvailableBuildings(buildings);
-    psilons.setAvailableResearch(ResearchService::Instance().getData());
-    SDL_Color blue { 0, 0, 200, 0 };
-    SDL_Color green { 0, 255, 0, 0 };
-
-    players.push_back(std::make_shared<Player>(_("Human"), human, blue));
-    players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
-
-    std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(20, players);
-
-    for (auto& star : stars) {
-        std::cout << "Starname: " << star->getName() << std::endl;
-        std::cout << "Position: (" << star->getPosition().getX() << ","
-                  << star->getPosition().getY() << ")" << std::endl;
-        for (auto& planet : star->getPlanets()) {
-            std::cout << "\tPlanetname: " << planet->getName() << std::endl;
-            std::cout << "\tPlanet Size: " << planet->getSize() << std::endl;
-        }
+        container->render(renderer);
+        settingsWindow.render(renderer);
     }
 
-    starMapScene = new StarMapScene(renderer, stars, players[0]);
-    sceneManager->addScene("map", starMapScene);
-    sceneManager->setCurrentScene("map");
-}
+    void MainScene::exitGame()
+    {
+        running = false;
+    }
+    std::vector<std::shared_ptr<Building>> MainScene::initBuildings()
+    {
+        std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
 
-void MainScene::loadGame()
-{
-}
+        return buildings;
+    }
+    void MainScene::startGame()
+    {
 
-void MainScene::handleEvents(core::Input* pInput)
-{
-    container->handleEvents(pInput);
-    settingsWindow.handleEvents(pInput);
-}
+        auto newGameScene = std::make_shared<NewGameScene>(renderer, sceneManager);
+        sceneManager->addScene("newGame", newGameScene);
+        sceneManager->setCurrentScene("newGame");
+    }
 
-MainScene::~MainScene()
-{
-}
+    void MainScene::loadGame()
+    {
+    }
+
+    void MainScene::handleEvents(core::Input *pInput)
+    {
+        container->handleEvents(pInput);
+        settingsWindow.handleEvents(pInput);
+    }
+
+    MainScene::~MainScene()
+    {
+    }
 
 } /* namespace scenes */

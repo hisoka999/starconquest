@@ -26,9 +26,9 @@
 
 //#ifdef _WIN32
 //INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-  //          PSTR lpCmdLine, INT nCmdShow)
+//          PSTR lpCmdLine, INT nCmdShow)
 //#else
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 
 //#endif
 {
@@ -39,7 +39,8 @@ int main(int argc, char* argv[])
     //textdomain ("starconquest");
     //bindtextdomain ("starconquest", "locale");
 
-    try {
+    try
+    {
         // Generate locales and imbue them to iostream
         //std::locale::global(gen(""));
         //std::locale::global(std::locale("de"));
@@ -58,8 +59,8 @@ int main(int argc, char* argv[])
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
         ren.setMainCamera(&mainCamera);
-        scenes::MainScene mainScene(&ren, &sceneManager, &win);
-        sceneManager.addScene("main", &mainScene);
+        auto mainScene = std::make_shared<scenes::MainScene>(&ren, &sceneManager, &win);
+        sceneManager.addScene("main", mainScene);
         sceneManager.setCurrentScene("main");
 
         ShipService::Instance().loadData("data/ships.json");
@@ -71,26 +72,32 @@ int main(int argc, char* argv[])
         unsigned int fps = 0;
         graphics::Text text;
         text.openFont(utils::os::combine("fonts", "arial.ttf"), 22);
-        SDL_Color color = { 200, 200, 0, 0 };
+        SDL_Color color = {200, 200, 0, 0};
         // game loop
         unsigned int delay = 0;
 
         bool run = true;
-        while (run && mainScene.isRunning()) {
+        while (run && mainScene->isRunning())
+        {
             ren.clear();
-            try {
-                while (input.poll()) {
+            try
+            {
+                while (input.poll())
+                {
                     if (input.isKeyDown(SDLK_ESCAPE) || input.isQuit())
                         run = false;
                     sceneManager.handleEvents(&input);
                 }
-            } catch (std::exception& e) {
+            }
+            catch (std::exception &e)
+            {
                 std::cerr << e.what() << std::endl;
             }
             sceneManager.update();
             sceneManager.render();
             frames++;
-            if ((ren.getTickCount() - lastTime) >= 1000) {
+            if ((ren.getTickCount() - lastTime) >= 1000)
+            {
                 lastTime = ren.getTickCount();
                 fps = frames;
                 frames = 0;
@@ -109,10 +116,13 @@ int main(int argc, char* argv[])
             //win.delay(delay);
             ren.calcDelta();
         }
-    } catch (SDLException& e) {
+    }
+    catch (SDLException &e)
+    {
         std::cout << "SDL Exception: " << e.what() << std::endl;
-
-    } catch (std::exception& e) {
+    }
+    catch (std::exception &e)
+    {
         std::cout << "unkown standard exception: " << e.what() << std::endl;
     }
     return 0;

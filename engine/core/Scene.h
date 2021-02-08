@@ -1,10 +1,3 @@
-/*
- * Scene.h
- *
- *  Created on: 18.04.2016
- *      Author: stefan
- */
-
 #ifndef CORE_SCENE_H_
 #define CORE_SCENE_H_
 
@@ -15,25 +8,27 @@
 #include <engine/core/Music.h>
 #include <memory>
 
-namespace core {
+namespace core
+{
 
-class Scene {
-public:
-    Scene(core::Renderer* pRenderer);
-    virtual ~Scene();
+    class Scene
+    {
+    public:
+        Scene(core::Renderer *pRenderer);
+        virtual ~Scene();
 
-    virtual void render() = 0;
-    virtual void handleEvents(core::Input* pInput) = 0;
-    virtual void update() {};
-    virtual void unload();
+        virtual void render() = 0;
+        virtual void handleEvents(core::Input *pInput) = 0;
+        virtual void update(){};
+        virtual void unload();
 
-protected:
-    core::Renderer* renderer;
-    std::shared_ptr<UI::WindowManager> winMgr;
-    std::shared_ptr<core::Music> music;
+    protected:
+        core::Renderer *renderer;
+        std::shared_ptr<UI::WindowManager> winMgr;
+        std::shared_ptr<core::Music> music;
 
-private:
-};
+    private:
+    };
 
 } /* namespace core */
 

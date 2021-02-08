@@ -27,6 +27,8 @@ BuildWindow::BuildWindow(std::shared_ptr<Player> p)
     });
 }
 
+
+
 void BuildWindow::setPlayer(std::shared_ptr<Player> p)
 {
     player = p;

@@ -10,7 +10,7 @@
 
 #include "../Building.h"
 #include "../windows/SettingsWindow.h"
-#include "StarMapScene.h"
+
 #include <engine/core/Scene.h>
 #include <engine/core/SceneManager.h>
 #include <engine/core/renderer.h>
@@ -18,32 +18,33 @@
 #include <memory>
 #include <vector>
 
-namespace scenes {
+namespace scenes
+{
 
-class MainScene : public core::Scene {
-public:
-    MainScene(core::Renderer* pRenderer, core::SceneManager* pSceneManager, core::GameWindow* gameWindow);
-    virtual ~MainScene();
-    void render();
-    void handleEvents(core::Input* pInput);
-    bool isRunning()
+    class MainScene : public core::Scene
     {
-        return running;
-    }
+    public:
+        MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager, core::GameWindow *gameWindow);
+        virtual ~MainScene();
+        void render();
+        void handleEvents(core::Input *pInput);
+        bool isRunning()
+        {
+            return running;
+        }
 
-private:
-    bool running;
-    core::SceneManager* sceneManager;
-    std::shared_ptr<UI::Container> container;
-    graphics::Texture bgTexture;
-    std::vector<std::shared_ptr<Building>> initBuildings();
+    private:
+        bool running;
+        core::SceneManager *sceneManager;
+        std::shared_ptr<UI::Container> container;
+        std::shared_ptr<graphics::Texture> bgTexture;
+        std::vector<std::shared_ptr<Building>> initBuildings();
 
-    void exitGame();
-    void startGame();
-    void loadGame();
-    StarMapScene* starMapScene;
-    SettingsWindow settingsWindow;
-};
+        void exitGame();
+        void startGame();
+        void loadGame();
+        SettingsWindow settingsWindow;
+    };
 
 } /* namespace scenes */
 
