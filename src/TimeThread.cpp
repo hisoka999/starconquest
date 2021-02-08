@@ -11,11 +11,8 @@
 //#include <boost/make_shared.hpp>
 #include <engine/core/MessageSystem.h>
 
-TimeThread::TimeThread(const std::shared_ptr<GameState>& gameState)
-    : running(false)
-    , gameState(gameState)
-    , paused(false)
-    , speed(400)
+TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
+    : running(false), gameState(gameState), paused(false), speed(400)
 {
 
     std::tm ttm = std::tm();
@@ -33,26 +30,31 @@ TimeThread::TimeThread(const std::shared_ptr<GameState>& gameState)
 TimeThread::~TimeThread()
 {
     stop();
+    thread.detach();
 }
 
 void TimeThread::update()
 {
-    while (running) {
+    while (running)
+    {
 
-        while (!paused) {
+        while (!paused)
+        {
             startTime += std::chrono::hours(24);
             std::this_thread::sleep_for(std::chrono::milliseconds(speed));
 
             std::time_t tmpTime = std::chrono::system_clock::to_time_t(startTime);
 
-            std::tm* tm = std::localtime(&tmpTime);
+            std::tm *tm = std::localtime(&tmpTime);
             //gameState->updateFleetPosition(0);
 
-            if (tm->tm_mday == 1) {
-                for (const auto& player : gameState->getPlayers()) {
+            if (tm->tm_mday == 1)
+            {
+                for (const auto &player : gameState->getPlayers())
+                {
                     gameState->updatePlayerState(player);
                 }
-                auto& msgSystem = core::MessageSystem<MessageTypes>::get();
+                auto &msgSystem = core::MessageSystem<MessageTypes>::get();
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);
             }
