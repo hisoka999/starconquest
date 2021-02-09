@@ -17,10 +17,11 @@
 class WorldGenerator
 {
 public:
-    WorldGenerator(unsigned seed);
+    WorldGenerator(unsigned long seed);
     virtual ~WorldGenerator();
 
     std::vector<std::shared_ptr<Star>> generateStarsystem(int systemSize,
+                                                          int worldSize,
                                                           std::vector<std::shared_ptr<Player>> players);
 
 private:
@@ -28,6 +29,7 @@ private:
     std::string generateName();
     std::vector<std::string> starNames;
     std::mt19937 generator;
+    unsigned long seed;
 };
 
 #endif /* WORLDGENERATOR_H_ */

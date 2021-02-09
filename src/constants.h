@@ -14,4 +14,20 @@
 #define WORLD_SIZE 6400
 #define PI 3.14159265f
 
+enum class Difficulty
+{
+    Easy,
+    Normal,
+    Hard,
+    Impossible
+};
+
+enum class WorldSize
+{
+    Small = 20,
+    Medium = 40,
+    Big = 80,
+    Huge = 120,
+};
+
 #endif /* CONSTANTS_H_ */

@@ -1,4 +1,5 @@
 #include "NewGameScene.h"
+#include <magic_enum.hpp>
 #include <engine/core/SceneManager.h>
 #include <engine/graphics/TextureManager.h>
 #include <engine/ui/TextItem.h>
@@ -9,6 +10,7 @@
 #include "../services/buildingservice.h"
 #include "../services/researchservice.h"
 #include "../WorldGenerator.h"
+#include <engine/ui/layout/GridLayout.h>
 
 namespace scenes
 {
@@ -17,6 +19,9 @@ namespace scenes
 
         const auto &viewPort = pRenderer->getViewPort();
         container = std::make_shared<UI::Container>();
+        buttonList = std::make_shared<UI::Container>();
+        auto layout = std::make_shared<UI::layout::GridLayout>(container.get(), 2);
+        layout->setPadding(utils::Vector2(10, 10));
 
         auto startButton = std::make_shared<UI::Button>();
         startButton->setPos(viewPort.width - 150, viewPort.height - 50);
@@ -24,14 +29,14 @@ namespace scenes
         startButton->setLabel(_("Start Game"));
 
         startButton->connect(UI::Button::buttonClickCallback(), [&]() { startGame(); });
-        container->addObject(startButton);
+        buttonList->addObject(startButton);
 
         auto backButton = std::make_shared<UI::Button>();
         backButton->setPos(viewPort.width - 250, viewPort.height - 50);
         backButton->setFont("fonts/Audiowide-Regular.ttf", 14);
         backButton->setLabel(_("Back"));
 
-        container->addObject(backButton);
+        buttonList->addObject(backButton);
 
         //add comboboxes and textfields
         int yOffset = 30;
@@ -118,18 +123,23 @@ namespace scenes
         systemSizeLabel->setPos(20, y);
         container->addObject(systemSizeLabel);
 
-        auto systemSizeCombobox = std::make_shared<UI::ComboBox<std::string>>();
+        auto systemSizeCombobox = std::make_shared<UI::ComboBox<WorldSize>>();
         systemSizeCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
-        systemSizeCombobox->addElement("Small");
-        systemSizeCombobox->addElement("Medium");
-        systemSizeCombobox->addElement("Big");
-        systemSizeCombobox->addElement("Huge");
-        systemSizeCombobox->setSelectionByText("Medium");
+        systemSizeCombobox->connect("valueChanged", [&](WorldSize size) {
+            worldSize = size;
+        });
+        constexpr auto &worldSizes = magic_enum::enum_values<WorldSize>();
+
+        for (auto &value : worldSizes)
+        {
+            systemSizeCombobox->addElement(value);
+        }
+        systemSizeCombobox->setSelectionByText(WorldSize::Medium);
 
         systemSizeCombobox->setPos(200, y);
         systemSizeCombobox->setWidth(200);
-        systemSizeCombobox->setElementFunction([](std::string val) {
-            return val;
+        systemSizeCombobox->setElementFunction([](WorldSize val) -> std::string {
+            return std::string(magic_enum::enum_name(val));
         });
         container->addObject(systemSizeCombobox);
 
@@ -140,20 +150,24 @@ namespace scenes
         difficultyLabel->setPos(20, y);
         container->addObject(difficultyLabel);
 
-        auto difficultyCombobox = std::make_shared<UI::ComboBox<std::string>>();
+        auto difficultyCombobox = std::make_shared<UI::ComboBox<Difficulty>>();
         difficultyCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
-        difficultyCombobox->addElement("Easy");
-        difficultyCombobox->addElement("Normal");
-        difficultyCombobox->addElement("Hard");
-        difficultyCombobox->addElement("Impossible");
-        difficultyCombobox->setSelectionByText("Normal");
+        constexpr auto &difficulties = magic_enum::enum_values<Difficulty>();
+        for (auto &value : difficulties)
+        {
+            difficultyCombobox->addElement(value);
+        }
+        difficultyCombobox->setSelectionByText(Difficulty::Normal);
 
         difficultyCombobox->setPos(200, y);
         difficultyCombobox->setWidth(200);
-        difficultyCombobox->setElementFunction([](std::string val) {
-            return val;
+        difficultyCombobox->setElementFunction([](Difficulty val) -> std::string {
+            return std::string(magic_enum::enum_name(val));
         });
         container->addObject(difficultyCombobox);
+        graphics::Rect bounds = {10, 450, 1280, 400};
+
+        layout->updateLayout(bounds);
 
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
     }
@@ -164,7 +178,25 @@ namespace scenes
                                  renderer->getMainCamera()->getWidth(),
                                  renderer->getMainCamera()->getHeight());
 
+        graphics::Texture texture(renderer, renderer->getMainCamera()->getWidth(),
+                                  renderer->getMainCamera()->getHeight());
+
+        renderer->setRenderTarget(texture.getSDLTexture());
+        renderer->setDrawColor(12, 21, 24, 155);
+        graphics::Rect bounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
+        utils::Vector2 lineStart(bounds.x, 440);
+        utils::Vector2 lineEnd(bounds.x + bounds.width, 440);
+
+        renderer->fillRect(bounds);
+        renderer->setDrawColor(93, 103, 108, 255);
+        renderer->drawLine(lineStart, lineEnd);
+        renderer->drawRect(bounds);
+        renderer->setRenderTarget(nullptr);
+        texture.setBlendMode(SDL_BLENDMODE_BLEND);
+        texture.render(renderer, 0, 0);
+
         container->render(renderer);
+        buttonList->render(renderer);
     }
 
     void NewGameScene::update()
@@ -174,6 +206,7 @@ namespace scenes
     void NewGameScene::handleEvents(core::Input *pInput)
     {
         container->handleEvents(pInput);
+        buttonList->handleEvents(pInput);
     }
 
     void NewGameScene::startGame()
@@ -194,7 +227,7 @@ namespace scenes
         players.push_back(std::make_shared<Player>(_("Human"), human, blue));
         players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
 
-        std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(20, players);
+        std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(int(worldSize), WORLD_SIZE, players);
 
         for (auto &star : stars)
         {

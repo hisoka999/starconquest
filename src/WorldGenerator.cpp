@@ -16,8 +16,8 @@
 #include <random>
 #include <sstream>
 
-WorldGenerator::WorldGenerator(unsigned seed)
-    : generator(seed)
+WorldGenerator::WorldGenerator(unsigned long seed)
+    : generator(seed), seed(seed)
 
 {
     loadStarnames();
@@ -50,6 +50,7 @@ std::string WorldGenerator::generateName()
 }
 
 std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int systemSize,
+                                                                      int worldSize,
                                                                       std::vector<std::shared_ptr<Player>> players)
 {
     std::vector<std::shared_ptr<Star>> stars;
@@ -58,14 +59,13 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
     auto playerList = players;
     int min_distance = (MAX_PLANETS_PER_STAR + 1) * PLANET_DISTANCE;
     std::uniform_int_distribution<int> positionGen(min_distance,
-                                                   WORLD_SIZE - min_distance);
+                                                   worldSize - min_distance);
     std::uniform_int_distribution<unsigned int> planetGen(0, 4);
     std::uniform_int_distribution<unsigned int> planetSizeGen(5, 10);
     std::uniform_int_distribution<unsigned int> planetTypeGen(0, MAX_PLANETS_PER_STAR);
     std::uniform_int_distribution<unsigned int> angleGen(0, 380);
 
     std::clock_t c_start = std::clock();
-    long seed = std::chrono::system_clock::now().time_since_epoch().count();
 
     auto t_start = std::chrono::high_resolution_clock::now();
 

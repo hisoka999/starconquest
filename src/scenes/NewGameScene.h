@@ -1,5 +1,6 @@
 #pragma once
 #include <engine/core/Scene.h>
+#include "../constants.h"
 
 namespace core
 {
@@ -24,6 +25,8 @@ namespace scenes
         core::SceneManager *sceneManager;
         std::shared_ptr<graphics::Texture> bgTexture;
         std::shared_ptr<UI::Container> container;
+        std::shared_ptr<UI::Container> buttonList;
         unsigned seed;
+        WorldSize worldSize;
     };
 }; // namespace scenes

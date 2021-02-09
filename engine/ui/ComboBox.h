@@ -6,6 +6,7 @@
 #include <engine/ui/Object.h>
 #include <vector>
 #include <type_traits>
+#include <engine/graphics/TextureManager.h>
 
 namespace UI
 {
@@ -18,10 +19,8 @@ namespace UI
         ComboBox(Object *parent = nullptr) : UI::Object(parent), selection(0)
         {
             width = 100;
-            //texture = new CTexture("ArkanaLook.png");
-            //border = texture->subSurface(7,217,6,6);
-            //background = texture->subSurface(250,80,50,50);
-            //border->zoomImage(width/6.0,28.0/6.0);
+            iconFont = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
+
             mouseDown = false;
             renderOrder = 99;
 
@@ -52,36 +51,40 @@ namespace UI
             rect.width = getWidth();
             rect.height = 28;
 
-            if (mouseDown && elements.size() > 0)
-            {
-                rect.height *= elements.size();
-            }
             SDL_Color textColor = {255, 255, 255, 255};
             SDL_Color selectionColor = {93, 103, 108, 255};
+
+            graphics::Rect leftButtonRect = {rect.x, rect.y, rect.height, rect.height};
+            graphics::Rect rightButtonRect = {rect.x + rect.width - rect.height, rect.y, rect.height, rect.height};
             pRender->setDrawColor(12, 21, 24, 255);
 
             pRender->fillRect(rect);
             pRender->setDrawColor(93, 103, 108, 255);
-            pRender->drawRect(rect);
+            pRender->fillRect(leftButtonRect);
+            pRender->fillRect(rightButtonRect);
 
-            if (mouseDown)
-            {
-                for (size_t i = 0; i < elements.size(); ++i)
-                {
-                    if (selection == i)
-                    {
-                        getFont()->render(pRender, elementFunction(elements[i]), selectionColor, rect.x + 5, rect.y + (i * 28));
-                    }
-                    else
-                    {
-                        getFont()->render(pRender, elementFunction(elements[i]), textColor, rect.x + 5, rect.y + (i * 28));
-                    }
-                }
-            }
+            // draw left and right button filling
+            if (selection > 0)
+                pRender->setDrawColor(0, 200, 200, 255);
             else
-            {
-                getFont()->render(pRender, elementFunction(elements[selection]), textColor, rect.x + 5, rect.y);
-            }
+                pRender->setDrawColor(93, 103, 108, 255);
+            pRender->fillRect(leftButtonRect);
+            if (selection < elements.size() - 1)
+                pRender->setDrawColor(0, 200, 200, 255);
+            else
+                pRender->setDrawColor(93, 103, 108, 255);
+
+            pRender->fillRect(rightButtonRect);
+
+            iconFont->render(pRender, "\uf0da", textColor, rightButtonRect.x + (rect.height / 2) - 5, rightButtonRect.y + (rect.height / 2) - 10);
+            iconFont->render(pRender, "\uf0d9", textColor, leftButtonRect.x + (rect.height / 2) - 5, leftButtonRect.y + (rect.height / 2) - 10);
+
+            std::string text = elementFunction(elements[selection]);
+
+            int textW, textH = 0;
+            getFont()->size(text, &textW, &textH);
+
+            getFont()->render(pRender, text, textColor, rect.x + rect.height + 5, rect.y + (rect.height / 2) - (textH / 2));
         }
         void setWidth(int width) { this->width = width; }
         int getWidth() { return width; }
@@ -108,27 +111,29 @@ namespace UI
                 tx += dsp.x;
                 ty += dsp.y;
             }
-            int height = 28;
-            if (mouseDown && elements.size() > 0)
-            {
-                height *= elements.size();
-            }
-            if (e.button.x >= tx && e.button.x <= tx + width + 28 && e.button.y >= ty && e.button.y <= ty + height)
-            {
-                if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
-                {
 
-                    mouseDown = true;
-                }
-                else if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT)
+            graphics::Rect rect;
+            rect.x = tx;
+            rect.y = ty;
+            rect.width = getWidth();
+            rect.height = 28;
+
+            graphics::Rect leftButtonRect = {rect.x, rect.y, rect.height, rect.height};
+            graphics::Rect rightButtonRect = {rect.x + rect.width - rect.height, rect.y, rect.height, rect.height};
+
+            if (leftButtonRect.intersects(pInput->getMousePostion()) && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
+            {
+                if (selection > 0)
                 {
-                    mouseDown = false;
-                    setSelection((e.button.y - ty) / 28);
+                    setSelection(selection - 1);
                 }
             }
-            else
+            else if (rightButtonRect.intersects(pInput->getMousePostion()) && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
-                mouseDown = false;
+                if (selection < elements.size() - 1)
+                {
+                    setSelection(selection + 1);
+                }
             }
         }
         int getSelection() { return selection; }
@@ -136,6 +141,8 @@ namespace UI
         {
             this->selection = selection;
             this->fireFuncionCall("selectionChanged", selection);
+            if (selection >= 0)
+                fireFuncionCall("valueChanged", elements[selection]);
         }
 
         void setSelectionByText(T text)
@@ -156,6 +163,7 @@ namespace UI
         std::vector<T> elements;
         bool mouseDown;
         unsigned int selection;
+        std::shared_ptr<graphics::Text> iconFont;
 
         std::function<std::string(T)> elementFunction;
     };
