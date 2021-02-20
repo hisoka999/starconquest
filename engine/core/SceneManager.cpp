@@ -19,7 +19,7 @@ namespace core
 
     SceneManager::~SceneManager()
     {
-        // TODO Auto-generated destructor stub
+        scenes.clear();
     }
 
     void SceneManager::render()
@@ -44,7 +44,8 @@ namespace core
 
     void SceneManager::addScene(std::string name, const std::shared_ptr<Scene> &scene)
     {
-        scenes.insert(std::pair<std::string, std::shared_ptr<Scene>>(name, scene));
+
+        scenes[name] = scene;
     }
 
     void SceneManager::setCurrentScene(std::string name)

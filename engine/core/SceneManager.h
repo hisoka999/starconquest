@@ -31,9 +31,6 @@ namespace core
             return *(instance);
         }
 
-        SceneManager();
-        virtual ~SceneManager();
-
         void render();
         void handleEvents(core::Input *pInput);
 
@@ -42,8 +39,15 @@ namespace core
         const std::shared_ptr<Scene> &getScene(std::string name);
         void update();
         const std::shared_ptr<Scene> &getCurrentScene();
+        static void free()
+        {
+            delete instance;
+        }
 
     private:
+        SceneManager();
+        virtual ~SceneManager();
+
         std::map<std::string, std::shared_ptr<Scene>> scenes;
         std::string currentScene;
 

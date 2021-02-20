@@ -30,15 +30,15 @@ TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
 TimeThread::~TimeThread()
 {
     stop();
-    thread.detach();
+    thread.join();
 }
 
 void TimeThread::update()
 {
-    while (running)
+    while (this->running)
     {
 
-        while (!paused)
+        while (!paused && running)
         {
             startTime += std::chrono::hours(24);
             std::this_thread::sleep_for(std::chrono::milliseconds(speed));

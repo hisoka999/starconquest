@@ -9,24 +9,29 @@
 namespace graphics
 {
 
-class Text
-{
-public:
-    /** Default constructor */
-    Text();
-    /** Default destructor */
-    virtual ~Text();
+    class Text
+    {
+    public:
+        /** Default constructor */
+        Text();
+        /** Default destructor */
+        virtual ~Text();
+        Text(const Text &org);
 
-    void openFont(const std::string fontFile, int fontSize);
-    void render(core::Renderer *ren, const std::string message, SDL_Color color,
-            int x, int y);
-    int size(std::string message, int* w, int* h);
-protected:
-private:
-    TTF_Font *font;
-    utils::Logger logger;
-    SDL_Texture *texture;
-};
+        void openFont(const std::string fontFile, int fontSize);
+        void render(core::Renderer *ren, const std::string &message, SDL_Color color,
+                    int x, int y);
+        int size(const std::string &message, int *w, int *h);
+
+    protected:
+    private:
+        const std::string genTextHash(const std::string &message, SDL_Color color);
+        TTF_Font *font;
+        utils::Logger logger;
+        SDL_Texture *texture;
+        std::map<std::string, SDL_Texture *> textCache;
+        std::string fontFile;
+    };
 
 } // namespace graphics
 

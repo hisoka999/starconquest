@@ -117,6 +117,7 @@ namespace scenes
 
     MainScene::~MainScene()
     {
+        bgTexture = nullptr;
     }
 
 } /* namespace scenes */

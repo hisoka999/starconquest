@@ -36,24 +36,16 @@ int main(int argc, char *argv[])
     Localisation::Instance().detectLanguage();
 
     setlocale(LC_ALL, "");
-    //textdomain ("starconquest");
-    //bindtextdomain ("starconquest", "locale");
-
+    core::GameWindow win("Star Conquest", 1280, 720);
+    utils::Logger logger(utils::LogLevel::trace);
+    core::Renderer ren(logger);
+    logger.trace(__FILE__, "renderer initialized");
+    graphics::TextureManager::Instance().setRenderer(&ren);
+    core::Input input;
     try
     {
-        // Generate locales and imbue them to iostream
-        //std::locale::global(gen(""));
-        //std::locale::global(std::locale("de"));
-        //std::cout.imbue(std::locale());
 
-        core::GameWindow win("Star Conquest", 1280, 720);
-        utils::Logger logger(utils::LogLevel::trace);
-        core::Renderer ren(logger);
-        logger.trace(__FILE__, "renderer initialized");
-        graphics::TextureManager::Instance().setRenderer(&ren);
-        core::Input input;
-
-        core::SceneManager sceneManager;
+        auto &sceneManager = core::SceneManager::Instance();
         win.open();
         ren.open(&win, false);
         graphics::Rect viewPort = ren.getViewPort();
@@ -84,8 +76,12 @@ int main(int argc, char *argv[])
             {
                 while (input.poll())
                 {
-                    if (input.isKeyDown(SDLK_ESCAPE) || input.isQuit())
+                    if (input.isQuit())
                         run = false;
+                    else if (input.isKeyDown(SDLK_ESCAPE))
+                    {
+                        sceneManager.setCurrentScene("main");
+                    }
                     sceneManager.handleEvents(&input);
                 }
             }
@@ -116,6 +112,8 @@ int main(int argc, char *argv[])
             //win.delay(delay);
             ren.calcDelta();
         }
+        core::SceneManager::free();
+        graphics::TextureManager::free();
     }
     catch (SDLException &e)
     {
@@ -125,5 +123,6 @@ int main(int argc, char *argv[])
     {
         std::cout << "unkown standard exception: " << e.what() << std::endl;
     }
+
     return 0;
 }

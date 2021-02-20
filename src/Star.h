@@ -13,22 +13,24 @@
 #include <memory>
 #include <vector>
 
-enum class StarType {
+enum class StarType
+{
     Yellow,
     Red,
 };
 
-class Star {
+class Star
+{
 public:
-    Star(const std::string& pName, const utils::Vector2& pPosition,
-        graphics::Texture* pTexture, StarType pType);
+    Star(const std::string &pName, const utils::Vector2 &pPosition,
+         graphics::Texture *pTexture, StarType pType);
     virtual ~Star();
 
     void addPlanet(std::shared_ptr<Planet> planet);
-    void addRelation(Star& star);
+    void addRelation(Star &star);
 
     std::string getName();
-    std::vector<std::shared_ptr<Planet>> getPlanets() const;
+    const std::vector<std::shared_ptr<Planet>> &getPlanets() const;
 
     utils::Vector2 getPosition() const;
 
@@ -36,7 +38,7 @@ public:
 
     StarType getType();
 
-    graphics::Rect planetDisplayRect(const std::shared_ptr<Planet>& planet) const;
+    graphics::Rect planetDisplayRect(const std::shared_ptr<Planet> &planet) const;
 
 private:
     std::string name;

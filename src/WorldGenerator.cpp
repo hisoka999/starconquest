@@ -44,7 +44,7 @@ void WorldGenerator::loadStarnames()
 
 std::string WorldGenerator::generateName()
 {
-    std::uniform_int_distribution<size_t> distribution(0, starNames.size());
+    std::uniform_int_distribution<size_t> distribution(0, starNames.size() - 1);
     size_t nameId = distribution(generator);
     return starNames[nameId];
 }

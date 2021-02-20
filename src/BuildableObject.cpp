@@ -8,17 +8,15 @@
 #include "BuildableObject.h"
 #include <engine/graphics/TextureManager.h>
 
-BuildableObject::BuildableObject(const std::string& name, const std::string& localisedName, int resources)
-    : name(name)
-    , localisedName(localisedName)
-    , resources(resources)
+BuildableObject::BuildableObject(const std::string &name, const std::string &localisedName, int resources)
+    : name(name), localisedName(localisedName), resources(resources)
 {
     // TODO Auto-generated constructor stub
 }
 
 BuildableObject::~BuildableObject()
 {
-    // TODO Auto-generated destructor stub
+    texture = nullptr;
 }
 
 std::string BuildableObject::getName()

@@ -11,20 +11,22 @@
 #include "engine/ui/Container.h"
 #include <string>
 
-namespace UI {
+namespace UI
+{
 
-class Tab : public UI::Container, public UI::Object {
-public:
-    Tab(Object* parent, std::string title);
-    virtual ~Tab();
-    std::string getTitle();
-    void setTitle(std::string title);
-    virtual void render(core::Renderer* pRender);
-    virtual void handleEvents(core::Input* pInput);
+    class Tab : public UI::Container, public UI::Object
+    {
+    public:
+        Tab(Object *parent, const std::string &title);
+        virtual ~Tab();
+        const std::string &getTitle() const;
+        void setTitle(const std::string &title);
+        virtual void render(core::Renderer *pRender);
+        virtual void handleEvents(core::Input *pInput);
 
-private:
-    std::string title;
-};
+    private:
+        std::string title;
+    };
 
 } /* namespace UI */
 

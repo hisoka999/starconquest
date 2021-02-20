@@ -12,10 +12,12 @@
 #include <chrono>
 #include <ctime>
 #include <thread>
+#include <atomic>
 
-class TimeThread {
+class TimeThread
+{
 public:
-    TimeThread(const std::shared_ptr<GameState>& gameState);
+    TimeThread(const std::shared_ptr<GameState> &gameState);
     virtual ~TimeThread();
 
     void stop();
@@ -34,7 +36,7 @@ private:
     void update();
     std::thread thread;
     std::chrono::system_clock::time_point startTime;
-    bool running;
+    std::atomic_bool running;
     bool paused;
     int speed;
     std::shared_ptr<GameState> gameState;
