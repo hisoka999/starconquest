@@ -20,61 +20,64 @@
 #include <engine/graphics/texture.h>
 #include <map>
 
-namespace UI {
-class IconButton;
+namespace UI
+{
+    class IconButton;
 }
 
-namespace scenes {
+namespace scenes
+{
 
-struct MovementDirection {
-    bool left = false;
-    bool right = false;
-    bool top = false;
-    bool bottom = false;
-};
+    struct MovementDirection
+    {
+        bool left = false;
+        bool right = false;
+        bool top = false;
+        bool bottom = false;
+    };
 
-class StarMapScene : public core::Scene {
-public:
-    StarMapScene(core::Renderer* pRenderer, std::vector<std::shared_ptr<Star>> pStars,
-        std::shared_ptr<Player> player);
-    virtual ~StarMapScene();
+    class StarMapScene : public core::Scene
+    {
+    public:
+        StarMapScene(core::Renderer *pRenderer, std::shared_ptr<GameState> gameState);
+        virtual ~StarMapScene();
 
-    void render();
-    void update();
-    void handleEvents(core::Input* pInput);
+        void render();
+        void update();
+        void handleEvents(core::Input *pInput);
 
-private:
-    void renderUI();
-    std::shared_ptr<GameState> gameState;
+    private:
+        void renderUI();
+        std::shared_ptr<GameState> gameState;
 
-    graphics::Text starText;
-    graphics::Text uiText;
-    graphics::Text glyphText;
-    std::shared_ptr<UI::IconButton> cashButton;
-    std::shared_ptr<UI::IconButton> researchButton;
+        graphics::Text starText;
+        graphics::Text uiText;
+        graphics::Text glyphText;
+        std::shared_ptr<UI::IconButton> cashButton;
+        std::shared_ptr<UI::IconButton> researchButton;
 
-    graphics::Texture background;
-    std::shared_ptr<graphics::Texture> uiTexture;
-    graphics::Texture planetSurfaceTexture;
-    std::map<StarType, graphics::Texture*> starTextures;
-    std::map<PlanetType, std::shared_ptr<graphics::Texture>> planetTextures;
-    graphics::Rect viewPort;
-    graphics::Rect defaultViewPort;
-    graphics::Rect mainViewPort;
-    std::shared_ptr<UI::Container> container;
-    std::shared_ptr<UI::Button> playButton;
-    std::shared_ptr<UI::Button> pauseButton;
-    std::shared_ptr<UI::Button> doubleSpeed;
-    windows::PlanetWindow planetWindow;
-    ResearchWindow researchWindow;
-    std::unique_ptr<TimeThread> timeThread;
-    std::shared_ptr<Fleet> selectedFleet;
-    std::map<std::string, std::shared_ptr<windows::FleetWindow>> fleetWindows;
-    utils::Vector2 targetFleetVec;
+        graphics::Texture background;
+        std::shared_ptr<graphics::Texture> uiTexture;
+        graphics::Texture planetSurfaceTexture;
+        std::map<StarType, graphics::Texture *> starTextures;
+        std::map<PlanetType, std::shared_ptr<graphics::Texture>> planetTextures;
+        graphics::Rect viewPort;
+        graphics::Rect defaultViewPort;
+        graphics::Rect mainViewPort;
+        std::shared_ptr<UI::Container> container;
+        std::shared_ptr<UI::Button> playButton;
+        std::shared_ptr<UI::Button> pauseButton;
+        std::shared_ptr<UI::Button> doubleSpeed;
+        windows::PlanetWindow planetWindow;
+        ResearchWindow researchWindow;
+        std::unique_ptr<TimeThread> timeThread;
+        std::shared_ptr<Fleet> selectedFleet;
+        std::map<std::string, std::shared_ptr<windows::FleetWindow>> fleetWindows;
+        utils::Vector2 targetFleetVec;
 
-    int mouseSpeedX, mouseSpeedY;
-    MovementDirection direction;
-};
+        int mouseSpeedX, mouseSpeedY;
+        MovementDirection direction;
+    };
 
 } /* namespace scenes */
 

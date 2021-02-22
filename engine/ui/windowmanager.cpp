@@ -33,9 +33,10 @@ namespace UI
 
     void WindowManager::render(core::Renderer *ren)
     {
-        for_each(containers.begin(), containers.end(), [&](Container *c) {
+        for (auto c : containers)
+        {
             c->render(ren);
-        });
+        }
     }
 
     void WindowManager::handleInput(core::Input *inp)

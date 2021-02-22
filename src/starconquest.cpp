@@ -20,6 +20,7 @@
 #include "services/buildingservice.h"
 #include "services/researchservice.h"
 #include "services/shipservice.h"
+#include "services/raceservice.h"
 #include "translate.h"
 #include <engine/utils/json/parser.h>
 #include <iostream>
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
         ShipService::Instance().loadData("data/ships.json");
         BuildingService::Instance().loadData("data/buildings.json");
         ResearchService::Instance().loadResearch("data/research.json");
+        RaceService::Instance().loadData("data/races.json");
 
         unsigned int lastTime = ren.getTickCount();
         unsigned int frames = 0;

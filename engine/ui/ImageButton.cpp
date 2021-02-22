@@ -55,7 +55,7 @@ namespace UI
         if (image == nullptr)
             return;
 
-        graphics::Rect rect = displayRect();
+        graphics::Rect rect = eventRect();
         rect.width = getWidth();
         rect.height = getHeight();
 
@@ -144,7 +144,8 @@ namespace UI
             white = clickColor;
             break;
         }
-        getParent()->getFont()->render(pRender, text, white, messageX, messageY);
+        if (text.length() > 0)
+            getParent()->getFont()->render(pRender, text, white, messageX, messageY);
         pRender->setDrawColor(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
     }
 

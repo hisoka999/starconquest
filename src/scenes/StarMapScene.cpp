@@ -23,19 +23,16 @@ namespace scenes
         gameState = nullptr;
     }
 
-    StarMapScene::StarMapScene(core::Renderer *pRenderer, std::vector<std::shared_ptr<Star>> pStars,
-                               std::shared_ptr<Player> player)
-        : core::Scene(pRenderer), selectedFleet(nullptr), mouseSpeedX(100), mouseSpeedY(100), researchWindow(player)
+    StarMapScene::StarMapScene(core::Renderer *pRenderer, std::shared_ptr<GameState> gameState)
+        : core::Scene(pRenderer), selectedFleet(nullptr), mouseSpeedX(100), mouseSpeedY(100), researchWindow(gameState->getHumanPlayer())
     {
 
         winMgr->addWindow(&researchWindow);
 
         researchWindow.setPos(100, 100);
         direction = {false, false, false, false};
-        std::vector<std::shared_ptr<Player>> players;
 
-        players.push_back(player);
-        gameState = std::make_shared<GameState>(pStars, players, player);
+        this->gameState = gameState;
         auto colonyShip = std::make_shared<Ship>("ColonyShip", "Kolonieschiff", 500, ShipType::ColonyShip, 1);
 
         auto playerStars = gameState->findStarsForPlayer(gameState->getHumanPlayer());
@@ -46,7 +43,7 @@ namespace scenes
         colonyShip->addAttribute(Attribute::Hull, 10);
         colonyShip->addAttribute(Attribute::Drive, 10);
         auto fleet = std::make_shared<Fleet>("Fleet 1");
-        fleet->setOwner(player.get());
+        fleet->setOwner(gameState->getHumanPlayer().get());
         fleet->addShip(colonyShip);
         fleet->setPosition(playerStars[0]->getPosition());
         fleet->setTargetPosition(playerStars[0]->getPosition());

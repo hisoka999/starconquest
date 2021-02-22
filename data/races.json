@@ -1,0 +1,83 @@
+[
+    {
+        "name": "Humans",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Sol",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Eerlir",
+        "face_image": "images/faces/Eerlir.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Ed Asich",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Kaen",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Keid",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Edu",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Heze",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Urkel",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Tyl",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Fargai",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Sol",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Scrix",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Sharatan",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Norkreds",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Nekkar",
+            "planettype": "Terran"
+        }
+    },
+    {
+        "name": "Tocur",
+        "face_image": "images/faces/dummy.png",
+        "description": "A diplimatic race living on the planet earth",
+        "home": {
+            "name": "Thabit",
+            "planettype": "Terran"
+        }
+    }
+]

@@ -14,12 +14,14 @@
 #include <string>
 #include <vector>
 
-enum class RaceType {
+enum class RaceType
+{
     Human,
     Psilons,
 };
 
-enum class AttributeModifierType{
+enum class AttributeModifierType
+{
     Income,
     Research,
     Production,
@@ -27,13 +29,14 @@ enum class AttributeModifierType{
     NeedsFood,
 };
 
-struct AttributeModifier{
+struct AttributeModifier
+{
     AttributeModifierType type;
     int value;
-
 };
 
-class Race {
+class Race
+{
 public:
     Race(RaceType Type, std::string Name, std::string HomePlanet);
     virtual ~Race();
@@ -48,17 +51,20 @@ public:
     }
 
     void setAvailableBuildings(
-        const std::vector<std::shared_ptr<Building>>& availableBuildings)
+        const std::vector<std::shared_ptr<Building>> &availableBuildings)
     {
         this->availableBuildings = availableBuildings;
     }
 
-    std::vector<std::shared_ptr<Research>> getAvailableResearch() const;
-    void setAvailableResearch(const std::vector<std::shared_ptr<Research>>& value);
+    const std::vector<std::shared_ptr<Research>> &getAvailableResearch() const;
+    void setAvailableResearch(const std::vector<std::shared_ptr<Research>> &value);
 
-    void setModifier(const AttributeModifierType type,const int value);
+    void setModifier(const AttributeModifierType type, const int value);
 
     int getModifier(const AttributeModifierType type);
+
+    void setFaceTexture(const std::shared_ptr<graphics::Texture> &texture);
+    const std::shared_ptr<graphics::Texture> &getFaceTexture() const;
 
 private:
     RaceType type;
@@ -67,7 +73,8 @@ private:
     std::vector<std::shared_ptr<Building>> availableBuildings;
     std::vector<std::shared_ptr<Research>> availableResearch;
 
-    std::map<AttributeModifierType,int> modifiers;
+    std::map<AttributeModifierType, int> modifiers;
+    std::shared_ptr<graphics::Texture> faceTexture;
 };
 
 #endif /* RACE_H_ */

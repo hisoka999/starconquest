@@ -6,11 +6,13 @@
 #include <engine/ui/ComboBox.h>
 #include "../translate.h"
 #include <string>
+#include <random>
 #include "StarMapScene.h"
 #include "../services/buildingservice.h"
 #include "../services/researchservice.h"
 #include "../WorldGenerator.h"
 #include <engine/ui/layout/GridLayout.h>
+#include "../services/raceservice.h"
 
 namespace scenes
 {
@@ -37,6 +39,7 @@ namespace scenes
         backButton->setLabel(_("Back"));
 
         buttonList->addObject(backButton);
+        winMgr->addContainer(buttonList.get());
 
         //add comboboxes and textfields
         int yOffset = 30;
@@ -114,6 +117,10 @@ namespace scenes
         numberOfPlayersCombobox->setElementFunction([](int val) {
             return std::to_string(val);
         });
+
+        numberOfPlayersCombobox->connect("valueChanged", [&](int size) {
+            numberOfPlayers = size;
+        });
         container->addObject(numberOfPlayersCombobox);
 
         y += yOffset;
@@ -165,11 +172,51 @@ namespace scenes
             return std::string(magic_enum::enum_name(val));
         });
         container->addObject(difficultyCombobox);
+        winMgr->addContainer(container.get());
         graphics::Rect bounds = {10, 450, 1280, 400};
 
         layout->updateLayout(bounds);
 
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
+
+        graphics::Rect scrollbounds = {5, 250, renderer->getViewPort().width - 10, renderer->getViewPort().height - 260};
+        avaiableRaces = RaceService::Instance().getData();
+        scrollArea = std::make_shared<UI::ScrollArea>(scrollbounds.width, 190, nullptr);
+        scrollArea->setPos(scrollbounds.x, scrollbounds.y);
+        int i = 0;
+        for (auto &race : avaiableRaces)
+        {
+            auto raceIcon = std::make_shared<UI::ImageButton>(scrollArea.get(), 80, 170, 0, 0, true);
+            raceIcon->setImage(race->getFaceTexture());
+            raceIcon->setPos(i * 100, 5);
+            scrollArea->addObject(raceIcon);
+            auto raceName = std::make_shared<UI::Label>(scrollArea.get());
+            raceName->setFont("fonts/Audiowide-Regular.ttf", 14);
+            raceName->setPos(i * 100, 170);
+            raceName->setText(race->getName());
+            raceIcon->connect("buttonClick", [=]() {
+                SDL_Color color = {0xef, 0, 0xef, 0xff};
+                SDL_Color white = {0xff, 0xff, 0xff, 0xff};
+                for (size_t objIdx = 0; objIdx < scrollArea->size(); ++objIdx)
+                {
+                    auto obj = scrollArea->get(objIdx);
+                    auto label = std::dynamic_pointer_cast<UI::Label>(obj);
+                    if (label != nullptr)
+                    {
+                        label->setColor(white);
+                    }
+                }
+
+                raceName->setColor(color);
+                selectedRace = race;
+            });
+
+            scrollArea->addObject(raceName);
+
+            i++;
+        }
+
+        winMgr->addContainer(scrollArea.get());
     }
 
     void NewGameScene::render()
@@ -195,8 +242,7 @@ namespace scenes
         texture.setBlendMode(SDL_BLENDMODE_BLEND);
         texture.render(renderer, 0, 0);
 
-        container->render(renderer);
-        buttonList->render(renderer);
+        winMgr->render(renderer);
     }
 
     void NewGameScene::update()
@@ -205,8 +251,7 @@ namespace scenes
 
     void NewGameScene::handleEvents(core::Input *pInput)
     {
-        container->handleEvents(pInput);
-        buttonList->handleEvents(pInput);
+        winMgr->handleInput(pInput);
     }
 
     void NewGameScene::startGame()
@@ -215,17 +260,27 @@ namespace scenes
         WorldGenerator gen(seed);
         std::vector<std::shared_ptr<Player>> players;
         std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
-        Race human(RaceType::Human, _("Human"), "Sol");
-        human.setAvailableBuildings(buildings);
-        human.setAvailableResearch(ResearchService::Instance().getData());
-        Race psilons(RaceType::Psilons, _("Psilon"), "Mentar");
-        psilons.setAvailableBuildings(buildings);
-        psilons.setAvailableResearch(ResearchService::Instance().getData());
+
         SDL_Color blue{0, 0, 200, 0};
         SDL_Color green{0, 255, 0, 0};
 
-        players.push_back(std::make_shared<Player>(_("Human"), human, blue));
-        players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
+        players.push_back(std::make_shared<Player>(selectedRace->getName(), *(selectedRace.get()), blue));
+        std::mt19937 generator(seed);
+        std::uniform_int_distribution<Uint8> colorGen(0, 255);
+
+        for (auto race : avaiableRaces)
+        {
+            race->setAvailableBuildings(buildings);
+            race->setAvailableResearch(ResearchService::Instance().getData());
+
+            if (numberOfPlayers > players.size() && race != selectedRace)
+            {
+                SDL_Color color = {colorGen(generator), colorGen(generator), colorGen(generator), 255};
+                players.push_back(std::make_shared<Player>(race->getName(), *(race.get()), color));
+            }
+        }
+
+        //players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
 
         std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(int(worldSize), WORLD_SIZE, players);
 
@@ -240,8 +295,9 @@ namespace scenes
                 std::cout << "\tPlanet Size: " << planet->getSize() << std::endl;
             }
         }
+        std::shared_ptr<GameState> gameState = std::make_shared<GameState>(stars, players, players[0]);
 
-        auto starMapScene = std::make_shared<StarMapScene>(renderer, stars, players[0]);
+        auto starMapScene = std::make_shared<StarMapScene>(renderer, gameState);
         sceneManager->addScene("map", starMapScene);
         sceneManager->setCurrentScene("map");
     }
