@@ -265,6 +265,10 @@ namespace scenes
         WorldGenerator gen(seed);
         std::vector<std::shared_ptr<Player>> players;
         std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
+        if (selectedRace == nullptr)
+        {
+            selectedRace = avaiableRaces[0];
+        }
 
         selectedRace->setAvailableBuildings(buildings);
         selectedRace->setAvailableResearch(ResearchService::Instance().getData());
