@@ -263,12 +263,13 @@ namespace scenes
             utils::Vector2 pos = pInput->getMouseWheelPosition();
             float oldFactor = renderer->getZoomFactor();
             renderer->setZoomFactor(oldFactor + pos.getY() / 100.0f);
-            float diffX = renderer->getMainCamera()->getWidth() - (renderer->getMainCamera()->getWidth() * (1 - (pos.getY() / 100.0f)));
-            float diffY = renderer->getMainCamera()->getHeight() - (renderer->getMainCamera()->getHeight() * (1 - (pos.getY() / 100.0f)));
+
+            float diffX = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
+            float diffY = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
 
             renderer->getMainCamera()->move(diffX / 2.f, diffY / 2.f);
             std::cout << "diff " << diffX << " : " << diffY << std::endl;
-            std::cout << "zoom: " << renderer->getZoomFactor() << std::endl;
+            std::cout << "old:" << oldFactor << "zoom: " << renderer->getZoomFactor() << std::endl;
             std::cout << "cam x " << renderer->getMainCamera()->getX() << " cam y " << renderer->getMainCamera()->getY() << std::endl;
         }
         float cameraX = renderer->getMainCamera()->getX();
