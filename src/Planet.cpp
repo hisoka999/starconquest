@@ -14,13 +14,9 @@
 #include <memory>
 #include <stdexcept>
 
-Planet::Planet(const std::string& Name, const PlanetType Type,
-    unsigned int Size, int Angle)
-    : name(Name)
-    , type(Type)
-    , size(Size)
-    , player(nullptr)
-    , angle(Angle)
+Planet::Planet(const std::string &Name, const PlanetType Type,
+               unsigned int Size, int Angle)
+    : name(Name), type(Type), size(Size), player(nullptr), angle(Angle)
 {
     population = 0;
     updateMaxPopulation();
@@ -37,7 +33,7 @@ Planet::Planet(const std::string& Name, const PlanetType Type,
         std::cerr << "Mentar 1 was created" << std::endl;
 }
 
-Planet::Planet(const Planet& orig)
+Planet::Planet(const Planet &orig)
 {
     name = orig.name;
     type = orig.type;
@@ -57,7 +53,8 @@ Planet::Planet(const Planet& orig)
 
 void Planet::updateMaxPopulation()
 {
-    switch (type) {
+    switch (type)
+    {
     case PlanetType::Terran:
         maxPopulation = size * 2;
         break;
@@ -84,7 +81,8 @@ PlanetType Planet::getType()
 
 std::string Planet::getTranslatedType()
 {
-    switch (type) {
+    switch (type)
+    {
     case PlanetType::Barren:
         return _("Barren");
     case PlanetType::Gaia:
@@ -117,11 +115,12 @@ unsigned int Planet::getMaxPopulation()
 Planet::~Planet()
 {
 }
-void Planet::colonize(const std::shared_ptr<Player>& player)
+void Planet::colonize(const std::shared_ptr<Player> &player)
 {
     setPlayer(player);
     initPopulation(10);
-    switch (type) {
+    switch (type)
+    {
     case PlanetType::Terran:
         break;
     case PlanetType::Gaia:
@@ -138,7 +137,8 @@ void Planet::colonize(const std::shared_ptr<Player>& player)
 int Planet::caclulateFoodPerField(size_t field)
 {
     int food = 0;
-    switch (fields[field]) {
+    switch (fields[field])
+    {
     case FieldType::Dirt:
         food = 1;
         break;
@@ -164,7 +164,8 @@ int Planet::caclulateFoodPerField(size_t field)
 int Planet::caclulateRessourcePerField(size_t field)
 {
     int ressource = 0;
-    switch (fields[field]) {
+    switch (fields[field])
+    {
     case FieldType::Dirt:
         ressource = 1;
         break;
@@ -216,9 +217,11 @@ int Planet::caclulateFood()
     int baseFood = 4;
     int result = baseFood;
 
-    for (size_t pos = 0; pos < FIELDS; ++pos) {
-        if (buildings.at(pos) != nullptr) {
-            auto& building = buildings[pos];
+    for (size_t pos = 0; pos < FIELDS; ++pos)
+    {
+        if (buildings.at(pos) != nullptr)
+        {
+            auto &building = buildings[pos];
             result += building->getModifier(ModifierType::Food) + caclulateFoodPerField(pos);
         }
     }
@@ -229,9 +232,11 @@ int Planet::calculateResources()
     int baseRessource = 10;
     int result = baseRessource;
 
-    for (size_t pos = 0; pos < FIELDS; ++pos) {
-        if (buildings.at(pos) != nullptr) {
-            auto& building = buildings[pos];
+    for (size_t pos = 0; pos < FIELDS; ++pos)
+    {
+        if (buildings.at(pos) != nullptr)
+        {
+            auto &building = buildings[pos];
             result += building->getModifier(ModifierType::Ressource) + caclulateRessourcePerField(pos);
         }
     }
@@ -241,9 +246,11 @@ int Planet::calculateIncome()
 {
     int result = population * 0.5;
 
-    for (size_t pos = 0; pos < FIELDS; ++pos) {
-        if (buildings.at(pos) != nullptr) {
-            auto& building = buildings[pos];
+    for (size_t pos = 0; pos < FIELDS; ++pos)
+    {
+        if (buildings.at(pos) != nullptr)
+        {
+            auto &building = buildings[pos];
             result += building->getModifier(ModifierType::Money);
         }
     }
@@ -254,9 +261,11 @@ int Planet::caluclateResearch()
     int baseRessource = 1;
     int result = baseRessource;
 
-    for (size_t pos = 0; pos < FIELDS; ++pos) {
-        if (buildings.at(pos) != nullptr) {
-            auto& building = buildings[pos];
+    for (size_t pos = 0; pos < FIELDS; ++pos)
+    {
+        if (buildings.at(pos) != nullptr)
+        {
+            auto &building = buildings[pos];
             result += building->getModifier(ModifierType::Research);
         }
     }
@@ -324,14 +333,16 @@ void Planet::generateSurface(long seed)
     int waste = 40;
     int dirt = 0;
     int forest = 0;
-    for (size_t i = 0; i < FIELDS; ++i) {
+    for (size_t i = 0; i < FIELDS; ++i)
+    {
         grass = 0;
         water = 0;
         mounten = 0;
         waste = 0;
         dirt = 0;
         forest = 0;
-        switch (type) {
+        switch (type)
+        {
         case PlanetType::Barren:
             grass = 10;
             water = 10;
@@ -365,27 +376,33 @@ void Planet::generateSurface(long seed)
         }
         int chance = chanceGen(generator);
         int base = 0;
-        if (chance < grass && chance > base) {
+        if (chance < grass && chance > base)
+        {
             fields[i] = FieldType::Grass;
         }
         base += grass;
-        if (chance < base + water && chance > base) {
+        if (chance < base + water && chance > base)
+        {
             fields[i] = FieldType::Water;
         }
         base += water;
-        if (chance < base + mounten && chance > base) {
+        if (chance < base + mounten && chance > base)
+        {
             fields[i] = FieldType::Mounten;
         }
         base += mounten;
-        if (chance < base + waste && chance > base) {
+        if (chance < base + waste && chance > base)
+        {
             fields[i] = FieldType::Waste;
         }
         base += waste;
-        if (chance < base + dirt && chance > base) {
+        if (chance < base + dirt && chance > base)
+        {
             fields[i] = FieldType::Dirt;
         }
         base += dirt;
-        if (chance < base + forest && chance > base) {
+        if (chance < base + forest && chance > base)
+        {
             fields[i] = FieldType::Forrest;
         }
         base += forest;
@@ -401,19 +418,24 @@ std::vector<std::shared_ptr<BuildableObject>> Planet::getBuildableBuildings(
 {
     std::vector<std::shared_ptr<BuildableObject>> buildings;
     auto playerBuildings = player->getRace().getAvailableBuildings();
-    for (auto& building : playerBuildings) {
+    for (auto &building : playerBuildings)
+    {
 
         bool buildable = true;
 
         auto resList = player->getRace().getAvailableResearch();
-        for (auto& res : resList) {
-            if (res->canEnableObject(building->getName())) {
-                if (!res->getResearched()) {
+        for (auto &res : resList)
+        {
+            if (res->canEnableObject(building->getName()))
+            {
+                if (!res->getResearched())
+                {
                     buildable = false;
                 }
             }
         }
-        if (buildable) {
+        if (buildable)
+        {
             buildings.push_back(building);
         }
     }
@@ -425,11 +447,12 @@ std::vector<std::shared_ptr<BuildableObject>> Planet::getBuildableBuildings(
     return buildings;
 }
 
-void Planet::findSrcRectFloor(graphics::Rect* target, FieldType fieldType)
+void Planet::findSrcRectFloor(graphics::Rect *target, FieldType fieldType)
 {
     target->width = 120;
     target->height = 140;
-    switch (fieldType) {
+    switch (fieldType)
+    {
     case FieldType::Forrest:
         target->x = 488;
         target->y = 1136;
@@ -439,11 +462,13 @@ void Planet::findSrcRectFloor(graphics::Rect* target, FieldType fieldType)
         target->y = 142;
         break;
     case FieldType::Mounten:
-        if (type == PlanetType::Radiated
-            || type == PlanetType::Wasteland) {
+        if (type == PlanetType::Radiated || type == PlanetType::Wasteland)
+        {
             target->x = 122;
             target->y = 994;
-        } else {
+        }
+        else
+        {
             target->x = 488;
             target->y = 710;
         }
@@ -466,14 +491,14 @@ void Planet::findSrcRectFloor(graphics::Rect* target, FieldType fieldType)
     }
 }
 
-void Planet::renderPlanetSurface(core::Renderer* pRenderer,
-    std::shared_ptr<graphics::Texture> pTexture, graphics::Texture* pTargetSurface)
+void Planet::renderPlanetSurface(core::Renderer *pRenderer,
+                                 std::shared_ptr<graphics::Texture> pTexture, graphics::Texture *pTargetSurface)
 {
     if (pTargetSurface == nullptr)
         return;
 
     SDL_SetTextureBlendMode(pTargetSurface->getSDLTexture(),
-        SDL_BLENDMODE_BLEND);
+                            SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(pRenderer->getRenderer(), 0, 0, 0, 0);
 
     int column = 0;
@@ -483,9 +508,11 @@ void Planet::renderPlanetSurface(core::Renderer* pRenderer,
     pRenderer->setRenderTarget(pTargetSurface->getSDLTexture());
     pRenderer->clear();
     graphics::Rect srcRect, destRect;
-    srcRect = { 0, 0, 0, 0 };
-    for (size_t i = 0; i < FIELDS; ++i, ++column) {
-        if (column >= FIELDS_PER_ROW) {
+    srcRect = {0, 0, 0, 0};
+    for (size_t i = 0; i < FIELDS; ++i, ++column)
+    {
+        if (column >= FIELDS_PER_ROW)
+        {
             column = 0;
             row++;
         }
@@ -497,30 +524,34 @@ void Planet::renderPlanetSurface(core::Renderer* pRenderer,
         destRect.height = height;
         destRect.width = width;
         pTexture->render(pRenderer, srcRect, destRect);
-        SDL_Color white = { 255, 255, 255, 255 };
+        SDL_Color white = {255, 255, 255, 255};
+
         debugText->render(pRenderer, std::to_string(row) + "/" + std::to_string(column), white, destRect.x, destRect.y);
 
         //render building
     }
     row = 0;
     column = 0;
-    for (size_t i = 0; i < FIELDS; ++i, ++column) {
-        if (column >= FIELDS_PER_ROW) {
+    for (size_t i = 0; i < FIELDS; ++i, ++column)
+    {
+        if (column >= FIELDS_PER_ROW)
+        {
             column = 0;
             row++;
         }
         destRect.x = (column * width) + ((row % 2 == 0) ? 0 : width / 2);
 
         destRect.y = row * (height - (35.0 / 140.0 * height));
-        if (buildings.at(i) != nullptr) {
+        if (buildings.at(i) != nullptr)
+        {
             buildings[i]->getTexture()->renderResized(pRenderer, destRect.x, destRect.y, width, height);
         }
     }
-    if (selectedRow >= 0 && selectedColumn >= 0) {
+    if (selectedRow >= 0 && selectedColumn >= 0)
+    {
         srcRect.x = 124;
         srcRect.y = 568;
-        destRect.x = (selectedColumn * width)
-            + ((selectedRow % 2 == 0) ? 0 : width / 2);
+        destRect.x = (selectedColumn * width) + ((selectedRow % 2 == 0) ? 0 : width / 2);
         destRect.y = selectedRow * (height - (35.0 / 140.0 * height));
         pTexture->render(pRenderer, srcRect, destRect);
     }
@@ -535,17 +566,21 @@ void Planet::updateBuildQueue()
     if (resources <= 0 || buildqueue.empty())
         return;
 
-    auto& element = buildqueue.front();
+    auto &element = buildqueue.front();
     element.resourcesLeft -= resources;
-    if (element.resourcesLeft <= 0) {
+    if (element.resourcesLeft <= 0)
+    {
         int diff = element.resourcesLeft;
 
         const std::shared_ptr<Building> b = std::dynamic_pointer_cast<Building>(element.object);
-        if (b != nullptr) {
+        if (b != nullptr)
+        {
             buildings[element.position] = b;
-        } else {
+        }
+        else
+        {
             const std::shared_ptr<Ship> ship = std::dynamic_pointer_cast<Ship>(element.object);
-            auto& sys = core::MessageSystem<MessageTypes>::get();
+            auto &sys = core::MessageSystem<MessageTypes>::get();
 
             ShipBuildData data;
             data.ship = ship;
@@ -567,9 +602,10 @@ bool Planet::hasFieldBuilding(int row, int column)
     size_t field = row + (column * FIELDS_PER_ROW);
     return buildings[field] != nullptr;
 }
-bool Planet::hasBuildingOfName(const std::string& buildingName)
+bool Planet::hasBuildingOfName(const std::string &buildingName)
 {
-    for (auto& building : buildings) {
+    for (auto &building : buildings)
+    {
         if (building == nullptr)
             continue;
         if (building->getName() == buildingName)

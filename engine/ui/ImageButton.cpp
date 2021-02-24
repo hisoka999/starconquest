@@ -68,7 +68,7 @@ namespace UI
 
                 this->fireFuncionCall("buttonClick");
                 this->fireFuncionCall("buttonClickPara",
-                                      utils::Vector2(pos.getX() - rect.x, pos.getY() - rect.y));
+                                      utils::Vector2(pos.getX() - displayRect().x, pos.getY() - displayRect().y));
 
                 state = ButtonState::Clicked;
             }

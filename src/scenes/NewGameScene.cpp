@@ -13,6 +13,7 @@
 #include "../WorldGenerator.h"
 #include <engine/ui/layout/GridLayout.h>
 #include "../services/raceservice.h"
+#include <engine/utils/color.h>
 
 namespace scenes
 {
@@ -47,14 +48,18 @@ namespace scenes
 
         auto nameLabel = std::make_shared<UI::Label>(nullptr);
         nameLabel->setFont("fonts/Audiowide-Regular.ttf", 14);
-        nameLabel->setText(_("Name: "));
+        nameLabel->setText(_("Playername: "));
         nameLabel->setPos(20, y);
         container->addObject(nameLabel);
 
         auto nameEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
         nameEdit->setPos(200, y);
         nameEdit->setFont("fonts/Audiowide-Regular.ttf", 14);
-        nameEdit->setText("New Game");
+        nameEdit->setText("Player");
+
+        nameEdit->connect("textChanged", [&](std::string data) {
+            playerName = data;
+        });
 
         container->addObject(nameEdit);
 
@@ -109,8 +114,8 @@ namespace scenes
         numberOfPlayersCombobox->addElement(2);
         numberOfPlayersCombobox->addElement(4);
         numberOfPlayersCombobox->addElement(8);
-        numberOfPlayersCombobox->addElement(16);
-        numberOfPlayersCombobox->addElement(32);
+        //numberOfPlayersCombobox->addElement(16);
+        //numberOfPlayersCombobox->addElement(32);
         numberOfPlayersCombobox->setPos(200, y);
         numberOfPlayersCombobox->setSelectionByText(8);
         numberOfPlayersCombobox->setWidth(200);
@@ -261,10 +266,10 @@ namespace scenes
         std::vector<std::shared_ptr<Player>> players;
         std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
 
-        SDL_Color blue{0, 0, 200, 0};
-        SDL_Color green{0, 255, 0, 0};
+        selectedRace->setAvailableBuildings(buildings);
+        selectedRace->setAvailableResearch(ResearchService::Instance().getData());
 
-        players.push_back(std::make_shared<Player>(selectedRace->getName(), *(selectedRace.get()), blue));
+        players.push_back(std::make_shared<Player>(playerName, *(selectedRace.get()), utils::color::BLUE));
         std::mt19937 generator(seed);
         std::uniform_int_distribution<Uint8> colorGen(0, 255);
 
@@ -279,8 +284,6 @@ namespace scenes
                 players.push_back(std::make_shared<Player>(race->getName(), *(race.get()), color));
             }
         }
-
-        //players.push_back(std::make_shared<Player>(_("psilons"), psilons, green));
 
         std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(int(worldSize), WORLD_SIZE, players);
 

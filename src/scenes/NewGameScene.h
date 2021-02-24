@@ -33,6 +33,7 @@ namespace scenes
         std::shared_ptr<UI::ScrollArea> scrollArea;
         unsigned seed;
         WorldSize worldSize;
+        std::string playerName;
         int numberOfPlayers;
         std::vector<std::shared_ptr<Race>> avaiableRaces;
         std::shared_ptr<Race> selectedRace;
