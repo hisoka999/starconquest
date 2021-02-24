@@ -1,6 +1,7 @@
 #include "engine/graphics/text.h"
 #include "engine/utils/exceptions.h"
 #include "engine/utils/logger.h"
+#include "engine/utils/color.h"
 
 namespace graphics
 {
@@ -57,19 +58,19 @@ namespace graphics
             return -1;
     }
 
-    const std::string Text::genTextHash(const std::string &message, SDL_Color color)
+    const size_t Text::genTextHash(const std::string &message, SDL_Color color)
     {
-        std::string hash;
-        hash.reserve(6 + message.length());
-        hash.append(std::to_string(color.r));
-        hash.append(",");
-        hash.append(std::to_string(color.g));
-        hash.append(",");
-        hash.append(std::to_string(color.b));
-        hash.append("#");
-        hash.append(message);
 
-        return hash;
+        unsigned long hash = 5381;
+        int c;
+
+        for (size_t pos = 0; pos < message.length(); ++pos)
+        {
+            c = message[pos];
+            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        }
+
+        return hash + utils::color::color2hex(color);
     }
 
     void Text::render(core::Renderer *ren, const std::string &message,
