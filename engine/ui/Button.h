@@ -29,6 +29,7 @@ namespace UI
         virtual void render(core::Renderer *pRender);
         virtual void handleEvents(core::Input *pInput);
         virtual graphics::Rect displayRect();
+        virtual graphics::Rect eventRect();
 
         static std::string buttonClickCallback()
         {

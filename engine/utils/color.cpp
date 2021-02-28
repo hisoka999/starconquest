@@ -16,7 +16,7 @@ namespace utils
 
         const uint32_t color2hex(const SDL_Color color)
         {
-            uint32_t value = color.r << 16 + color.g << 8 + color.b;
+            uint32_t value = (color.r << 16) + (color.g << 8) + color.b;
             return value;
         }
     }

@@ -84,6 +84,27 @@ namespace UI
         return r;
     }
 
+    graphics::Rect Button::eventRect()
+    {
+        graphics::Rect r;
+
+        if (getParent() != nullptr)
+        {
+            r = getParent()->eventRect();
+
+            r.x += getX();
+            r.y += getY();
+        }
+        else
+        {
+            r.x = getX();
+            r.y = getY();
+        }
+        r.width = width + 25;
+        r.height = getHeight();
+        return r;
+    }
+
     bool Button::getBorderless() const
     {
         return borderless;
@@ -100,7 +121,7 @@ namespace UI
             hover = false;
             return;
         }
-        graphics::Rect r = displayRect();
+        graphics::Rect r = eventRect();
 
         if (r.intersects(pInput->getMousePostion()))
         {
@@ -198,20 +219,10 @@ namespace UI
         }
 
         int ty;
-        if (getParent() != nullptr)
-        {
-            graphics::Rect r = getParent()->displayRect();
+        graphics::Rect r = displayRect();
 
-            r.x += getX();
-            r.y += getY();
-            tx = int(r.x);
-            ty = int(r.y);
-        }
-        else
-        {
-            tx = getX();
-            ty = getY();
-        }
+        tx = int(r.x);
+        ty = int(r.y);
         renderBackground(pRender);
 
         getFont()->render(pRender, label, displayColor, tx + 10, ty + 10);

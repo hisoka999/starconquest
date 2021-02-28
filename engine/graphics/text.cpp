@@ -70,7 +70,7 @@ namespace graphics
             hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
         }
 
-        return hash + utils::color::color2hex(color);
+        return ((hash << 5) + hash) + utils::color::color2hex(color);
     }
 
     void Text::render(core::Renderer *ren, const std::string &message,

@@ -55,7 +55,8 @@ namespace scenes
         auto nameEdit = std::make_shared<UI::TextItem>(nullptr, 200, 25);
         nameEdit->setPos(200, y);
         nameEdit->setFont("fonts/Audiowide-Regular.ttf", 14);
-        nameEdit->setText("Player");
+        playerName = "Player";
+        nameEdit->setText(playerName);
 
         nameEdit->connect("textChanged", [&](std::string data) {
             playerName = data;

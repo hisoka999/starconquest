@@ -206,6 +206,7 @@ namespace windows
             ressourceLabel->setText("0");
 
             planetOwnerLabel->setText(_("Owner: "));
+            buildButton->disable();
         }
         planetIcon->setImage(planetTextures[planet->getType()]);
 
@@ -220,8 +221,7 @@ namespace windows
             bar->removeTab(shipyardTab);
             shipyardTab = nullptr;
         }
-        buildButton->disable();
-    }
+        }
 
     void PlanetWindow::onSurfaceClick(const utils::Vector2 &pos)
     {
