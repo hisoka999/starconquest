@@ -51,10 +51,7 @@ public:
     }
 
     void setAvailableBuildings(
-        const std::vector<std::shared_ptr<Building>> &availableBuildings)
-    {
-        this->availableBuildings = availableBuildings;
-    }
+        const std::vector<std::shared_ptr<Building>> &availableBuildings);
 
     const std::vector<std::shared_ptr<Research>> &getAvailableResearch() const;
     void setAvailableResearch(const std::vector<std::shared_ptr<Research>> &value);

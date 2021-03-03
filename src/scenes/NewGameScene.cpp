@@ -200,16 +200,20 @@ namespace scenes
             raceName->setFont("fonts/Audiowide-Regular.ttf", 14);
             raceName->setPos(i * 100, 170);
             raceName->setText(race->getName());
+            if (i == 0)
+            {
+                raceName->setColor(utils::color::BLUE);
+            }
             raceIcon->connect("buttonClick", [=]() {
-                SDL_Color color = {0xef, 0, 0xef, 0xff};
-                SDL_Color white = {0xff, 0xff, 0xff, 0xff};
+                SDL_Color color = utils::color::BLUE;
+                SDL_Color white = utils::color::WHITE;
                 for (size_t objIdx = 0; objIdx < scrollArea->size(); ++objIdx)
                 {
                     auto obj = scrollArea->get(objIdx);
                     auto label = std::dynamic_pointer_cast<UI::Label>(obj);
                     if (label != nullptr)
                     {
-                        label->setColor(white);
+                        label->setColor(utils::color::WHITE);
                     }
                 }
 

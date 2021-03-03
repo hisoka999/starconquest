@@ -43,7 +43,7 @@ namespace windows
         colonizeButton->setLabel(_("Colonize"));
         colonizeButton->setPos(100, 180);
         colonizeButton->connect(UI::Button::buttonClickCallback(), [=]() {
-            planet->colonize(gameState->getHumanPlayer());
+            planet->colonize(gameState->getHumanPlayer(), false);
             colonizeButton->disable();
 
             auto fleets = gameState->findFleetsInPlanetDistance(star, planet);
@@ -221,7 +221,7 @@ namespace windows
             bar->removeTab(shipyardTab);
             shipyardTab = nullptr;
         }
-        }
+    }
 
     void PlanetWindow::onSurfaceClick(const utils::Vector2 &pos)
     {

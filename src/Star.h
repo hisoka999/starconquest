@@ -33,6 +33,7 @@ public:
     const std::vector<std::shared_ptr<Planet>> &getPlanets() const;
 
     utils::Vector2 getPosition() const;
+    void setPosition(const utils::Vector2 &pPosition);
 
     std::shared_ptr<Player> getPlayer();
 
