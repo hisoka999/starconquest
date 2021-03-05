@@ -5,19 +5,17 @@
 #include <magic_enum.hpp>
 #include <sstream>
 
-BuildingService* BuildingService::instance = nullptr;
-std::once_flag BuildingService::onceFlag;
-
 BuildingService::BuildingService()
 {
 }
 
-std::shared_ptr<Building> BuildingService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object>& object)
+std::shared_ptr<Building> BuildingService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
 {
     std::string lang = Localisation::Instance().getLanguage();
     if (lang == "en")
         lang = "";
-    else {
+    else
+    {
         lang = "_" + lang;
     }
     auto name = object->getStringValue("name");
@@ -26,7 +24,8 @@ std::shared_ptr<Building> BuildingService::convertJsonObject2Data(const std::sha
     std::shared_ptr<Building> building = std::make_shared<Building>(name, localisedName, resources);
     building->loadTexture(object->getStringValue("texture"));
     auto props = object->getObjectValue("props");
-    for (auto attrName : props->getAttributes()) {
+    for (auto attrName : props->getAttributes())
+    {
         building->addModifier(magic_enum::enum_cast<ModifierType>(attrName).value(), props->getIntValue(attrName));
     }
     return building;

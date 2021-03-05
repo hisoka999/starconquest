@@ -13,8 +13,6 @@
 #include <windows.h>
 #endif
 
-Localisation* Localisation::instance = nullptr;
-std::once_flag Localisation::onceFlag;
 #ifdef _WIN32
 
 /**
@@ -22,7 +20,7 @@ std::once_flag Localisation::onceFlag;
  */
 static WORD GetLangFromLocale(LCID lcid)
 {
-    TCHAR buff[8] = { 0 };
+    TCHAR buff[8] = {0};
     WORD langID = 0;
     if (GetLocaleInfo(lcid, LOCALE_IDEFAULTLANGUAGE, buff, static_cast<int>(std::size(buff))))
         _stscanf_s(buff, _T("%4hx"), &langID);
@@ -53,25 +51,28 @@ void Localisation::detectLanguage()
 {
     std::string lang = "en";
 #ifdef __linux
-    const char* envLang = std::getenv("LANG");
+    const char *envLang = std::getenv("LANG");
     language = std::string(envLang);
 #elif _WIN32
     WORD Lang1 = GetLangFromLocale(GetThreadLocale());
 
     WORD Lang2 = GetLangFromLocale(LOCALE_USER_DEFAULT);
     WORD Lang3 = GetLangFromLocale(LOCALE_SYSTEM_DEFAULT);
-    if (Lang1 == 0) {
+    if (Lang1 == 0)
+    {
         Lang1 = Lang2;
     }
     std::string s;
-    if (int cch = GetLocaleInfo(Lang1, LOCALE_SNAME, 0, 0)) {
+    if (int cch = GetLocaleInfo(Lang1, LOCALE_SNAME, 0, 0))
+    {
         s.resize(cch - 1);
         GetLocaleInfo(Lang1, LOCALE_SNAME, &*s.begin(), cch);
     }
     language = s;
 #endif
 
-    if (language.empty()) {
+    if (language.empty())
+    {
         language = lang;
     }
 
@@ -82,9 +83,10 @@ void Localisation::detectLanguage()
     loadLanguage(this->lang);
 }
 
-std::string Localisation::translate(const std::string& msgid) const
+std::string Localisation::translate(const std::string &msgid) const
 {
-    if (translations.count(msgid) > 0) {
+    if (translations.count(msgid) > 0)
+    {
         return translations.at(msgid);
     }
     return msgid;
@@ -99,26 +101,34 @@ void Localisation::loadLocalisation(std::string filename)
     std::cout << filename << std::endl;
 
     file.open(filename.c_str(), std::ios::in);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         throw IOException(filename, "file does not exists");
     }
     std::string msgid = "";
     std::string msgstr = "";
-    while (getline(file, s)) {
+    while (getline(file, s))
+    {
 
         std::size_t pos = 0;
         //std::cout << "line = " << s << std::endl;
         pos = s.find("#");
-        if (pos < s.length() - 1) {
-
-        } else {
+        if (pos < s.length() - 1)
+        {
+        }
+        else
+        {
             pos = s.find("msgid");
-            if (pos < s.length() - 1) {
+            if (pos < s.length() - 1)
+            {
                 std::string part = s.substr(pos + 5);
                 msgid = utils::trim(utils::trim(part), "\"");
-            } else {
+            }
+            else
+            {
                 pos = s.find("msgstr");
-                if (pos < s.length() - 1) {
+                if (pos < s.length() - 1)
+                {
                     std::string part = s.substr(pos + 6);
                     msgstr = utils::trim(utils::trim(part), "\"");
                     translations[msgid] = msgstr;

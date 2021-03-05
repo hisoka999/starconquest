@@ -37,17 +37,17 @@ int main(int argc, char *argv[])
     Localisation::Instance().detectLanguage();
 
     setlocale(LC_ALL, "");
-    core::GameWindow win("Star Conquest", 1280, 720);
+    const core::GameWindow &win = core::GameWindow::Instance();
     utils::Logger logger(utils::LogLevel::trace);
     core::Renderer ren(logger);
     logger.trace(__FILE__, "renderer initialized");
-    graphics::TextureManager::Instance().setRenderer(&ren);
-    core::Input input;
+
     try
     {
-
+        graphics::TextureManager::Instance().setRenderer(&ren);
+        core::Input input;
         auto &sceneManager = core::SceneManager::Instance();
-        win.open();
+
         ren.open(&win, false);
         graphics::Rect viewPort = ren.getViewPort();
         core::Camera mainCamera(viewPort);
@@ -114,8 +114,6 @@ int main(int argc, char *argv[])
             //win.delay(delay);
             ren.calcDelta();
         }
-        core::SceneManager::free();
-        graphics::TextureManager::free();
     }
     catch (SDLException &e)
     {

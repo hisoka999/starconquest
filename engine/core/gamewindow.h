@@ -8,33 +8,42 @@
 #include <memory>
 #include <string>
 
-namespace core {
+namespace core
+{
 
-class GameWindow {
-public:
-    /** Default constructor */
-    GameWindow(std::string pTitle, int pWidth, int pHeight);
-    /** Default destructor */
-    virtual ~GameWindow();
+    class GameWindow
+    {
+    public:
+        static GameWindow &Instance()
+        {
+            static GameWindow instance("Star Conquest", 1280, 720);
 
-    int open();
+            return instance;
+        }
 
-    SDL_Window* getSDLWindow();
+        const SDL_Window *getSDLWindow() const;
 
-    void delay(unsigned int millsec);
-    int getWidth() { return width; }
-    int getHeight() { return height; }
-    std::shared_ptr<utils::IniBase> getSettings() const;
+        void delay(unsigned int millsec);
+        const int getWidth() const { return width; }
+        const int getHeight() const { return height; }
+        std::shared_ptr<utils::IniBase> getSettings() const;
 
-protected:
-private:
-    SDL_Window* win;
+    protected:
+    private:
+        /** Default constructor */
+        GameWindow(std::string pTitle, int pWidth, int pHeight);
+        /** Default destructor */
+        virtual ~GameWindow();
 
-    int width;
-    int height;
-    std::string title;
-    std::shared_ptr<utils::IniBase> settings;
-};
+        int open();
+
+        SDL_Window *win;
+
+        int width;
+        int height;
+        std::string title;
+        std::shared_ptr<utils::IniBase> settings;
+    };
 
 } // namespace core
 

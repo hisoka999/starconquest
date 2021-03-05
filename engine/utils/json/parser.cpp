@@ -109,7 +109,7 @@ namespace utils
                 {
                     vector.push_back(std::atoi(attrValue.c_str()));
                 }
-                std::cout << "array value: " << attrValue << std::endl;
+                //std::cout << "array value: " << attrValue << std::endl;
 
                 if (splitPos > data.size())
                     break;
@@ -161,7 +161,7 @@ namespace utils
                         size_t objectEnd = findPositionInString(jsonData, '{', '}', objectStart + 1);
                         attrValue = jsonData.substr(objectStart + 1, objectEnd - objectStart - 1);
                         attrValue = rtrim(ltrim(trim(attrValue), "{"), "}");
-                        std::cout << "sub:" << attrName << ":" << attrValue << std::endl;
+                        //std::cout << "sub:" << attrName << ":" << attrValue << std::endl;
                         object->setAttribute(attrName, parseObject(attrValue));
                     }
                     else if (attrValue.find_first_of("[") < attrValue.size())
@@ -171,7 +171,7 @@ namespace utils
                         splitPos = attrValue.find_first_of("]");
                         attrValue = jsonData.substr(arrayStart, arrayEnd - arrayStart);
                         //attrValue = rtrim(ltrim(trim(attrValue), "["), "]");
-                        std::cerr << "array value: " << attrValue << std::endl;
+                        //std::cerr << "array value: " << attrValue << std::endl;
                         object->setArrayAttribute(attrName, parseArray(attrValue));
                     }
                     else if (attrValue.find_first_of("\"") < attrValue.size())

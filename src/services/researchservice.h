@@ -10,34 +10,24 @@
 
 std::string utf8chr(int cp);
 
-class ResearchService : public services::JSONService<Research> {
+class ResearchService : public services::JSONService<Research>
+{
 public:
-    static ResearchService& Instance()
+    static ResearchService &Instance()
     {
-        std::call_once(onceFlag, [] {
-            initSingleton();
-        });
-
-        return *(instance);
+        static ResearchService instance;
+        return instance;
     }
 
     void loadResearch(std::string fileName);
 
 protected:
-    std::shared_ptr<Research> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object>& object);
+    std::shared_ptr<Research> convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object);
 
 private:
     ResearchService();
     ~ResearchService() = default;
-    ResearchService(const ResearchService&) = delete;
-    ResearchService& operator=(const ResearchService&) = delete;
-
-    static ResearchService* instance;
-    static std::once_flag onceFlag;
-
-    static void initSingleton()
-    {
-        instance = new ResearchService();
-    }
+    ResearchService(const ResearchService &) = delete;
+    ResearchService &operator=(const ResearchService &) = delete;
 };
 #endif // RESEARCHSERVICE_H

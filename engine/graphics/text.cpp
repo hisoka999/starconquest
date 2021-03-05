@@ -10,8 +10,6 @@ namespace graphics
     {
         //ctor
         font = nullptr;
-        //logger = new utils::Logger();
-        texture = nullptr;
     }
 
     Text::~Text()
@@ -22,19 +20,18 @@ namespace graphics
         }
         textCache.clear();
 
-        if (texture != nullptr)
-        {
-            SDL_DestroyTexture(texture);
-        }
-
+        logger.trace(__FILE__, "delete font" + fontFile);
         if (font != nullptr)
+        {
+            logger.trace(__FILE__, "ttf was initialised: " + std::to_string(TTF_WasInit()));
             TTF_CloseFont(font);
+            font = nullptr;
+        }
     }
 
     Text::Text(const Text &org)
     {
         font = nullptr;
-        texture = nullptr;
         this->fontFile = "";
     }
 
@@ -91,6 +88,7 @@ namespace graphics
         }
         auto hash = genTextHash(message, color);
         SDL_Surface *surf = nullptr;
+        SDL_Texture *texture = nullptr;
         if (textCache.count(hash) > 0)
         {
             texture = textCache[hash];

@@ -2,11 +2,10 @@
 #include "../translate.h"
 #include <engine/graphics/TextureManager.h>
 #include <functional>
-SettingsWindow::SettingsWindow(core::GameWindow *window)
+SettingsWindow::SettingsWindow(const core::GameWindow *window)
     : UI::Window(50, 50, 490, 300), window(window)
 {
     uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
-    uiIconText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
 
     setFont(uiText.get());
     this->fullscreen = std::make_shared<UI::Checkbox>(this);
@@ -75,7 +74,8 @@ SettingsWindow::SettingsWindow(core::GameWindow *window)
 
 SettingsWindow::~SettingsWindow()
 {
-    //dtor
+    uiText = nullptr;
+    uiIconText = nullptr;
 }
 void SettingsWindow::closeWindow()
 {

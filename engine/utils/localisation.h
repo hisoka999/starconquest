@@ -5,26 +5,25 @@
 #include <memory>
 #include <mutex>
 
-enum class Language : long {
+enum class Language : long
+{
     de,
     en
 };
 
-class Localisation {
+class Localisation
+{
 public:
-    static Localisation& Instance()
+    static Localisation &Instance()
     {
-        std::call_once(onceFlag, [] {
-            initSingleton();
-        });
-
-        return *(instance);
+        static Localisation instance;
+        return instance;
     }
 
     void loadLanguage(const Language lang);
     void detectLanguage();
 
-    std::string translate(const std::string& msgid) const;
+    std::string translate(const std::string &msgid) const;
 
     std::string getLanguage() const;
 
@@ -34,14 +33,8 @@ private:
     void loadLocalisation(std::string filename);
     Localisation();
     ~Localisation() = default;
-    Localisation(const Localisation&) = delete;
-    Localisation& operator=(const Localisation&) = delete;
-    static void initSingleton()
-    {
-        instance = new Localisation();
-    }
-    static Localisation* instance;
-    static std::once_flag onceFlag;
+    Localisation(const Localisation &) = delete;
+    Localisation &operator=(const Localisation &) = delete;
 
     std::map<std::string, std::string> translations;
     std::string language;

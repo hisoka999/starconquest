@@ -13,7 +13,7 @@ namespace graphics
     TextureManager::~TextureManager()
     {
         textures.clear();
-        fonts.clear();
+        //fonts.clear();
         textureMaps.clear();
     }
     void TextureManager::updateRessources()
@@ -43,8 +43,5 @@ namespace graphics
             }
         }
     }
-
-    TextureManager *TextureManager::instance = nullptr;
-    std::once_flag TextureManager::onceFlag;
 
 }

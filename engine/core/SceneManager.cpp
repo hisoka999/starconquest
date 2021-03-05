@@ -10,8 +10,7 @@
 
 namespace core
 {
-    SceneManager *SceneManager::instance = nullptr;
-    std::once_flag SceneManager::onceFlag;
+
     SceneManager::SceneManager()
     {
         // TODO Auto-generated constructor stub

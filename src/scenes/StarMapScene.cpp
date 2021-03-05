@@ -52,13 +52,13 @@ namespace scenes
         gameState->addFleet(fleet);
 
         timeThread = std::make_unique<TimeThread>(gameState);
-        starText.openFont(utils::os::combine("fonts", "Audiowide-Regular.ttf"), 12);
-        glyphText.openFont("fonts/fa-solid-900.ttf", 20);
+        starText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "Audiowide-Regular.ttf"), 12);
+        glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
 
         background.loadTexture(renderer, "images/star_background.png");
 
         uiTexture = graphics::TextureManager::Instance().loadTexture("images/ArkanaLook.png");
-        uiText.openFont("fonts/Audiowide-Regular.ttf", 12);
+        uiText = graphics::TextureManager::Instance().loadFont("fonts/Audiowide-Regular.ttf", 12);
 
         starTextures[StarType::Yellow] = graphics::TextureManager::Instance().loadTexture("images/yellow_sun.png");
 
@@ -183,9 +183,9 @@ namespace scenes
         int yLeft = 10;
         SDL_Color color = {100, 200, 0, 255};
 
-        glyphText.render(renderer, "\uf017", color, xLeft, yLeft);
+        glyphText->render(renderer, "\uf017", color, xLeft, yLeft);
         xLeft += 25;
-        uiText.render(renderer, std::string(time_str), color, xLeft, yLeft + 3);
+        uiText->render(renderer, std::string(time_str), color, xLeft, yLeft + 3);
         container->render(renderer);
     }
 
@@ -430,8 +430,8 @@ namespace scenes
             //render star name
             int w = 0;
             int h = 0;
-            starText.size(star->getName(), &w, &h);
-            starText.render(renderer, star->getName(), color, ((x - w / 2) * renderer->getZoomFactor()) - cameraX, ((y + 30) * renderer->getZoomFactor()) - cameraY);
+            starText->size(star->getName(), &w, &h);
+            starText->render(renderer, star->getName(), color, ((x - w / 2) * renderer->getZoomFactor()) - cameraX, ((y + 30) * renderer->getZoomFactor()) - cameraY);
 
             //render planets
             int i = 1;

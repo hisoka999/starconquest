@@ -24,7 +24,7 @@ namespace scenes
     class MainScene : public core::Scene
     {
     public:
-        MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager, core::GameWindow *gameWindow);
+        MainScene(core::Renderer *pRenderer, core::SceneManager *pSceneManager, const core::GameWindow *gameWindow);
         virtual ~MainScene();
         void render();
         void handleEvents(core::Input *pInput);

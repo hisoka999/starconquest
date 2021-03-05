@@ -28,7 +28,6 @@ namespace graphics
         const size_t genTextHash(const std::string &message, SDL_Color color);
         TTF_Font *font;
         utils::Logger logger;
-        SDL_Texture *texture;
         std::map<size_t, SDL_Texture *> textCache;
         std::string fontFile;
     };

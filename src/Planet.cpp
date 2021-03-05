@@ -205,7 +205,7 @@ int Planet::getSelectedRow() const
 double Planet::populationGrowth()
 {
     int food = caclulateFood();
-    double consumption = population / 4.0;
+    double consumption = population / 2.0;
     return ((food - consumption) / food);
 }
 
@@ -218,7 +218,7 @@ void Planet::updatePopulation()
 
 int Planet::caclulateFood()
 {
-    int baseFood = 4;
+    int baseFood = 2;
     int result = baseFood;
 
     for (size_t pos = 0; pos < FIELDS; ++pos)
@@ -233,7 +233,7 @@ int Planet::caclulateFood()
 }
 int Planet::calculateResources()
 {
-    int baseRessource = 10;
+    int baseRessource = population / 2;
     int result = baseRessource;
 
     for (size_t pos = 0; pos < FIELDS; ++pos)
@@ -348,22 +348,31 @@ void Planet::generateSurface(long seed)
         switch (type)
         {
         case PlanetType::Barren:
-            grass = 10;
-            water = 10;
+            grass = 0;
+            water = 0;
+            dirt = 20;
             mounten = 30;
             waste = 50;
             break;
+        case PlanetType::Radiated:
         case PlanetType::Wasteland:
             grass = 0;
             water = 0;
             mounten = 30;
             waste = 70;
             break;
-        case PlanetType::Terran:
+        case PlanetType::Gaia:
             grass = 20;
             water = 20;
             mounten = 20;
             forest = 40;
+            break;
+        case PlanetType::Terran:
+            dirt = 20;
+            grass = 20;
+            water = 20;
+            mounten = 20;
+            forest = 20;
             break;
         case PlanetType::Swamp:
             grass = 30;
@@ -466,7 +475,7 @@ void Planet::findSrcRectFloor(graphics::Rect *target, FieldType fieldType)
         target->y = 142;
         break;
     case FieldType::Mounten:
-        if (type == PlanetType::Radiated || type == PlanetType::Wasteland)
+        if (type == PlanetType::Radiated || type == PlanetType::Wasteland || type == PlanetType::Barren)
         {
             target->x = 122;
             target->y = 994;

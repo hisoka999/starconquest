@@ -50,9 +50,9 @@ namespace scenes
         void renderUI();
         std::shared_ptr<GameState> gameState;
 
-        graphics::Text starText;
-        graphics::Text uiText;
-        graphics::Text glyphText;
+        std::shared_ptr<graphics::Text> starText;
+        std::shared_ptr<graphics::Text> uiText;
+        std::shared_ptr<graphics::Text> glyphText;
         std::shared_ptr<UI::IconButton> cashButton;
         std::shared_ptr<UI::IconButton> researchButton;
 

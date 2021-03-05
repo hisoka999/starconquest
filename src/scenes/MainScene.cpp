@@ -24,11 +24,11 @@ namespace scenes
 {
 
     MainScene::MainScene(core::Renderer *pRenderer,
-                         core::SceneManager *pSceneManager, core::GameWindow *gameWindow)
-        : core::Scene(pRenderer), running(true), sceneManager(
-                                                     pSceneManager),
+                         core::SceneManager *pSceneManager, const core::GameWindow *gameWindow)
+        : core::Scene(pRenderer), running(true),
           settingsWindow(gameWindow)
     {
+        sceneManager = pSceneManager;
         bgTexture = graphics::TextureManager::Instance().loadTexture("images/title_background.png");
 
         container = std::make_shared<UI::Container>();

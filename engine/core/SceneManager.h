@@ -24,11 +24,8 @@ namespace core
     public:
         static SceneManager &Instance()
         {
-            std::call_once(onceFlag, [] {
-                initSingleton();
-            });
-
-            return *(instance);
+            static SceneManager instance;
+            return instance;
         }
 
         void render();
@@ -39,10 +36,6 @@ namespace core
         const std::shared_ptr<Scene> &getScene(std::string name);
         void update();
         const std::shared_ptr<Scene> &getCurrentScene();
-        static void free()
-        {
-            delete instance;
-        }
 
     private:
         SceneManager();
@@ -50,14 +43,6 @@ namespace core
 
         std::map<std::string, std::shared_ptr<Scene>> scenes;
         std::string currentScene;
-
-        static SceneManager *instance;
-        static std::once_flag onceFlag;
-
-        static void initSingleton()
-        {
-            instance = new SceneManager();
-        }
     };
 
 } /* namespace core */

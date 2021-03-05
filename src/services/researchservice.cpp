@@ -4,9 +4,6 @@
 #include <fstream>
 #include <magic_enum.hpp>
 
-ResearchService *ResearchService::instance = nullptr;
-std::once_flag ResearchService::onceFlag;
-
 std::string utf8chr(int cp)
 {
     char c[5] = {0x00, 0x00, 0x00, 0x00, 0x00};

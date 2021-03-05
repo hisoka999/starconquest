@@ -23,11 +23,8 @@ namespace graphics
     public:
         static TextureManager &Instance()
         {
-            std::call_once(onceFlag, [] {
-                initSingleton();
-            });
-
-            return *(instance);
+            static TextureManager instance;
+            return instance;
         }
 
         const std::shared_ptr<graphics::Texture> loadTexture(const std::string &filename)
@@ -84,30 +81,17 @@ namespace graphics
 
         void updateRessources();
 
-        static void free()
-        {
-            delete instance;
-        }
-
     private:
         TextureManager() = default;
         ~TextureManager();
         TextureManager(const TextureManager &) = delete;
         TextureManager &operator=(const TextureManager &) = delete;
 
-        static TextureManager *instance;
-        static std::once_flag onceFlag;
-
         std::map<std::string, std::shared_ptr<graphics::Texture>> textures;
         std::map<std::string, std::shared_ptr<graphics::Text>> fonts;
         std::map<std::string, std::shared_ptr<graphics::TextureMap>> textureMaps;
 
         core::Renderer *renderer = nullptr;
-
-        static void initSingleton()
-        {
-            instance = new TextureManager();
-        }
     };
 
 } /* namespace graphics */

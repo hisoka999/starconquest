@@ -25,9 +25,6 @@ private:
     ~RaceService() = default;
     RaceService(const RaceService &) = delete;
     RaceService &operator=(const RaceService &) = delete;
-
-    static RaceService instance;
-    static std::once_flag onceFlag;
 };
 
 #endif // RACESERVICE_H

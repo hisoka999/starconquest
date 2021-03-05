@@ -12,7 +12,7 @@ class SettingsWindow : public UI::Window
 {
 public:
     /** Default constructor */
-    SettingsWindow(core::GameWindow *window);
+    SettingsWindow(const core::GameWindow *window);
 
     /** Default destructor */
     virtual ~SettingsWindow();
@@ -25,7 +25,7 @@ private:
     std::shared_ptr<UI::Button> saveButton;
     std::shared_ptr<UI::Button> cancelButton;
     std::shared_ptr<UI::ComboBox<std::string>> resolutions;
-    core::GameWindow *window;
+    const core::GameWindow *window;
     int display_in_use = 0;
     std::shared_ptr<graphics::Text> uiText;
     std::shared_ptr<graphics::Text> uiIconText;
