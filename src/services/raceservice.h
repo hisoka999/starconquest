@@ -13,11 +13,8 @@ class RaceService : public services::JSONService<Race>
 public:
     static RaceService &Instance()
     {
-        std::call_once(onceFlag, [] {
-            initSingleton();
-        });
-
-        return *(instance);
+        static RaceService instance;
+        return instance;
     }
 
 protected:
@@ -29,13 +26,8 @@ private:
     RaceService(const RaceService &) = delete;
     RaceService &operator=(const RaceService &) = delete;
 
-    static RaceService *instance;
+    static RaceService instance;
     static std::once_flag onceFlag;
-
-    static void initSingleton()
-    {
-        instance = new RaceService();
-    }
 };
 
 #endif // RACESERVICE_H

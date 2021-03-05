@@ -1,7 +1,7 @@
 #include "raceservice.h"
 #include <engine/graphics/TextureManager.h>
 
-RaceService *RaceService::instance = nullptr;
+//RaceService *RaceService::instance = nullptr;
 std::once_flag RaceService::onceFlag;
 
 RaceService::RaceService()

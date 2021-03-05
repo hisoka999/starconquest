@@ -39,7 +39,7 @@ namespace UI
 
         for (auto &tab : tabs)
         {
-            std::string title = tab->getTitle();
+            const std::string &title = tab->getTitle();
             //render tab
             int w = 0;
             int h = 0;

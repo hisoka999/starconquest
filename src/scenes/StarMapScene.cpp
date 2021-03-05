@@ -21,6 +21,8 @@ namespace scenes
         timeThread->stop();
         timeThread = nullptr;
         gameState = nullptr;
+        starTextures.clear();
+        planetTextures.clear();
     }
 
     StarMapScene::StarMapScene(core::Renderer *pRenderer, std::shared_ptr<GameState> gameState)
@@ -58,9 +60,7 @@ namespace scenes
         uiTexture = graphics::TextureManager::Instance().loadTexture("images/ArkanaLook.png");
         uiText.openFont("fonts/Audiowide-Regular.ttf", 12);
 
-        starTextures[StarType::Yellow] = new graphics::Texture();
-        starTextures[StarType::Yellow]->loadTexture(renderer,
-                                                    "images/yellow_sun.png");
+        starTextures[StarType::Yellow] = graphics::TextureManager::Instance().loadTexture("images/yellow_sun.png");
 
         planetTextures[PlanetType::Barren] = graphics::TextureManager::Instance().loadTexture("images/planets/planet_23.png");
 
@@ -171,7 +171,7 @@ namespace scenes
         std::time_t tmpTime = std::chrono::system_clock::to_time_t(
             timeThread->getTime());
 
-        char date_time_format[] = "%d.%m.%Y";
+        const char date_time_format[] = "%d.%m.%Y";
 
         char time_str[100];
 

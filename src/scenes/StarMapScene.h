@@ -59,7 +59,7 @@ namespace scenes
         graphics::Texture background;
         std::shared_ptr<graphics::Texture> uiTexture;
         graphics::Texture planetSurfaceTexture;
-        std::map<StarType, graphics::Texture *> starTextures;
+        std::map<StarType, std::shared_ptr<graphics::Texture>> starTextures;
         std::map<PlanetType, std::shared_ptr<graphics::Texture>> planetTextures;
         graphics::Rect viewPort;
         graphics::Rect defaultViewPort;
