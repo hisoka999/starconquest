@@ -115,10 +115,14 @@ unsigned int Planet::getMaxPopulation()
 Planet::~Planet()
 {
 }
-void Planet::colonize(const std::shared_ptr<Player> &player)
+void Planet::colonize(const std::shared_ptr<Player> &player, const bool startPlanet)
 {
     setPlayer(player);
-    initPopulation(10);
+    if (startPlanet)
+        initPopulation(5);
+    else
+        initPopulation(1);
+
     switch (type)
     {
     case PlanetType::Terran:

@@ -4,24 +4,32 @@
 #include <fstream>
 #include <magic_enum.hpp>
 
-ResearchService* ResearchService::instance = nullptr;
+ResearchService *ResearchService::instance = nullptr;
 std::once_flag ResearchService::onceFlag;
 
 std::string utf8chr(int cp)
 {
-    char c[5] = { 0x00, 0x00, 0x00, 0x00, 0x00 };
-    if (cp <= 0x7F) {
+    char c[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
+    if (cp <= 0x7F)
+    {
         c[0] = cp;
-    } else if (cp <= 0x7FF) {
+    }
+    else if (cp <= 0x7FF)
+    {
         c[0] = (cp >> 6) + 192;
         c[1] = (cp & 63) + 128;
-    } else if (0xd800 <= cp && cp <= 0xdfff) {
+    }
+    else if (0xd800 <= cp && cp <= 0xdfff)
+    {
     } //invalid block of utf8
-    else if (cp <= 0xFFFF) {
+    else if (cp <= 0xFFFF)
+    {
         c[0] = (cp >> 12) + 224;
         c[1] = ((cp >> 6) & 63) + 128;
         c[2] = (cp & 63) + 128;
-    } else if (cp <= 0x10FFFF) {
+    }
+    else if (cp <= 0x10FFFF)
+    {
         c[0] = (cp >> 18) + 240;
         c[1] = ((cp >> 12) & 63) + 128;
         c[2] = ((cp >> 6) & 63) + 128;
@@ -29,7 +37,7 @@ std::string utf8chr(int cp)
     }
     return std::string(c);
 }
-int codepoint(const std::string& u)
+int codepoint(const std::string &u)
 {
     int l = u.length();
     if (l < 1)
@@ -65,28 +73,16 @@ void ResearchService::loadResearch(std::string fileName)
     loadData(fileName);
 
     auto list = getData();
-
-    for (auto& research : list) {
-
-        auto names = research->getRequirementNames();
-        for (auto name : names) {
-            for (auto& sub : list) {
-                if (sub->getName() == name) {
-                    research->addRequirement(sub);
-                    break;
-                }
-            }
-        }
-    }
 }
 
-std::shared_ptr<Research> ResearchService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object>& object)
+std::shared_ptr<Research> ResearchService::convertJsonObject2Data(const std::shared_ptr<utils::JSON::Object> &object)
 {
 
     std::string lang = Localisation::Instance().getLanguage();
     if (lang == "en")
         lang = "";
-    else {
+    else
+    {
         lang = "_" + lang;
     }
     std::string name = object->getStringValue("name");
@@ -117,12 +113,14 @@ std::shared_ptr<Research> ResearchService::convertJsonObject2Data(const std::sha
     auto requirements = object->getArray("requires");
     std::vector<std::string> enabledObjectNames;
     std::vector<std::string> requirementNames;
-    for (auto obj : enabledObjs) {
+    for (auto obj : enabledObjs)
+    {
         auto objName = std::get<std::string>(obj);
         enabledObjectNames.push_back(objName);
     }
 
-    for (auto obj : requirements) {
+    for (auto obj : requirements)
+    {
         auto objName = std::get<std::string>(obj);
         requirementNames.push_back(objName);
     }

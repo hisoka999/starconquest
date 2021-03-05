@@ -37,6 +37,11 @@ utils::Vector2 Star::getPosition() const
     return position;
 }
 
+void Star::setPosition(const utils::Vector2 &pPosition)
+{
+    position = pPosition;
+}
+
 std::shared_ptr<Player> Star::getPlayer()
 {
     for (auto &planet : planets)

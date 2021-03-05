@@ -31,6 +31,15 @@ std::string Race::getHomePlanet()
     return homePlanet;
 }
 
+void Race::setAvailableBuildings(const std::vector<std::shared_ptr<Building>> &availableBuildings)
+{
+    this->availableBuildings.clear();
+    for (auto &building : availableBuildings)
+    {
+        this->availableBuildings.push_back(std::make_shared<Building>(*building));
+    }
+}
+
 const std::vector<std::shared_ptr<Research>> &Race::getAvailableResearch() const
 {
     return availableResearch;
@@ -38,7 +47,28 @@ const std::vector<std::shared_ptr<Research>> &Race::getAvailableResearch() const
 
 void Race::setAvailableResearch(const std::vector<std::shared_ptr<Research>> &value)
 {
-    availableResearch = value;
+    this->availableResearch.clear();
+    for (auto &research : value)
+    {
+        this->availableResearch.push_back(std::make_shared<Research>(*research));
+    }
+
+    for (auto &research : availableResearch)
+    {
+
+        auto names = research->getRequirementNames();
+        for (auto name : names)
+        {
+            for (auto &sub : availableResearch)
+            {
+                if (sub->getName() == name)
+                {
+                    research->addRequirement(sub);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Race::setModifier(const AttributeModifierType type, const int value)

@@ -49,7 +49,7 @@
         "face_image": "images/faces/dummy.png",
         "description": "A diplimatic race living on the planet earth",
         "home": {
-            "name": "Sol",
+            "name": "Furud",
             "planettype": "Terran"
         }
     },

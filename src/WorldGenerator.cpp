@@ -69,13 +69,13 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
 
     auto t_start = std::chrono::high_resolution_clock::now();
 
+    // generate stars
     for (int starId = 0; starId < systemSize; ++starId)
     {
         std::string starName;
         StarType starType = StarType::Yellow;
-        currentPlayer = nullptr;
         unsigned int planetNum = planetGen(generator);
-
+        currentPlayer = nullptr;
         if (playerList.size() > 0)
         {
             currentPlayer = playerList.back();
@@ -84,6 +84,10 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
             starName = currentPlayer->getRace().getHomePlanet();
             while (planetNum == 0)
                 planetNum = planetGen(generator);
+
+            //remove starname from starlist
+            auto it = std::find(starNames.begin(), starNames.end(), starName);
+            starNames.erase(it);
         }
         //lookup star name
         if (starName.empty())
@@ -95,9 +99,31 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
                 throw std::runtime_error("star name is empty");
             }
         }
-        bool goodPosition = false;
+        utils::Vector2 position(0, 0);
+        std::shared_ptr<Star> star = std::make_shared<Star>(starName, position, nullptr, starType);
 
-        // find a good position
+        for (unsigned int planetId = 0; planetId < planetNum; ++planetId)
+        {
+            unsigned int planetSize = planetSizeGen(generator);
+
+            PlanetType type = static_cast<PlanetType>(planetTypeGen(generator));
+            if (currentPlayer != nullptr && planetId == 0)
+                type = PlanetType::Terran;
+            std::shared_ptr<Planet> planet = std::make_shared<Planet>(starName + " " + std::to_string(planetId + 1), type, planetSize, angleGen(generator));
+            if (currentPlayer != nullptr)
+                planet->colonize(currentPlayer, true);
+            planet->generateSurface(seed);
+            star->addPlanet(planet);
+            currentPlayer = nullptr;
+        }
+        stars.push_back(star);
+    }
+
+    std::random_shuffle(stars.begin(), stars.end());
+
+    for (auto &star : stars)
+    {
+        bool goodPosition = false;
         utils::Vector2 position(0, 0);
         while (!goodPosition)
         {
@@ -122,24 +148,9 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
             if (dd == stars.size() && dd != 0)
                 goodPosition = false;
         }
-        std::shared_ptr<Star> star = std::make_shared<Star>(starName, position, nullptr, starType);
-
-        for (unsigned int planetId = 0; planetId < planetNum; ++planetId)
-        {
-            unsigned int planetSize = planetSizeGen(generator);
-
-            PlanetType type = static_cast<PlanetType>(planetTypeGen(generator));
-            if (currentPlayer != nullptr && planetId == 0)
-                type = PlanetType::Terran;
-            std::shared_ptr<Planet> planet = std::make_shared<Planet>(starName + " " + std::to_string(planetId + 1), type, planetSize, angleGen(generator));
-            if (currentPlayer != nullptr)
-                planet->colonize(currentPlayer);
-            planet->generateSurface(seed);
-            star->addPlanet(planet);
-            currentPlayer = nullptr;
-        }
-        stars.push_back(star);
+        star->setPosition(position);
     }
+
     //TODO add connection between stars
 
     std::clock_t c_end = std::clock();
