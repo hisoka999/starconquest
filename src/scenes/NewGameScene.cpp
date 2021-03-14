@@ -90,16 +90,19 @@ namespace scenes
         starsystemLabel->setPos(20, y);
         container->addObject(starsystemLabel);
 
-        auto starsystemCombobox = std::make_shared<UI::ComboBox<std::string>>();
+        auto starsystemCombobox = std::make_shared<UI::ComboBox<GenerationType>>();
         starsystemCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
-        starsystemCombobox->addElement("Random");
-        starsystemCombobox->addElement("Spiral");
-        starsystemCombobox->addElement("???");
+        starsystemCombobox->addElement(GenerationType::Spiral);
+        starsystemCombobox->addElement(GenerationType::Random);
+        starsystemCombobox->setSelectionByText(GenerationType::Random);
 
         starsystemCombobox->setPos(200, y);
         starsystemCombobox->setWidth(200);
-        starsystemCombobox->setElementFunction([](std::string val) {
-            return val;
+        starsystemCombobox->setElementFunction([](GenerationType val) {
+            return std::string(magic_enum::enum_name(val));
+        });
+        starsystemCombobox->connect("valueChanged", [&](GenerationType val) {
+            generationType = val;
         });
         container->addObject(starsystemCombobox);
 
@@ -267,7 +270,7 @@ namespace scenes
     void NewGameScene::startGame()
     {
         std::cout << "start game" << std::endl;
-        WorldGenerator gen(seed);
+        WorldGenerator gen(generationType, seed);
         std::vector<std::shared_ptr<Player>> players;
         std::vector<std::shared_ptr<Building>> buildings = BuildingService::Instance().getData();
         if (selectedRace == nullptr)

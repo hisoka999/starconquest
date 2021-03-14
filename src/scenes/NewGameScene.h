@@ -2,6 +2,7 @@
 #include <engine/core/Scene.h>
 #include "../constants.h"
 #include "../Race.h"
+#include "../WorldGenerator.h"
 namespace core
 {
     class SceneManager;
@@ -37,5 +38,6 @@ namespace scenes
         int numberOfPlayers;
         std::vector<std::shared_ptr<Race>> avaiableRaces;
         std::shared_ptr<Race> selectedRace;
+        GenerationType generationType;
     };
 }; // namespace scenes

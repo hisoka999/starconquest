@@ -14,10 +14,16 @@
 #include <string>
 #include <vector>
 
+enum class GenerationType
+{
+    Random,
+    Spiral
+};
+
 class WorldGenerator
 {
 public:
-    WorldGenerator(unsigned long seed);
+    WorldGenerator(GenerationType generationType, unsigned long seed);
     virtual ~WorldGenerator();
 
     std::vector<std::shared_ptr<Star>> generateStarsystem(int systemSize,
@@ -29,6 +35,7 @@ private:
     std::string generateName();
     std::vector<std::string> starNames;
     std::mt19937 generator;
+    GenerationType generationType;
     unsigned long seed;
 };
 

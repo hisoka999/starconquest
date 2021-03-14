@@ -16,8 +16,8 @@
 #include <random>
 #include <sstream>
 
-WorldGenerator::WorldGenerator(unsigned long seed)
-    : generator(seed), seed(seed)
+WorldGenerator::WorldGenerator(GenerationType generationType, unsigned long seed)
+    : generator(seed), generationType(generationType), seed(seed)
 
 {
     loadStarnames();
@@ -127,8 +127,30 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
         utils::Vector2 position(0, 0);
         while (!goodPosition)
         {
-            position = utils::Vector2(positionGen(generator),
-                                      positionGen(generator));
+
+            switch (generationType)
+            {
+            case GenerationType::Random:
+                position = utils::Vector2(positionGen(generator),
+                                          positionGen(generator));
+                break;
+
+            case GenerationType::Spiral:
+            {
+                int maxRadius = worldSize / 2;
+                std::uniform_int_distribution<unsigned int> radiusGen(5, maxRadius);
+
+                int radius = radiusGen(generator);
+                int angle = angleGen(generator);
+                int x = radius * std::cos(angle);
+                int y = radius * std::sin(angle);
+                position = utils::Vector2(x, y);
+                break;
+            }
+            default:
+                break;
+            }
+
             goodPosition = true;
             unsigned int dd = 0;
             for (auto &tmpStar : stars)
