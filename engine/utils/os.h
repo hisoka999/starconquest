@@ -10,38 +10,43 @@
 
 #include <initializer_list>
 #include <string>
+#include <thread>
 
-namespace utils {
+namespace utils
+{
 
-namespace os {
-
-    const std::string path_separator();
-
-    template <class T>
-    std::string combine(T t)
+    namespace os
     {
-        return t;
+
+        const std::string path_separator();
+
+        template <class T>
+        std::string combine(T t)
+        {
+            return t;
+        }
+
+        template <class T, typename... Args>
+        std::string combine(T t, Args... args)
+        {
+            return t + path_separator() + combine(args...);
+        }
+        const std::string get_home_dir();
+
+        const std::string get_prog_dir();
+
+        const std::string get_pref_dir(const std::string &org, const std::string &app);
+
+        const std::string get_current_work_dir();
+
+        bool is_dir(const std::string path);
+
+        bool is_file(const std::string path);
+
+        void create_dir(const std::string path);
+
+        void SetThreadName(std::thread *thread, const char *threadName);
     }
-
-    template <class T, typename... Args>
-    std::string combine(T t, Args... args)
-    {
-        return t + path_separator() + combine(args...);
-    }
-    const std::string get_home_dir();
-
-    const std::string get_prog_dir();
-
-    const std::string get_pref_dir(const std::string& org, const std::string& app);
-
-    const std::string get_current_work_dir();
-
-    bool is_dir(const std::string path);
-
-    bool is_file(const std::string path);
-
-    void create_dir(const std::string path);
-}
 }
 
 #endif /* UTILS_OS_H_ */

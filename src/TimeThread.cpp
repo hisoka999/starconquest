@@ -8,8 +8,8 @@
 #include "TimeThread.h"
 
 #include "messagetypes.h"
-//#include <boost/make_shared.hpp>
 #include <engine/core/MessageSystem.h>
+#include <engine/utils/os.h>
 
 TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
     : running(false), gameState(gameState), paused(false), speed(400)
@@ -24,6 +24,7 @@ TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
     startTime = std::chrono::system_clock::from_time_t(ttime);
     running = true;
     thread = std::thread(&TimeThread::update, this);
+    utils::os::SetThreadName(&thread, "TimerThread");
     //thread.join();
 }
 

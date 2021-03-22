@@ -20,6 +20,8 @@ namespace scenes
     {
         timeThread->stop();
         timeThread = nullptr;
+        aiThread->stop();
+        aiThread = nullptr;
         gameState = nullptr;
         starTextures.clear();
         planetTextures.clear();
@@ -52,6 +54,7 @@ namespace scenes
         gameState->addFleet(fleet);
 
         timeThread = std::make_unique<TimeThread>(gameState);
+        aiThread = std::make_unique<AI::ExecutionThread>(gameState);
         starText = graphics::TextureManager::Instance().loadFont(utils::os::combine("fonts", "Audiowide-Regular.ttf"), 12);
         glyphText = graphics::TextureManager::Instance().loadFont("fonts/fa-solid-900.ttf", 20);
 
@@ -89,6 +92,7 @@ namespace scenes
         playButton->setBorderless(true);
         playButton->connect(UI::Button::buttonClickCallback(), [&] {
             timeThread->start();
+            aiThread->start();
             timeThread->setSpeed(400);
         });
         pauseButton = std::make_shared<UI::Button>();
@@ -98,6 +102,7 @@ namespace scenes
         pauseButton->setBorderless(true);
         pauseButton->connect(UI::Button::buttonClickCallback(), [&] {
             timeThread->pause();
+            aiThread->pause();
         });
 
         doubleSpeed = std::make_shared<UI::Button>();

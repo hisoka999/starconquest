@@ -125,7 +125,8 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
     {
         bool goodPosition = false;
         utils::Vector2 position(0, 0);
-        while (!goodPosition)
+        int generationRun = 0;
+        while (!goodPosition && generationRun < 10)
         {
 
             switch (generationType)
@@ -153,22 +154,33 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
 
             goodPosition = true;
             unsigned int dd = 0;
+            int good = 0;
+            int bad = 0;
             for (auto &tmpStar : stars)
             {
 
                 int distance = position.distance(tmpStar->getPosition());
+
+                // distance to short
                 if (distance < min_distance * 2)
                 {
                     goodPosition = false;
                     break;
                 }
+                else if (distance <= min_distance * 4)
+                {
+                    good++;
+                }
                 else if (distance > min_distance * 4)
                 {
-                    dd++;
+                    bad++;
                 }
             }
-            if (dd == stars.size() && dd != 0)
+            if (good == 0 && bad > 0)
+            {
                 goodPosition = false;
+                generationRun++;
+            }
         }
         star->setPosition(position);
     }

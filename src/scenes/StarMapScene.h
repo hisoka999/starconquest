@@ -19,6 +19,7 @@
 #include <engine/graphics/text.h>
 #include <engine/graphics/texture.h>
 #include <map>
+#include "../ai/ExecutionThread.h"
 
 namespace UI
 {
@@ -71,6 +72,7 @@ namespace scenes
         windows::PlanetWindow planetWindow;
         ResearchWindow researchWindow;
         std::unique_ptr<TimeThread> timeThread;
+        std::unique_ptr<AI::ExecutionThread> aiThread;
         std::shared_ptr<Fleet> selectedFleet;
         std::map<std::string, std::shared_ptr<windows::FleetWindow>> fleetWindows;
         utils::Vector2 targetFleetVec;
