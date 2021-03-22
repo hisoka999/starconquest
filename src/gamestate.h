@@ -9,7 +9,7 @@ class GameState
 {
 public:
     GameState(std::vector<std::shared_ptr<Star>> stars,
-              std::vector<std::shared_ptr<Player>> players, std::shared_ptr<Player> humanPlayer);
+              std::vector<std::shared_ptr<Player>> players, std::shared_ptr<Player> humanPlayer, uint32_t systemSize);
     virtual ~GameState();
 
     const std::vector<std::shared_ptr<Star>> &getStars() const;
@@ -17,6 +17,8 @@ public:
     const std::vector<std::shared_ptr<Player>> &getPlayers() const;
 
     const std::shared_ptr<Player> &getHumanPlayer() const;
+
+    const uint32_t &getSystemSize() const;
 
     std::vector<std::shared_ptr<Star>> findStarsForPlayer(const std::shared_ptr<Player> &player) const;
 
@@ -35,6 +37,7 @@ private:
     std::vector<std::shared_ptr<Player>> players;
     std::shared_ptr<Player> humanPlayer;
     std::vector<std::shared_ptr<Fleet>> fleets;
+    uint32_t systemSize;
 };
 
 #endif // GAMESTATE_H

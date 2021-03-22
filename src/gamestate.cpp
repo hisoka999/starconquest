@@ -3,8 +3,8 @@
 #include <engine/core/MessageSystem.h>
 
 GameState::GameState(std::vector<std::shared_ptr<Star>> stars,
-                     std::vector<std::shared_ptr<Player>> players, std::shared_ptr<Player> humanPlayer)
-    : stars(stars), players(players), humanPlayer(humanPlayer)
+                     std::vector<std::shared_ptr<Player>> players, std::shared_ptr<Player> humanPlayer, uint32_t systemSize)
+    : stars(stars), players(players), humanPlayer(humanPlayer), systemSize(systemSize)
 {
     auto &sys = core::MessageSystem<MessageTypes>::get();
     sys.registerForType(MessageTypes::ShipHasBuild, [=](ShipBuildData buildData) {
@@ -68,6 +68,11 @@ const std::vector<std::shared_ptr<Player>> &GameState::getPlayers() const
 const std::shared_ptr<Player> &GameState::getHumanPlayer() const
 {
     return humanPlayer;
+}
+
+const uint32_t &GameState::getSystemSize() const
+{
+    return systemSize;
 }
 std::vector<std::shared_ptr<Star>> GameState::findStarsForPlayer(const std::shared_ptr<Player> &player) const
 {

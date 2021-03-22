@@ -148,7 +148,7 @@ std::vector<std::shared_ptr<Star>> WorldGenerator::generateStarsystem(int system
                 break;
             }
             default:
-                break;
+                throw std::runtime_error("unknown generationtype");
             }
 
             goodPosition = true;

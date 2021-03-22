@@ -91,10 +91,11 @@ namespace scenes
         container->addObject(starsystemLabel);
 
         auto starsystemCombobox = std::make_shared<UI::ComboBox<GenerationType>>();
+        generationType = GenerationType::Random;
         starsystemCombobox->setFont("fonts/Audiowide-Regular.ttf", 14);
         starsystemCombobox->addElement(GenerationType::Spiral);
         starsystemCombobox->addElement(GenerationType::Random);
-        starsystemCombobox->setSelectionByText(GenerationType::Random);
+        starsystemCombobox->setSelectionByText(generationType);
 
         starsystemCombobox->setPos(200, y);
         starsystemCombobox->setWidth(200);
@@ -296,8 +297,9 @@ namespace scenes
                 players.push_back(std::make_shared<Player>(race->getName(), *(race.get()), color));
             }
         }
+        int systemSize = WORLD_SIZE * int(worldSize) / int(WorldSize::Medium);
 
-        std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(int(worldSize), WORLD_SIZE, players);
+        std::vector<std::shared_ptr<Star>> stars = gen.generateStarsystem(int(worldSize), systemSize, players);
 
         for (auto &star : stars)
         {
@@ -310,7 +312,7 @@ namespace scenes
                 std::cout << "\tPlanet Size: " << planet->getSize() << std::endl;
             }
         }
-        std::shared_ptr<GameState> gameState = std::make_shared<GameState>(stars, players, players[0]);
+        std::shared_ptr<GameState> gameState = std::make_shared<GameState>(stars, players, players[0], systemSize);
 
         auto starMapScene = std::make_shared<StarMapScene>(renderer, gameState);
         sceneManager->addScene("map", starMapScene);

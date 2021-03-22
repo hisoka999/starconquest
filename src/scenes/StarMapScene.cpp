@@ -74,8 +74,8 @@ namespace scenes
 
         planetTextures[PlanetType::Wasteland] = graphics::TextureManager::Instance().loadTexture("images/planets/planet_30.png");
         viewPort = renderer->getViewPort();
-        viewPort.width = WORLD_SIZE;
-        viewPort.height = WORLD_SIZE;
+        viewPort.width = gameState->getSystemSize();
+        viewPort.height = gameState->getSystemSize();
         defaultViewPort = renderer->getViewPort();
 
         planetWindow.setPos(100, 100);
@@ -145,6 +145,7 @@ namespace scenes
         container->addObject(pauseButton);
         container->addObject(doubleSpeed);
         renderer->getMainCamera()->reset();
+        renderer->setZoomFactor(1.0f);
 
         for (auto &star : gameState->getStars())
         {
@@ -154,9 +155,15 @@ namespace scenes
                 float camY = star->getPosition().getY() - (renderer->getMainCamera()->getHeight() / 2);
 
                 renderer->getMainCamera()->move(camX, camY);
+                // //test code
+                // viewPort = renderer->getViewPort();
+                // viewPort.width = gameState->getSystemSize();
+                // viewPort.height = gameState->getSystemSize();
+
                 std::cout << "Player star: " << star->getName() << std::endl;
-                std::cout << "viewPort.x " << viewPort.x << std::endl;
-                std::cout << "viewPort.y " << viewPort.y << std::endl;
+                std::cout << "camX " << camX << std::endl;
+                std::cout << "camY " << camY << std::endl;
+
                 break;
             }
         }
@@ -263,9 +270,9 @@ namespace scenes
             utils::Vector2 pos = pInput->getMouseWheelPosition();
             float oldFactor = renderer->getZoomFactor();
             renderer->setZoomFactor(oldFactor + pos.getY() / 100.0f);
-
-            float diffX = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
-            float diffY = WORLD_SIZE - (WORLD_SIZE * (1 - (pos.getY() / 100.0f)));
+            uint32_t systemSize = gameState->getSystemSize();
+            float diffX = systemSize - (systemSize * (1 - (pos.getY() / 100.0f)));
+            float diffY = systemSize - (systemSize * (1 - (pos.getY() / 100.0f)));
 
             renderer->getMainCamera()->move(diffX / 2.f, diffY / 2.f);
             std::cout << "diff " << diffX << " : " << diffY << std::endl;
@@ -291,8 +298,8 @@ namespace scenes
             starRect.y -= cameraY;
             if (starRect.intersects(mousePos) && pInput->isMouseButtonPressed(SDL_BUTTON_LEFT))
             {
-                viewPort.width = WORLD_SIZE;
-                viewPort.height = WORLD_SIZE;
+                viewPort.width = gameState->getSystemSize();
+                viewPort.height = gameState->getSystemSize();
                 renderer->setZoomFactor(1);
                 renderer->getMainCamera()->reset();
                 renderer->getMainCamera()->move(star->getPosition().getX() - (renderer->getMainCamera()->getWidth() / 2), star->getPosition().getY() - (renderer->getMainCamera()->getHeight() / 2));

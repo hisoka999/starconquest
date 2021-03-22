@@ -160,7 +160,7 @@ namespace windows
         surfaceTiles = nullptr;
 
         auto &msgSystem = core::MessageSystem<MessageTypes>::get();
-        msgSystem.registerForType(MessageTypes::NewMonth, [&](int val) {
+        newMonthMessageId = msgSystem.registerForType(MessageTypes::NewMonth, [&](int val) {
             updatePlanet = true;
             updateData();
         });
@@ -343,6 +343,8 @@ namespace windows
     {
         surfaceTiles = nullptr;
         planetTextures.clear();
+
+        core::MessageSystem<MessageTypes>::get().deregister(newMonthMessageId);
     }
     void PlanetWindow::handleEvents(core::Input *pInput)
     {
