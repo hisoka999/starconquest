@@ -11,7 +11,7 @@
 #define PLANET_DISTANCE 50.0f
 #define MAX_PLANETS_PER_STAR 4
 
-#define WORLD_SIZE 3200
+#define WORLD_SIZE 6400
 #define PI 3.14159265f
 
 enum class Difficulty

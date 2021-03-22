@@ -93,7 +93,7 @@ namespace scenes
         playButton->connect(UI::Button::buttonClickCallback(), [&] {
             timeThread->start();
             aiThread->start();
-            timeThread->setSpeed(400);
+            timeThread->setSpeed(200);
         });
         pauseButton = std::make_shared<UI::Button>();
         pauseButton->setFont("fonts/fa-solid-900.ttf", 20);
@@ -112,7 +112,7 @@ namespace scenes
         doubleSpeed->setBorderless(true);
         doubleSpeed->connect(UI::Button::buttonClickCallback(), [&] {
             timeThread->start();
-            timeThread->setSpeed(100);
+            timeThread->setSpeed(50);
         });
 
         int xLeft = 10;
@@ -215,12 +215,12 @@ namespace scenes
             return;
         }
 
-        if (pInput->isKeyDown(SDLK_DOWN))
+        if (pInput->isKeyDown(SDLK_DOWN) || pInput->isKeyDown(SDLK_s))
         {
             direction.bottom = true;
             direction.top = false;
         }
-        else if (pInput->isKeyDown(SDLK_UP))
+        else if (pInput->isKeyDown(SDLK_UP) || pInput->isKeyDown(SDLK_w))
         {
             direction.top = true;
             direction.bottom = false;
@@ -231,12 +231,12 @@ namespace scenes
             direction.bottom = false;
         }
 
-        if (pInput->isKeyDown(SDLK_LEFT))
+        if (pInput->isKeyDown(SDLK_LEFT) || pInput->isKeyDown(SDLK_a))
         {
             direction.left = true;
             direction.right = false;
         }
-        else if (pInput->isKeyDown(SDLK_RIGHT))
+        else if (pInput->isKeyDown(SDLK_RIGHT) || pInput->isKeyDown(SDLK_d))
         {
             direction.left = false;
             direction.right = true;

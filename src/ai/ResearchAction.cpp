@@ -16,11 +16,14 @@ namespace AI
         auto &availableResearch = player->getRace().getAvailableResearch();
         if (queue.size() == 0)
         {
-            //at first just research the first available item
-            if (availableResearch.size() > 0)
+
+            for (auto &research : availableResearch)
             {
-                auto &research = availableResearch.front();
-                queue.push_back(research);
+                if (!research->getResearched())
+                {
+                    player->addResearchToQueue(research);
+                    return;
+                }
             }
         }
     }

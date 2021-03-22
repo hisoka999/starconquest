@@ -13,6 +13,7 @@
 #include <ctime>
 #include <thread>
 #include <atomic>
+#include "ai/Action.h"
 
 class TimeThread
 {
@@ -40,6 +41,7 @@ private:
     bool paused;
     int speed;
     std::shared_ptr<GameState> gameState;
+    std::vector<std::shared_ptr<AI::Action>> actions;
 };
 
 #endif /* TIMETHREAD_H_ */

@@ -1,5 +1,6 @@
 #include "ExecutionThread.h"
 #include "ResearchAction.h"
+#include "BuildAction.h"
 #include <engine/utils/os.h>
 #include <chrono>
 #include <iostream>
@@ -16,6 +17,7 @@ namespace AI
         utils::os::SetThreadName(&thread, "AIExecutionThread");
 
         actions.push_back(std::make_shared<ResearchAction>());
+        actions.push_back(std::make_shared<BuildAction>());
     }
 
     ExecutionThread::~ExecutionThread()
@@ -48,7 +50,7 @@ namespace AI
 
             while (!paused && running)
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                 std::clock_t c_start = std::clock();
                 auto t_start = std::chrono::high_resolution_clock::now();
 

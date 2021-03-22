@@ -10,9 +10,11 @@
 #include "messagetypes.h"
 #include <engine/core/MessageSystem.h>
 #include <engine/utils/os.h>
+#include "ai/ResearchAction.h"
+#include "ai/BuildAction.h"
 
 TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
-    : running(false), gameState(gameState), paused(false), speed(400)
+    : running(false), gameState(gameState), paused(false), speed(200)
 {
 
     std::tm ttm = std::tm();
@@ -25,6 +27,9 @@ TimeThread::TimeThread(const std::shared_ptr<GameState> &gameState)
     running = true;
     thread = std::thread(&TimeThread::update, this);
     utils::os::SetThreadName(&thread, "TimerThread");
+
+    actions.push_back(std::make_shared<AI::ResearchAction>());
+    actions.push_back(std::make_shared<AI::BuildAction>());
     //thread.join();
 }
 
@@ -59,6 +64,16 @@ void TimeThread::update()
                 std::shared_ptr<core::Message<MessageTypes, int>> msg = std::make_shared<core::Message<MessageTypes, int>>(MessageTypes::NewMonth, 0);
                 msgSystem.sendMessage(msg);
             }
+            // for (const auto &player : gameState->getPlayers())
+            // {
+            //     if (player != gameState->getHumanPlayer())
+            //     {
+            //         for (auto action : actions)
+            //         {
+            //             action->execute(gameState, player);
+            //         }
+            //     }
+            // }
         }
     }
 }

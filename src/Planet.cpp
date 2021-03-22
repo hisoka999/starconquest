@@ -612,7 +612,7 @@ std::vector<BuildQueueElement> Planet::getQueuedObjects()
 }
 bool Planet::hasFieldBuilding(int row, int column)
 {
-    size_t field = row + (column * FIELDS_PER_ROW);
+    size_t field = (row * FIELDS_PER_ROW) + column;
     return buildings[field] != nullptr;
 }
 bool Planet::hasBuildingOfName(const std::string &buildingName)
