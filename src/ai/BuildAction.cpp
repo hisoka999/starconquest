@@ -1,5 +1,6 @@
 #include "BuildAction.h"
 #include "../gamestate.h"
+#include <memory>
 
 namespace AI
 {
@@ -27,20 +28,33 @@ namespace AI
                     {
                         std::map<std::string, std::shared_ptr<BuildableObject>> buildings;
 
+                        unsigned maxNum = 0;
                         for (auto &building : planet->getBuildableBuildings(0, 0))
                         {
                             buildings[building->getName()] = building;
+                            maxNum = std::max(maxNum, planet->countBuildingOfName(building->getName()));
                         }
                         //step one find buildable space
+                        auto buildables = planet->getBuildableBuildings(0, 0);
+                        std::sort(buildables.begin(), buildables.end(), [&](const std::shared_ptr<BuildableObject> &b1, const std::shared_ptr<BuildableObject> &b2) {
+                            return planet->countBuildingOfName(b1->getName()) < planet->countBuildingOfName(b2->getName());
+                        });
 
                         //do we have the space port researched
 
-                        for (auto &building : planet->getBuildableBuildings(0, 0))
+                        for (auto &building : buildables)
                         {
-                            if (!planet->hasBuildingOfName(building->getName()))
+                            unsigned buildingCount = planet->countBuildingOfName(building->getName());
+                            if (!planet->hasBuildingOfName(building->getName()) || buildingCount <= maxNum)
                             {
-                                buildBuilding(building, planet);
-                                break;
+                                auto realBuilding = std::dynamic_pointer_cast<Building>(building);
+
+                                if (buildingCount < realBuilding->getLimit())
+                                {
+                                    std::cout << building->getName() << " limit: " << realBuilding->getLimit() << std::endl;
+                                    buildBuilding(building, planet);
+                                    break;
+                                }
                             }
                         }
                     }

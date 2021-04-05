@@ -21,7 +21,8 @@ std::shared_ptr<Building> BuildingService::convertJsonObject2Data(const std::sha
     auto name = object->getStringValue("name");
     auto localisedName = object->getStringValue("name" + lang);
     int resources = object->getIntValue("resources");
-    std::shared_ptr<Building> building = std::make_shared<Building>(name, localisedName, resources);
+    int limit = object->getIntValue("limit");
+    std::shared_ptr<Building> building = std::make_shared<Building>(name, localisedName, resources, limit);
     building->loadTexture(object->getStringValue("texture"));
     auto props = object->getObjectValue("props");
     for (auto attrName : props->getAttributes())

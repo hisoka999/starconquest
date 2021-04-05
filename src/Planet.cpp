@@ -447,6 +447,11 @@ std::vector<std::shared_ptr<BuildableObject>> Planet::getBuildableBuildings(
                 }
             }
         }
+        if (countBuildingOfName(building->getName()) >= building->getLimit())
+        {
+            buildable = false;
+        }
+
         if (buildable)
         {
             buildings.push_back(building);
@@ -625,4 +630,17 @@ bool Planet::hasBuildingOfName(const std::string &buildingName)
             return true;
     }
     return false;
+}
+
+unsigned Planet::countBuildingOfName(const std::string &buildingName)
+{
+    unsigned i = 0;
+    for (auto &building : buildings)
+    {
+        if (building == nullptr)
+            continue;
+        if (building->getName() == buildingName)
+            i++;
+    }
+    return i;
 }

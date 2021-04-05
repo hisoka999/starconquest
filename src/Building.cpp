@@ -7,8 +7,8 @@
 
 #include "Building.h"
 
-Building::Building(const std::string& name, const std::string& localisedName, int resources)
-    : BuildableObject(name, localisedName, resources)
+Building::Building(const std::string &name, const std::string &localisedName, int resources, unsigned limit)
+    : BuildableObject(name, localisedName, resources), limit(limit)
 {
     // TODO Auto-generated constructor stub
 }
@@ -33,4 +33,9 @@ int Building::getModifier(ModifierType type)
     if (modifiers.count(type) == 0)
         return 0;
     return modifiers[type];
+}
+
+unsigned Building::getLimit() const
+{
+    return limit;
 }

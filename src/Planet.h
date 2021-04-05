@@ -95,6 +95,7 @@ public:
     void updateBuildQueue();
     bool hasFieldBuilding(int row, int column);
     bool hasBuildingOfName(const std::string &buildingName);
+    unsigned countBuildingOfName(const std::string &buildingName);
 
     int getSelectedRow() const;
 
